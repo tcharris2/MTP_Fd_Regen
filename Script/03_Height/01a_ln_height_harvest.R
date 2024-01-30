@@ -121,6 +121,11 @@ ggplot(data = ln_harvest_model_0_fits) +
                  y = resid)) +
   facet_wrap( ~ location, nrow = 2)
 
+ggplot(data = ln_harvest_model_0_fits) +
+  geom_qq(aes(sample = resid)) +
+  facet_wrap( ~ location, nrow = 2) +
+  labs(title = "ln_harvest_model_0_QQplot")
+
 ###### 7.2 Model H -------
 
 # Keeping only nessecary models/information
@@ -142,6 +147,11 @@ ggplot(data = ln_harvest_model_h_fits) +
   geom_point(aes(x = fitted,
                  y = resid)) +
   facet_wrap( ~ location, nrow = 2)
+
+ggplot(data = ln_harvest_model_h_fits) +
+  geom_qq(aes(sample = resid)) +
+  facet_wrap( ~ location, nrow = 2) +
+  labs(title = "ln_harvest_model_h_QQplot")
 
 # 8. Diagnostic Values by Climatic Var -----------------
 
@@ -187,6 +197,9 @@ names(melt_ln_height_harvest_df) <- paste0("ln_harvest_", ClimaticVarList)
 # This will save outputs in the working directory when run
 
 graphingMeltFunction(melt_ln_height_harvest_df)
+
+graphingQQPlotFunction(melt_ln_height_harvest_df)
+
 
 # graphingFunction()
 
