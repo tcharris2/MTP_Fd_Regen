@@ -120,7 +120,7 @@ groupMeltDF <-function(df) {
   
 }
 
-# 4. Graphing -------------------------------------------------------------------
+# 4. Resid vs Fitted Graphing -------------------------------------------------------------------
 
 groupGraphingMeltFunction <-  function(df) {
   
@@ -166,3 +166,51 @@ groupGraphingMeltFunction <-  function(df) {
   }
   
   } 
+
+
+# 4. QQ plots Graphing -------------------------------------------------------------------
+
+groupQQGraphingFunction <-  function(df) {
+  
+  for (i in 1:nrow(df)) {
+    
+    my_title <- df$ClimaticVarList[[i]]
+    
+    print(ggplot(data = df$melt_data[[i]]) + 
+            geom_qq(aes(sample = residaul, colour = resid_model_name), size = 0.25) +
+            
+            theme(legend.title=element_blank()) +
+            labs(title = my_title))
+    
+    # Saving plots as PDFs
+    # Long piece of code that just specifics the name of the file
+    # Could be done manually if wanted 
+    ggsave(paste0(Sys.Date(), paste0("_QQplot_group_"), my_title,
+                  
+                  # check to see if it a natural log transformed dataset            
+                  if (grepl("ln_", df[4][[1]][[1]])) {
+                    
+                    paste0("_ln_")
+                    
+                  } else {
+                    
+                    paste0("_")
+                    
+                  },
+                  
+                  # check to see if the treatment is harvest or tree cover
+                  if (grepl("harvest", df[4][[1]][[1]])) {
+                    
+                    paste("harvest")
+                    
+                  } else {
+                    
+                    paste("canopy")
+                    
+                  }, 
+                  
+                  ".pdf"))
+    
+  }
+  
+} 

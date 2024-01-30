@@ -140,9 +140,14 @@ ln_height_group_harvest_fits_data <- subset(ln_height_group_harvest_fits, select
 ln_height_group_harvest_fits_data$names <- rep("ln_harvest")
 ln_height_group_harvest_fits_data
 
-# graphins
+# Graphing
+
+# Residual Vs Fitted
 groupGraphingMeltFunction(ln_height_group_harvest_fits_data)
 
+
+# QQ plot
+groupQQGraphingFunction(ln_height_group_harvest_fits_data)
 
 ###### 8.2 Canopy ---------
 
@@ -170,8 +175,15 @@ ln_height_group_canopy_fits_data <- subset(ln_height_group_canopy_fits, select =
 ln_height_group_canopy_fits_data$names <- rep("ln_canopy")
 ln_height_group_canopy_fits_data
 
-# graphins
+
+# Graphing
+
+# Residual Vs Fitted
 groupGraphingMeltFunction(ln_height_group_canopy_fits_data)
+
+
+# QQ plot
+groupQQGraphingFunction(ln_height_group_canopy_fits_data)
 
 
 

@@ -9,6 +9,8 @@
 
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
 
+ClimaticVarList <- names(regen %>% select(starts_with("d_")))
+
 # 2. Importing Functions ----------------------------------------------------------
 
 source("Script/03a_Height_Functions/02a_ln_height_canopy_model_function.R")
@@ -98,7 +100,7 @@ ln_height_canopy_models
 
 # 7. Extracting Diagnostic Values ---------------------------------------------
 
-source("Script/03a_ln_height_Functions/04_individual_loc_assumptions_diagnostic_functions.R")
+source("Script/03a_Height_Functions/04_individual_loc_assumptions_diagnostic_functions.R")
 
 ###### 7.1 Model 0 ----
 
@@ -122,6 +124,11 @@ ggplot(data = ln_height_canopy_model_0_fits) +
                  y = resid)) +
   facet_wrap( ~ location, nrow = 2)
 
+ggplot(data = ln_height_canopy_model_0_fits) +
+  geom_qq(aes(sample = resid)) +
+  facet_wrap( ~ location, nrow = 2) +
+  labs(title = "ln_canopy_model_0_QQplot")
+
 ###### 7.2 Model C -------
 
 # Keeping only nessecary models/information
@@ -135,7 +142,7 @@ ln_height_canopy_model_c_resid
 # removing model_x so that the dataframe can be unnested
 ln_canopy_model_c_fits <- subset(ln_height_canopy_model_c_resid, select = c("location", "data"))
 
-ln_canopy_model_c_fits <- unnest(canopy_model_c_fits)
+ln_canopy_model_c_fits <- unnest(ln_canopy_model_c_fits)
 ln_canopy_model_c_fits
 
 # Graphing
@@ -143,6 +150,11 @@ ggplot(data = canopy_model_c_fits) +
   geom_point(aes(x = fitted,
                  y = resid)) +
   facet_wrap( ~ location, nrow = 2)
+
+ggplot(data = ln_canopy_model_c_fits) +
+  geom_qq(aes(sample = resid)) +
+  facet_wrap( ~ location, nrow = 2) +
+  labs(title = "ln_canopy_model_c_QQplot")
 
 # 8. Diagnostic Values by Climatic Var -----------------
 
@@ -188,6 +200,9 @@ names(melt_ln_height_canopy_df) <- paste0("ln_canopy_", ClimaticVarList)
 # This will save outputs in the working directory when run
 
 graphingMeltFunction(melt_ln_height_canopy_df)
+
+graphingQQPlotFunction(melt_ln_height_canopy_df)
+
 
 # graphingFunction()
 

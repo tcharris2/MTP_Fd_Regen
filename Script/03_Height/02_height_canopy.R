@@ -9,6 +9,8 @@
 
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
 
+ClimaticVarList <- names(regen %>% select(starts_with("d_")))
+
 # 2. Importing Functions ----------------------------------------------------------
 
 source("Script/03a_Height_Functions/02_height_canopy_model_function.R")
@@ -118,6 +120,12 @@ ggplot(data = height_canopy_model_0_fits) +
                  y = resid)) +
   facet_wrap( ~ location, nrow = 2)
 
+ggplot(data = height_canopy_model_0_fits) +
+  geom_qq(aes(sample = resid)) +
+  facet_wrap( ~ location, nrow = 2) +
+  labs(title = "canopy_model_0_QQplot")
+
+
 ###### 7.2 Model C -------
 
 # Keeping only nessecary models/information
@@ -139,6 +147,11 @@ ggplot(data = canopy_model_c_fits) +
   geom_point(aes(x = fitted,
                  y = resid)) +
   facet_wrap( ~ location, nrow = 2)
+
+ggplot(data = canopy_model_c_fits) +
+  geom_qq(aes(sample = resid)) +
+  facet_wrap( ~ location, nrow = 2) +
+  labs(title = "canopy_model_c_QQplot")
 
 # 8. Diagnostic Values by Climatic Var -----------------
 
@@ -184,6 +197,9 @@ names(melt_height_canopy_df) <- paste0("canopy_", ClimaticVarList)
 # This will save outputs in the working directory when run
 
 graphingMeltFunction(melt_height_canopy_df)
+
+graphingQQPlotFunction(melt_height_canopy_df)
+
 
 # graphingFunction()
 

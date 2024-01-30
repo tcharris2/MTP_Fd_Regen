@@ -262,6 +262,55 @@ graphingMeltFunction <-  function(df) {
 } 
 
 
+# 7. For-Loop Graphing Diagnostic QQ plots -----------------------
+
+graphingQQPlotFunction <-  function(df) {
+  
+  for (i in 1:length(df)) {
+    
+    my_title <- df[[i]][["climatic_var"]]
+    
+    print(ggplot(data = df[[i]]) + 
+            geom_qq(aes(sample = residaul, colour = resid_model_name), size = 0.25) +
+            facet_wrap( ~ location, nrow = 2) +
+            scale_colour_discrete(labels=c('Model 1', 'Model 2', "Model 3")) +
+            theme(legend.title=element_blank()) +
+            labs(title = my_title))
+    
+    # Saving plots as PDFs
+    # Long piece of code that just specifics the name of the file
+    # Could be done manually if wanted 
+    ggsave(paste0(Sys.Date(),
+                  
+                  # check to see if it a natural log transformed dataset            
+                  if (grepl("ln_", names(df[1]))) {
+                    
+                    paste0("_ln_")
+                    
+                  } else {
+                    
+                    paste0("_")
+                    
+                  },
+                  
+                  # check to see if the treatment is harvest or tree cover
+                  if (grepl("harvest", names(df[1]))) {
+                    
+                    paste("harvest_")
+                    
+                  } else {
+                    
+                    paste("canopy_")
+                    
+                  }, 
+                  
+                  "mod_123_QQplot_", df[[i]][["climatic_var"]], ".pdf"))
+    
+  }
+  
+} 
+
+
 # graphingFunction <- function() {
   
 #  for (i in 1:length(graphing_df)) {
