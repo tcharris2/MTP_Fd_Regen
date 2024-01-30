@@ -137,7 +137,31 @@ groupGraphingMeltFunction <-  function(df) {
     # Saving plots as PDFs
     # Long piece of code that just specifics the name of the file
     # Could be done manually if wanted 
-    ggsave(paste0(Sys.Date(), my_title, ".pdf"))
+    ggsave(paste0(Sys.Date(), paste0("_group_"), my_title,
+                  
+                  # check to see if it a natural log transformed dataset            
+                  if (grepl("ln_", df[4][[1]][[1]])) {
+                    
+                    paste0("_ln_")
+                    
+                  } else {
+                    
+                    paste0("_")
+                    
+                  },
+                  
+                  # check to see if the treatment is harvest or tree cover
+                  if (grepl("harvest", df[4][[1]][[1]])) {
+                    
+                    paste("harvest_")
+                    
+                  } else {
+                    
+                    paste("canopy_")
+                    
+                  }, 
+                  
+                  ".pdf"))
     
   }
   

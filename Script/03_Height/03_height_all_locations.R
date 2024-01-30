@@ -110,83 +110,69 @@ height_group_canopy_models
 
 
 # 8. Testing Model Assumptions -------------------------------------------------------
-names(height_group_harvest_models)
 
-tree_numbers <- subset(regen_harvest_height, select = c(tree_number))
+# importing functions
+source("Script/03a_Height_Functions/05_grouped_loc_assumption_functions.R")
 
+###### 8.1 Harvest -------
 
-height_group_harvest_models$data <- rep(list(tree_numbers))
+# creating a new nested dataframe for inputing resids and fits
+harvest_tree_numbers <- subset(regen_harvest_height, select = c(tree_number))
 
-class(height_group_harvest_models$data[[1]][[1]])
-height_group_harvest_models$data
+height_group_harvest_models$data <- rep(list(harvest_tree_numbers))
 
+# creating columns for residuals and fits 
 height_group_harvest_models <- groupDiagnosticColsFunction(height_group_harvest_models)
-names(height_group_harvest_models$data[[1]])
 
+# extracting metrics to fill columns 
 height_group_harvest_models <- groupExtractMetrics(height_group_harvest_models)
 
-# melting dfs
+
+# melting dfs so they can be graphed 
+height_group_harvest_fits <- groupMeltDF(height_group_harvest_models)
+
+# removing models from dataset for tidyness
+height_group_harvest_fits_names <- names(height_group_harvest_fits %>% select(contains("data")))
+
+height_group_harvest_fits_data <- subset(height_group_harvest_fits, select = c("ClimaticVarList", height_group_harvest_fits_names))
+
+# adding a column for proper graphings names
+height_group_harvest_fits_data$names <- rep("harvest")
+height_group_harvest_fits_data
+
+# graphins
+groupGraphingMeltFunction(height_group_harvest_fits_data)
 
 
-full_melt_test <- groupMeltDF(height_group_harvest_models)
+###### 8.2 Canopy ---------
 
-full_melt_data_names <- names(full_melt_test %>% select(contains("data")))
+# creating a new nested dataframe for inputing resids and fits
+canopy_tree_numbers <- subset(regen_canopy_height, select = c(tree_number))
 
-full_melt_data <- subset(full_melt_test, select = c("ClimaticVarList", full_melt_data_names))
-full_melt_data
+height_group_canopy_models$data <- rep(list(canopy_tree_numbers))
 
-groupGraphingMeltFunction(full_melt_data)
+# creating columns for residuals and fits 
+height_group_canopy_models <- groupDiagnosticColsFunction(height_group_canopy_models)
 
-###### 8.1 Importing Function ---------
-
-source("Script/03a_Height_Functions/04_assumptions_diagnostic_functions.R")
-
-
-####### 8.2 Running Functions ------ 
-diagnostic_height_harvest <- diagnosticColsFunction(height_group_harvest_models)
-diagnostic_height_harvest
-
-diagnostic_height_harvest <- extractMetrics(diagnostic_height_harvest)
-diagnostic_height_harvest
+# extracting metrics to fill columns 
+height_group_canopy_models <- groupExtractMetrics(height_group_canopy_models)
 
 
+# melting dfs so they can be graphed 
+height_group_canopy_fits <- groupMeltDF(height_group_canopy_models)
 
-p <- ggplot()
-i <- 1
-while(i <= length(diagnostic_height_harvest)) {
-  df <- diagnostic_height_harvest[[i]]
-  p <- p + geom_line(data = df, aes(fitted_h_group_model_harvest_1, resid_h_group_model_harvest_1))  
-  i <- i + 1
-}
-p
+# removing models from dataset for tidyness
+height_group_canopy_fits_names <- names(height_group_canopy_fits %>% select(contains("data")))
 
+height_group_canopy_fits_data <- subset(height_group_canopy_fits, select = c("ClimaticVarList", height_group_canopy_fits_names))
 
+# adding a column for proper graphings names
+height_group_canopy_fits_data$names <- rep("canopy")
+height_group_canopy_fits_data
 
-for (i in 1:nrow(diagnostic_height_harvest)) { 
-  print(ggplot() +
-          geom_point(aes(x = diagnostic_height_harvest$fitted_h_group_model_harvest_1[[i]],
-                         y = diagnostic_height_harvest$resid_h_group_model_harvest_1[[i]]),
-                     size = 0.25)) 
-  Sys.sleep(2)
-}
-
-for (i in 1:nrow(diagnostic_height_harvest)) { 
-  print(ggplot(aes(x = diagnostic_height_harvest$fitted_h_group_model_harvest_1[[i]],
-                   y = diagnostic_height_harvest$resid_h_group_model_harvest_1[[i]])) +
-          geom_point(size = 0.25)) 
-}
+# graphins
+groupGraphingMeltFunction(height_group_canopy_fits_data)
 
 
 
-p <- ggplot() + 
-  geom_point(aes(x = diagnostic_height_harvest$fitted_h_group_model_harvest[[1]], 
-                 y = diagnostic_height_harvest$resid_h_group_model_harvest[[1]]))
-
-ggplot() + 
-  geom_point(aes(x = fitted(height_group_harvest_models$h_group_model_harvest[[1]]), 
-                 y = resid(height_group_harvest_models$h_group_model_harvest[[1]])))
-
-
-diagnostic_height_harvest$resid_h_group_model_harvest[[1]]
-diagnostic_height_harvest$fitted_h_group_model_harvest[[1]]
 

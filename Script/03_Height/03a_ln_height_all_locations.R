@@ -19,19 +19,22 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 source("Script/02a_Height_Functions/height_all_locs_model_function.R")
 
-source("Script/02a_Height_Functions/height_data_prep_function.R")
+source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 source("Script/02a_Height_Functions/lrtest_function.R")
 
 
 # 3. Correcting Variable types ----------------------------------------------------
 
-regen_harvest_height <- heightDataPrepFunction(regen)
+regen_prepped <- universalDataPrepFunction(regen)
+
+regen_prepped$ln_height <- log(regen_prepped$height)
+
+regen_harvest_height <-  subset(regen_prepped, !(is.na(height)))
 
 str(regen_harvest_height)
 
 regen_canopy_height <- subset(regen_harvest_height, !(is.na(tree_cover)))
-
 ## 4. Building out models ----------------------------------------------------------
 
 ###### 4.1 Null Model ----
@@ -108,91 +111,68 @@ ln_height_group_canopy_models
 
 # 8. Testing Model Assumptions -----------------------------------------------------------
 
-ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]
-plot(resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]))
-qqnorm(resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]))
+# importing functions
+source("Script/03a_Height_Functions/05_grouped_loc_assumption_functions.R")
+
+###### 8.1 Harvest -------
+
+# creating a new nested dataframe for inputing resids and fits
+harvest_tree_numbers <- subset(regen_harvest_height, select = c(tree_number))
+
+ln_height_group_harvest_models$data <- rep(list(harvest_tree_numbers))
+
+# creating columns for residuals and fits 
+ln_height_group_harvest_models <- groupDiagnosticColsFunction(ln_height_group_harvest_models)
+
+# extracting metrics to fill columns 
+ln_height_group_harvest_models <- groupExtractMetrics(ln_height_group_harvest_models)
 
 
-ggplot() + 
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]], level = 4), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]], level = 4)))
+# melting dfs so they can be graphed 
+ln_height_group_harvest_fits <- groupMeltDF(ln_height_group_harvest_models)
 
-ggplot() + 
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]))) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]])))
+# removing models from dataset for tidyness
+ln_height_group_harvest_fits_names <- names(ln_height_group_harvest_fits %>% select(contains("data")))
 
-ggplot() + 
-  geom_line(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]), 
-                y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]))) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]])))
+ln_height_group_harvest_fits_data <- subset(ln_height_group_harvest_fits, select = c("ClimaticVarList", ln_height_group_harvest_fits_names))
 
-ggplot() + 
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest[[1]])))+ 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[1]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[1]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[1]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[1]])))+ 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_2[[1]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_2[[1]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_2[[1]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_2[[1]])))+ 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_3[[1]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_3[[1]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_3[[1]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_3[[1]])))
+# adding a column for proper graphings names
+ln_height_group_harvest_fits_data$names <- rep("ln_harvest")
+ln_height_group_harvest_fits_data
+
+# graphins
+groupGraphingMeltFunction(ln_height_group_harvest_fits_data)
 
 
-ggplot() +
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[1]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[1]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[1]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[1]]))) + 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[2]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[2]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[2]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[2]]))) + 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[3]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[3]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[3]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[3]]))) + 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[4]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[4]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[4]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[4]]))) + 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[5]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[5]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[5]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[5]]))) + 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[6]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[6]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[6]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[6]]))) + 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[7]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[7]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[7]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[7]]))) + 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[8]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[8]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[8]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[8]]))) + 
-  
-  geom_point(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[9]]), 
-                 y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[9]])), size = 0.25) +
-  geom_smooth(aes(x = fitted(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[9]]), 
-                  y = resid(ln_height_group_harvest_models$ln_h_group_model_harvest_1[[9]])))
+###### 8.2 Canopy ---------
+
+# creating a new nested dataframe for inputing resids and fits
+canopy_tree_numbers <- subset(regen_canopy_height, select = c(tree_number))
+
+ln_height_group_canopy_models$data <- rep(list(canopy_tree_numbers))
+
+# creating columns for residuals and fits 
+ln_height_group_canopy_models <- groupDiagnosticColsFunction(ln_height_group_canopy_models)
+
+# extracting metrics to fill columns 
+ln_height_group_canopy_models <- groupExtractMetrics(ln_height_group_canopy_models)
+
+
+# melting dfs so they can be graphed 
+ln_height_group_canopy_fits <- groupMeltDF(ln_height_group_canopy_models)
+
+# removing models from dataset for tidyness
+ln_height_group_canopy_fits_names <- names(ln_height_group_canopy_fits %>% select(contains("data")))
+
+ln_height_group_canopy_fits_data <- subset(ln_height_group_canopy_fits, select = c("ClimaticVarList", ln_height_group_canopy_fits_names))
+
+# adding a column for proper graphings names
+ln_height_group_canopy_fits_data$names <- rep("ln_canopy")
+ln_height_group_canopy_fits_data
+
+# graphins
+groupGraphingMeltFunction(ln_height_group_canopy_fits_data)
+
+
+
+
