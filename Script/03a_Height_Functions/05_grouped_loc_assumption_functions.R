@@ -122,7 +122,7 @@ groupMeltDF <-function(df) {
 
 # 4. Resid vs Fitted Graphing -------------------------------------------------------------------
 
-groupGraphingMeltFunction <-  function(df) {
+groupGraphingResidFitsFunction <-  function(df) {
   
   for (i in 1:nrow(df)) {
     
@@ -137,7 +137,7 @@ groupGraphingMeltFunction <-  function(df) {
     # Saving plots as PDFs
     # Long piece of code that just specifics the name of the file
     # Could be done manually if wanted 
-    ggsave(paste0(Sys.Date(), paste0("_group_"), my_title,
+    ggsave(paste0(Sys.Date(), paste0("_resid_fitted_group_"), my_title,
                   
                   # check to see if it a natural log transformed dataset            
                   if (grepl("ln_", df[4][[1]][[1]])) {
@@ -153,11 +153,11 @@ groupGraphingMeltFunction <-  function(df) {
                   # check to see if the treatment is harvest or tree cover
                   if (grepl("harvest", df[4][[1]][[1]])) {
                     
-                    paste("harvest_")
+                    paste("harvest")
                     
                   } else {
                     
-                    paste("canopy_")
+                    paste("canopy")
                     
                   }, 
                   

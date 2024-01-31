@@ -17,7 +17,7 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 # 2. Importing Functions ----------------------------------------------------------
 
-source("Script/02a_Height_Functions/height_all_locs_model_function.R")
+source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
@@ -27,6 +27,8 @@ source("Script/02a_Height_Functions/lrtest_function.R")
 # 3. Correcting Variable types ----------------------------------------------------
 
 regen_prepped <- universalDataPrepFunction(regen)
+
+regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
 
 regen_prepped$ln_height <- log(regen_prepped$height)
 
@@ -100,11 +102,11 @@ height_group_canopy_models$climatic_var <- ClimaticVarList
 
 # 7. Calling RDS File  ------------------------------------------------------------
 
-ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "ln_height_group_harvest_models.rds"))
+ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "202401301_ln_height_group_harvest_models_OutEdit.rds"))
 
 ln_height_group_harvest_models
 
-ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp", "ln_height_group_canopy_models.rds"))
+ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp", "202401301_ln_height_group_canopy_models_OutEdit.rds"))
 
 ln_height_group_canopy_models
 
@@ -143,7 +145,7 @@ ln_height_group_harvest_fits_data
 # Graphing
 
 # Residual Vs Fitted
-groupGraphingMeltFunction(ln_height_group_harvest_fits_data)
+groupGraphingResidFitsFunction(ln_height_group_harvest_fits_data)
 
 
 # QQ plot
@@ -179,7 +181,7 @@ ln_height_group_canopy_fits_data
 # Graphing
 
 # Residual Vs Fitted
-groupGraphingMeltFunction(ln_height_group_canopy_fits_data)
+groupGraphingResidFitsFunction(ln_height_group_canopy_fits_data)
 
 
 # QQ plot
