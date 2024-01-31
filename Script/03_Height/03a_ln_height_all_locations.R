@@ -288,7 +288,7 @@ ln_height_group_canopy_models
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 
-###### 9.1 Test models ----
+###### 10.1 Test models ----
 
 # Null vs 1 variable
 ln_height_group_canopy_models$lr_test_0_c <- unlist(modelsTest(df = ln_height_group_canopy_models,
@@ -358,7 +358,7 @@ HC_group_sig_p_vals <- removeNonSigPVals(HC_group_p_vals)
 
 HC_group_sig_p_vals
 
-###### 9.3 Saving p-values ----
+###### 10.3 Saving p-values ----
 write.csv(HC_group_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Canopy_group_p_vals.csv"), row.names = FALSE)
 
 write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Canopy_group_sig_p_vals.csv"), row.names = FALSE)
