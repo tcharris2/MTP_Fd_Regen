@@ -5,19 +5,25 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 # 2. Importing Functions ----------------------------------------------------------
 
-source("Script/02a_Height_Functions/ln_height_all_locs_model_function.R")
+source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
 
-source("Script/02a_Height_Functions/height_data_prep_function.R")
+source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 
 # 3. Correcting Variable types ----------------------------------------------------
 
-regen_harvest_height <- heightDataPrepFunction(regen)
+regen_prepped <- universalDataPrepFunction(regen)
+
+# Removing Outliers
+regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
+
+regen_prepped$ln_height <- log(regen_prepped$height)
+
+regen_harvest_height <-  subset(regen_prepped, !(is.na(height)))
 
 str(regen_harvest_height)
 
 regen_canopy_height <- subset(regen_harvest_height, !(is.na(tree_cover)))
-
 # 4. Building out models ----------------------------------------------------------
 
 ###### 4.1 Null Model ----
@@ -72,7 +78,7 @@ ln_height_group_canopy_models
 # 6. Saving output ---------------------------------------------------------------
 
 # Harvest models
-saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp", "ln_height_group_harvest_models.rds"))
+saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp", "20240131_ln_height_group_harvest_models_OutEdit.rds"))
 
 # Canopy models
-saveRDS(ln_height_group_canopy_models, file = here("Data/04_Temp", "ln_height_group_canopy_models.rds"))
+saveRDS(ln_height_group_canopy_models, file = here("Data/04_Temp", "20240131_ln_height_group_canopy_models_OutEdit.rds"))
