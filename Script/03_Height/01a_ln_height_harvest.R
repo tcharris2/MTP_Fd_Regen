@@ -23,6 +23,8 @@ source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 # 3.  Correcting Variable types ----------------------------------------------------
 regen_prepped <- universalDataPrepFunction(regen)
 
+regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
+
 # Removing NAs from height
 regen_height <- subset(regen_prepped, !(is.na(height)))
 
@@ -32,7 +34,7 @@ regen_ln_height <- regen_height
 regen_ln_height$ln_height <- log(regen_ln_height$height)
 
 
-str(regen_harvest_ln_height)
+str(regen_ln_height)
 
 # This function converts survival, harvestF, provenanceF, and all the random 
 # effects into factors. 
@@ -87,11 +89,12 @@ ln_height_harvest_models$model_h
 
 # 5. Saving models as a RDS file --------------------------------------------------
 
-saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", "ln_height_harvest_models.rds"))
+saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", "20240131_ln_height_harvest_models_OutEdit.rds"))
 
 # 6. Calling model RDS files  -----------------------------------------------------
 
-ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", "ln_height_harvest_models.rds"))
+
+ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", "20240131_ln_height_harvest_models_OutEdit.rds"))
 
 ln_height_harvest_models
 
@@ -202,5 +205,6 @@ graphingQQPlotFunction(melt_ln_height_harvest_df)
 
 
 # graphingFunction()
+
 
 

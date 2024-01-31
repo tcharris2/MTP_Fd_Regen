@@ -23,6 +23,8 @@ source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 # 3.  Correcting Variable types ----------------------------------------------------
 regen_prepped <- universalDataPrepFunction(regen)
 
+regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
+
 # Removing NAs from height
 regen_height <- subset(regen_prepped, !(is.na(height)))
 
@@ -72,7 +74,7 @@ ln_height_canopy_models <- ln_height_canopy_models %>%
 ln_height_canopy_models <- ln_height_canopy_models %>% 
   mutate(model_3 = map(data, ln_heightCanopy_3))
 
-# Stores ModelHarvest 
+# Stores ModelCanopy 
 ln_height_canopy_models <- ln_height_canopy_models %>% 
   mutate(model_c = map(data, ln_heightCanopy))
 
@@ -89,12 +91,12 @@ ln_height_canopy_models$model_h
 
 # 5. Saving models as a RDS file --------------------------------------------------
 
-saveRDS(ln_height_canopy_models, file = here("Data/04_Temp", "ln_height_canopy_models.rds"))
+saveRDS(ln_height_canopy_models, file = here("Data/04_Temp", "2024-01-31_ln_height_canopy_models_OutEdit.rds"))
 
 
 # 6. Calling model RDS files  -----------------------------------------------------
 
-ln_height_canopy_models <- readRDS(file = here("Data/04_Temp", "ln_height_canopy_models.rds"))
+ln_height_canopy_models <- readRDS(file = here("Data/04_Temp", "2024-01-31_ln_height_canopy_models_OutEdit.rds"))
 
 ln_height_canopy_models
 
@@ -122,7 +124,8 @@ ln_height_canopy_model_0_fits
 ggplot(data = ln_height_canopy_model_0_fits) +
   geom_point(aes(x = fitted,
                  y = resid)) +
-  facet_wrap( ~ location, nrow = 2)
+  facet_wrap( ~ location, nrow = 2) +
+  labs(title = "ln_canopy_model_0_resid_fitted")
 
 ggplot(data = ln_height_canopy_model_0_fits) +
   geom_qq(aes(sample = resid)) +
@@ -146,10 +149,11 @@ ln_canopy_model_c_fits <- unnest(ln_canopy_model_c_fits)
 ln_canopy_model_c_fits
 
 # Graphing
-ggplot(data = canopy_model_c_fits) +
+ggplot(data = ln_canopy_model_c_fits) +
   geom_point(aes(x = fitted,
                  y = resid)) +
-  facet_wrap( ~ location, nrow = 2)
+  facet_wrap( ~ location, nrow = 2) + 
+  labs(title = "ln_canopy_model_c_resid_fitted")
 
 ggplot(data = ln_canopy_model_c_fits) +
   geom_qq(aes(sample = resid)) +
