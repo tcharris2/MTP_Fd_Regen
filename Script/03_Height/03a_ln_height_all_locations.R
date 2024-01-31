@@ -188,5 +188,177 @@ groupGraphingResidFitsFunction(ln_height_group_canopy_fits_data)
 groupQQGraphingFunction(ln_height_group_canopy_fits_data)
 
 
+# 9. Testing Harvest Models ----------------------------------------------------
+names(ln_height_group_harvest_models)
 
 
+# rename columns
+colnames(ln_height_group_harvest_models) <- c("ClimaticVarList", "model_0", "model_h", "model_a", 
+                                           "model_1", "model_1a", "model_2", "model_2a", 
+                                           "model_3", "model_3a")
+ln_height_group_harvest_models
+
+source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
+
+###### 9.1 Test models ----
+
+# Null vs 1 variable
+ln_height_group_harvest_models$lr_test_0_h <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                             model_x = ln_height_group_harvest_models$model_0,
+                                                             model_y = ln_height_group_harvest_models$model_h), 
+                                                  recursive = FALSE)
+
+ln_height_group_harvest_models$lr_test_0_a <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                             model_x = ln_height_group_harvest_models$model_0,
+                                                             model_y = ln_height_group_harvest_models$model_a), 
+                                                  recursive = FALSE)
+
+ln_height_group_harvest_models$lr_test_0_1 <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                             model_x = ln_height_group_harvest_models$model_0,
+                                                             model_y = ln_height_group_harvest_models$model_1), 
+                                                  recursive = FALSE)
+
+# Model 1 vs n + 1
+ln_height_group_harvest_models$lr_test_1_1a <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                              model_x = ln_height_group_harvest_models$model_1,
+                                                              model_y = ln_height_group_harvest_models$model_1a), 
+                                                   recursive = FALSE)
+
+ln_height_group_harvest_models$lr_test_1_2 <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                             model_x = ln_height_group_harvest_models$model_1,
+                                                             model_y = ln_height_group_harvest_models$model_2), 
+                                                  recursive = FALSE)
+
+# Harvest model vs Havest + Climatic
+ln_height_group_harvest_models$lr_test_h_2 <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                             model_x = ln_height_group_harvest_models$model_h,
+                                                             model_y = ln_height_group_harvest_models$model_2), 
+                                                  recursive = FALSE)
+
+# Model 2 vs n + 1
+ln_height_group_harvest_models$lr_test_2_2a <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                              model_x = ln_height_group_harvest_models$model_2,
+                                                              model_y = ln_height_group_harvest_models$model_2a), 
+                                                   recursive = FALSE)
+
+ln_height_group_harvest_models$lr_test_2_3 <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                             model_x = ln_height_group_harvest_models$model_2,
+                                                             model_y = ln_height_group_harvest_models$model_3), 
+                                                  recursive = FALSE)
+# Model 3 vs n + 1
+ln_height_group_harvest_models$lr_test_3_3a <- unlist(modelsTest(df = ln_height_group_harvest_models,
+                                                              model_x = ln_height_group_harvest_models$model_3,
+                                                              model_y = ln_height_group_harvest_models$model_3a), 
+                                                   recursive = FALSE)
+
+ln_height_group_harvest_models
+
+
+###### 9.2 Extracting p-values ----
+HH_group_p_vals <- extractPVals(ln_height_group_harvest_models)
+
+HH_group_p_vals
+
+HH_group_p_vals <- subset(HH_group_p_vals, 
+                          select = c("ClimaticVarList", "p_val_0_h", "p_val_0_a", 
+                                     "p_val_0_1", "p_val_1_1a", "p_val_1_2", "p_val_h_2",
+                                     "p_val_2_2a", "p_val_2_3", "p_val_3_3a"))
+HH_group_p_vals
+
+# Isolating Significant P-Values 
+HH_group_sig_p_vals <- removeNonSigPVals(HH_group_p_vals)
+
+HH_group_sig_p_vals
+
+###### 9.3 Saving p-values ----
+write.csv(HH_group_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Harvest_group_p_vals.csv"), row.names = FALSE)
+
+write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Harvest_group_sig_p_vals.csv"), row.names = FALSE)
+
+
+# 10. Testing Caonpy Models ----------------------------------------------------
+names(ln_height_group_canopy_models)
+
+
+# rename columns
+colnames(ln_height_group_canopy_models) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
+                                              "model_1", "model_1a", "model_2", "model_2a", 
+                                              "model_3", "model_3a")
+ln_height_group_canopy_models
+
+source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
+
+###### 9.1 Test models ----
+
+# Null vs 1 variable
+ln_height_group_canopy_models$lr_test_0_c <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                model_x = ln_height_group_canopy_models$model_0,
+                                                                model_y = ln_height_group_canopy_models$model_c), 
+                                                     recursive = FALSE)
+
+ln_height_group_canopy_models$lr_test_0_a <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                model_x = ln_height_group_canopy_models$model_0,
+                                                                model_y = ln_height_group_canopy_models$model_a), 
+                                                     recursive = FALSE)
+
+ln_height_group_canopy_models$lr_test_0_1 <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                model_x = ln_height_group_canopy_models$model_0,
+                                                                model_y = ln_height_group_canopy_models$model_1), 
+                                                     recursive = FALSE)
+
+# Model 1 vs n + 1
+ln_height_group_canopy_models$lr_test_1_1a <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                 model_x = ln_height_group_canopy_models$model_1,
+                                                                 model_y = ln_height_group_canopy_models$model_1a), 
+                                                      recursive = FALSE)
+
+ln_height_group_canopy_models$lr_test_1_2 <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                model_x = ln_height_group_canopy_models$model_1,
+                                                                model_y = ln_height_group_canopy_models$model_2), 
+                                                     recursive = FALSE)
+
+# Harvest model vs Havest + Climatic
+ln_height_group_canopy_models$lr_test_c_2 <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                model_x = ln_height_group_canopy_models$model_c,
+                                                                model_y = ln_height_group_canopy_models$model_2), 
+                                                     recursive = FALSE)
+
+# Model 2 vs n + 1
+ln_height_group_canopy_models$lr_test_2_2a <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                 model_x = ln_height_group_canopy_models$model_2,
+                                                                 model_y = ln_height_group_canopy_models$model_2a), 
+                                                      recursive = FALSE)
+
+ln_height_group_canopy_models$lr_test_2_3 <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                model_x = ln_height_group_canopy_models$model_2,
+                                                                model_y = ln_height_group_canopy_models$model_3), 
+                                                     recursive = FALSE)
+# Model 3 vs n + 1
+ln_height_group_canopy_models$lr_test_3_3a <- unlist(modelsTest(df = ln_height_group_canopy_models,
+                                                                 model_x = ln_height_group_canopy_models$model_3,
+                                                                 model_y = ln_height_group_canopy_models$model_3a), 
+                                                      recursive = FALSE)
+
+ln_height_group_canopy_models
+
+
+###### 10.2 Extracting p-values ----
+HC_group_p_vals <- extractPVals(ln_height_group_canopy_models)
+
+HC_group_p_vals
+
+HC_group_p_vals <- subset(HC_group_p_vals, 
+                          select = c("ClimaticVarList", "p_val_0_c", "p_val_0_a", 
+                                     "p_val_0_1", "p_val_1_1a", "p_val_1_2", "p_val_c_2",
+                                     "p_val_2_2a", "p_val_2_3", "p_val_3_3a"))
+HC_group_p_vals
+
+# Isolating Significant P-Values 
+HC_group_sig_p_vals <- removeNonSigPVals(HC_group_p_vals)
+
+HC_group_sig_p_vals
+
+###### 9.3 Saving p-values ----
+write.csv(HC_group_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Canopy_group_p_vals.csv"), row.names = FALSE)
+
+write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Canopy_group_sig_p_vals.csv"), row.names = FALSE)
