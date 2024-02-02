@@ -75,6 +75,7 @@ ln_height_group_harvest_models <- tibble(ln_h_group_model_null_harvest,
 ln_height_group_harvest_models
 
 
+
 ln_height_group_canopy_models <- tibble(ln_h_group_model_null_canopy,
                                         ln_h_group_model_canopy, ln_h_group_model_age_can, 
                                         ln_h_group_model_canopy_1, ln_h_group_model_canopy_1a, 
@@ -82,6 +83,7 @@ ln_height_group_canopy_models <- tibble(ln_h_group_model_null_canopy,
                                         ln_h_group_model_canopy_3, ln_h_group_model_canopy_3a)
 
 ln_height_group_canopy_models
+
 
 
 
@@ -101,11 +103,11 @@ saveRDS(ln_height_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Da
 
 # 7. Calling RDS File  ------------------------------------------------------------
 
-ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_harvest_models_OutEdit_Bv1.rds" )))
+ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-02_ln_height_group_harvest_models_OutEdit_Bv1.rds" ))
 
 ln_height_group_harvest_models
 
-ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp",  paste0(Sys.date(), "_ln_height_group_canopy_models_OutEdit_Bv1.rds" )))
+ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp", "2024-02-02_ln_height_group_canopy_models_OutEdit_Bv1.rds" ))
 
 ln_height_group_canopy_models
 

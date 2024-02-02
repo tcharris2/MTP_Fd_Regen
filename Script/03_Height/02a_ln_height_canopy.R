@@ -25,18 +25,13 @@ regen_prepped <- universalDataPrepFunction(regen)
 
 regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
 
-# Removing NAs from height
-regen_height <- subset(regen_prepped, !(is.na(height)))
+regen_prepped$ln_height <- log(regen_prepped$height)
 
-# Removing NAs from tree cover 
-regen_canopy_height <- subset(regen_height, !(is.na(tree_cover)))
+regen_height <-  subset(regen_prepped, !(is.na(height)))
 
-regen_canopy_ln_height <- regen_canopy_height
+regen_height <- subset(regen_height, !(is.na(tree_cover)))
 
-regen_canopy_ln_height$ln_height <- log(regen_canopy_height$height)
-
-
-str(regen_canopy_ln_height)
+str(regen_height)
 
 # This function converts survival, harvestF, provenanceF, and all the random 
 # effects into factors. 
@@ -47,7 +42,7 @@ str(regen_canopy_ln_height)
 
 ###### 4.1 Grouping Data ------
 
-ln_height_loc_group_canopy <- regen_canopy_ln_height %>% 
+ln_height_loc_group_canopy <- regen_height %>% 
   group_by(location) %>% 
   nest()
 
@@ -86,12 +81,12 @@ ln_height_canopy_models$model_0
 ln_height_canopy_models$model_1
 ln_height_canopy_models$model_2
 ln_height_canopy_models$model_3
-ln_height_canopy_models$model_h
+ln_height_canopy_models$model_c
 
 
 # 5. Saving models as a RDS file --------------------------------------------------
 
-saveRDS(ln_height_canopy_models, file = here("Data/04_Temp", "2024-01-31_ln_height_canopy_models_OutEdit.rds"))
+saveRDS(ln_height_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_canopy_models_OutEdit_Bv1.rds" )))
 
 
 # 6. Calling model RDS files  -----------------------------------------------------

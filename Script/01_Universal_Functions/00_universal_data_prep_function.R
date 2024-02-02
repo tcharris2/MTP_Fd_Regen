@@ -23,6 +23,8 @@ universalDataPrepFunction <- function (df) {
   # Removing provenance and site climatic variables 
   df <- df %>% select(-contains(c("p_", "s_")))
   
+  df <- df[df$blockNo != 9 & df$blockNo != 13, ]
+  
   # Function output
   return(df)
   

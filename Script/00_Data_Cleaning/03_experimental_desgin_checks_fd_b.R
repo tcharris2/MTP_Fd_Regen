@@ -4,6 +4,8 @@ survival_fd_b_processed <- read.csv(here("Data/03_processed" , "20231130_surviva
 
 survival_fd_b_processed <- subset(survival_fd_b_processed, !(is.na(tree_cover)))
 
+survival_fd_b_processed <- subset(survival_fd_b_processed, !survival_fd_b_processed$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
+
 # diving dataset by location 
 
 location1<-survival_fd_b_processed[(survival_fd_b_processed$locationNo==1),]
@@ -76,7 +78,7 @@ location3 %>%
   group_by(blockNo, plotNo) %>%
   summarise( alive= n()) # 12 = 3 blocks X 4 plots per block
 
-loc_3_issue <- location3 %>%
+location3 %>%
   group_by(blockNo, harvestNo, ID_tag) %>%
   summarise( alive= n()) # 72 = 3 blocks X 4 harvests X 6 provenances
 
