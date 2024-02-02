@@ -14,24 +14,24 @@
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
 # check for most recent CSV file
 
+ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # 2. Importing Functions ----------------------------------------------------------
 
 source("Script/01a_Survival_Functions/survival_all_locs_model_function.R")
 
-source("Script/01a_Survival_Functions/survival_data_prep_function.R")
+source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 source("Script/01a_Survival_Functions/lrtest_function.R")
 
 # 3. Correcting Variable types ----------------------------------------------------
 
-ClimaticVarList <- climaticVarListFunction(regen)
 
-regen <- dataPrepFunction(regen)
+regen_prepped <- universalDataPrepFunction(regen)
 
-str(regen)
+regen_survival <- subset(regen_prepped, !(is.na(tree_cover)))
 
-regen_canopy <- subset(regen, !(is.na(tree_cover)))
+str(regen_survival)
 
 # This function converts survival, harvestF, provenanceF, and all the random 
 # effects into factors. 
@@ -41,30 +41,30 @@ regen_canopy <- subset(regen, !(is.na(tree_cover)))
 # 4. Building out models ----------------------------------------------------------
 
 ###### 4.1 Null Model ----
-s_group_model_null_harvest <- list(groupSurvivalModelNull(regen))
-s_group_model_null_canopy <- list(groupSurvivalModelNull(regen_canopy))
+s_group_model_null_harvest <- list(groupSurvivalModelNull(regen_survival))
+s_group_model_null_canopy <- list(groupSurvivalModelNull(regen_survival))
 
 ###### 4.2 Treatment Models ----
-s_group_model_harvest <- list(groupSurvivalModelHarvest(regen))
-s_group_model_canopy <- list(groupSurvivalModelCanopy(regen_canopy))
-s_group_model_age_har <- list(groupSurvivalModelAge(regen))
-s_group_model_age_can <- list(groupSurvivalModelAge(regen_canopy))
+s_group_model_harvest <- list(groupSurvivalModelHarvest(regen_survival))
+s_group_model_canopy <- list(groupSurvivalModelCanopy(regen_survival))
+s_group_model_age_har <- list(groupSurvivalModelAge(regen_survival))
+s_group_model_age_can <- list(groupSurvivalModelAge(regen_survival))
 
 ###### 4.3 Harvest Models ----
-s_group_model_harvest_1 <- groupSurvivalHarvest_1(regen)
-s_group_model_harvest_1a <- groupSurvivalHarvest_1a(regen)
-s_group_model_harvest_2 <- groupSurvivalHarvest_2(regen)
-s_group_model_harvest_2a <- groupSurvivalHarvest_2a(regen)
-s_group_model_harvest_3 <- groupSurvivalHarvest_3(regen)
-s_group_model_harvest_3a <- groupSurvivalHarvest_3a(regen)
+s_group_model_harvest_1 <- groupSurvivalHarvest_1(regen_survival)
+s_group_model_harvest_1a <- groupSurvivalHarvest_1a(regen_survival)
+s_group_model_harvest_2 <- groupSurvivalHarvest_2(regen_survival)
+s_group_model_harvest_2a <- groupSurvivalHarvest_2a(regen_survival)
+s_group_model_harvest_3 <- groupSurvivalHarvest_3(regen_survival)
+s_group_model_harvest_3a <- groupSurvivalHarvest_3a(regen_survival)
 
 ###### 4.4 Canopy Models ----
-s_group_model_canopy_1 <- groupSurvivalCanopy_1(regen_canopy)
-s_group_model_canopy_1a <- groupSurvivalCanopy_1a(regen_canopy)
-s_group_model_canopy_2 <- groupSurvivalCanopy_2(regen_canopy)
-s_group_model_canopy_2a <- groupSurvivalCanopy_2a(regen_canopy)
-s_group_model_canopy_3 <- groupSurvivalCanopy_3(regen_canopy)
-s_group_model_canopy_3a <- groupSurvivalCanopy_3a(regen_canopy)
+s_group_model_canopy_1 <- groupSurvivalCanopy_1(regen_survival)
+s_group_model_canopy_1a <- groupSurvivalCanopy_1a(regen_survival)
+s_group_model_canopy_2 <- groupSurvivalCanopy_2(regen_survival)
+s_group_model_canopy_2a <- groupSurvivalCanopy_2a(regen_survival)
+s_group_model_canopy_3 <- groupSurvivalCanopy_3(regen_survival)
+s_group_model_canopy_3a <- groupSurvivalCanopy_3a(regen_survival)
 
 
 # 5. Grouping Models ------------------------------------------------------------
@@ -94,18 +94,18 @@ survival_group_canopy_models$climatic_var <- ClimaticVarList
 # 6. Saving models as a RDS file --------------------------------------------------
 
 # Harvest models
-# saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", "survival_group_harvest_models_df.rds"))
+# saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models_Bv1.rds")))
 
 # Canopy models
-# saveRDS(survival_group_canopy_models, file = here("Data/04_Temp", "survival_group_canopy_models_df.rds"))
+# saveRDS(survival_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_canopy_models_Bv1.rds")))
 
 # 7.Calling RDS File  ------------------------------------------------------------
 
-survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "survival_group_harvest_models.rds"))
+survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-02-02_survival_group_harvest_models_Bv1.rds"))
 
 survival_group_harvest_mods
 
-survival_group_canopy_mods <- readRDS(file = here("Data/04_Temp", "survival_group_canopy_models.rds"))
+survival_group_canopy_mods <- readRDS(file = here("Data/04_Temp", "2024-02-02_survival_group_canopy_models_Bv1.rds"))
 
 survival_group_canopy_mods
 
@@ -119,7 +119,7 @@ colnames(survival_group_harvest_mods) <- c("ClimaticVarList", "model_0", "model_
                                                 "model_3", "model_3a")
 survival_group_harvest_mods
 
-source("Script/01a_Survival_Functions/04_lrtest_function_updated.R")
+source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 
 ###### 8.1 Test models ----
 
@@ -192,9 +192,11 @@ SH_group_sig_p_vals <- removeNonSigPVals(SH_group_p_vals)
 SH_group_sig_p_vals
 
 ###### 8.3 Saving p-values ----
-write.csv(SH_group_p_vals, file = here("Data/05_Output", "20231214_SH_group_p_vals.csv"), row.names = FALSE)
+write.csv(SH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_p_vals.csv")),
+          row.names = FALSE)
 
-write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", "20231214_SH_group_sig_p_vals.csv"), row.names = FALSE)
+write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_sig_p_vals.csv")),
+          row.names = FALSE)
 
 
 # 9. Testing Canopy Models  -------------------------------------------------------
@@ -276,7 +278,9 @@ SC_group_sig_p_vals <- removeNonSigPVals(SC_group_p_vals)
 SC_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
-write.csv(SC_group_p_vals, file = here("Data/05_Output", "20231214_SC_group_p_vals.csv"), row.names = FALSE)
+write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Canopy_group_p_vals.csv")),
+          row.names = FALSE)
 
-write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", "20231214)SC_group_sig_p_vals.csv"), row.names = FALSE)
+write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Canopy_group_sig_p_vals.csv")),
+          row.names = FALSE)
 

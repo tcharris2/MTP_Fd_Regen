@@ -15,13 +15,14 @@
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE) 
 # check for most recent CSV file
 
+ClimaticVarList <- names(regen %>% select(starts_with("d_")))
+
+
 # 2. Importing Functions ----------------------------------------------------------
 
 source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
-
-source("Script/02a_Height_Functions/lrtest_function.R")
 
 
 # 3. Correcting Variable types ----------------------------------------------------
@@ -32,38 +33,39 @@ regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9
 
 regen_prepped$ln_height <- log(regen_prepped$height)
 
-regen_harvest_height <-  subset(regen_prepped, !(is.na(height)))
+regen_height <-  subset(regen_prepped, !(is.na(height)))
 
-str(regen_harvest_height)
+regen_height <- subset(regen_height, !(is.na(tree_cover)))
 
-regen_canopy_height <- subset(regen_harvest_height, !(is.na(tree_cover)))
+str(regen_height)
+
 ## 4. Building out models ----------------------------------------------------------
 
 ###### 4.1 Null Model ----
-ln_h_group_model_null_harvest <- list(ln_groupHeightModelNull(regen_harvest_height))
-ln_h_group_model_null_canopy <- list(ln_groupHeightModelNull(regen_canopy_height))
+ln_h_group_model_null_harvest <- list(ln_groupHeightModelNull(regen_height))
+ln_h_group_model_null_canopy <- list(ln_groupHeightModelNull(regen_height))
 
 ###### 4.2 Treatment Models ----
-ln_h_group_model_harvest <- list(ln_groupHeightModelHarvest(regen_harvest_height))
-ln_h_group_model_canopy <- list(ln_groupHeightModelCanopy(regen_canopy_height))
-ln_h_group_model_age_har <- list(ln_groupHeightModelAge(regen_harvest_height))
-ln_h_group_model_age_can <- list(ln_groupHeightModelAge(regen_canopy_height))
+ln_h_group_model_harvest <- list(ln_groupHeightModelHarvest(regen_height))
+ln_h_group_model_canopy <- list(ln_groupHeightModelCanopy(regen_height))
+ln_h_group_model_age_har <- list(ln_groupHeightModelAge(regen_height))
+ln_h_group_model_age_can <- list(ln_groupHeightModelAge(regen_height))
 
 ###### 4.3 Harvest Models ----
-ln_h_group_model_harvest_1 <- ln_groupHeightHarvest_1(regen_harvest_height)
-ln_h_group_model_harvest_2 <- ln_groupHeightHarvest_2(regen_harvest_height)
-ln_h_group_model_harvest_3 <- ln_groupHeightHarvest_3(regen_harvest_height)
-ln_h_group_model_harvest_1a <- ln_groupHeightHarvest_1a(regen_harvest_height)
-ln_h_group_model_harvest_2a <- ln_groupHeightHarvest_2a(regen_harvest_height)
-ln_h_group_model_harvest_3a <- ln_groupHeightHarvest_3a(regen_harvest_height)
+ln_h_group_model_harvest_1 <- ln_groupHeightHarvest_1(regen_height)
+ln_h_group_model_harvest_2 <- ln_groupHeightHarvest_2(regen_height)
+ln_h_group_model_harvest_3 <- ln_groupHeightHarvest_3(regen_height)
+ln_h_group_model_harvest_1a <- ln_groupHeightHarvest_1a(regen_height)
+ln_h_group_model_harvest_2a <- ln_groupHeightHarvest_2a(regen_height)
+ln_h_group_model_harvest_3a <- ln_groupHeightHarvest_3a(regen_height)
 
 ###### 4.4 Canopy Models ----
-ln_h_group_model_canopy_1 <- ln_groupHeightCanopy_1(regen_canopy_height)
-ln_h_group_model_canopy_2 <- ln_groupHeightCanopy_2(regen_canopy_height)
-ln_h_group_model_canopy_3 <- ln_groupHeightCanopy_3(regen_canopy_height)
-ln_h_group_model_canopy_1a <- ln_groupHeightCanopy_1a(regen_canopy_height)
-ln_h_group_model_canopy_2a <- ln_groupHeightCanopy_2a(regen_canopy_height)
-ln_h_group_model_canopy_3a <- ln_groupHeightCanopy_3a(regen_canopy_height)
+ln_h_group_model_canopy_1 <- ln_groupHeightCanopy_1(regen_height)
+ln_h_group_model_canopy_2 <- ln_groupHeightCanopy_2(regen_height)
+ln_h_group_model_canopy_3 <- ln_groupHeightCanopy_3(regen_height)
+ln_h_group_model_canopy_1a <- ln_groupHeightCanopy_1a(regen_height)
+ln_h_group_model_canopy_2a <- ln_groupHeightCanopy_2a(regen_height)
+ln_h_group_model_canopy_3a <- ln_groupHeightCanopy_3a(regen_height)
 
 
 # 5. Grouping Models -----------------------------------------------------------
@@ -76,6 +78,7 @@ ln_height_group_harvest_models <- tibble(ln_h_group_model_null_harvest,
 ln_height_group_harvest_models
 
 
+
 ln_height_group_canopy_models <- tibble(ln_h_group_model_null_canopy,
                                         ln_h_group_model_canopy, ln_h_group_model_age_can, 
                                         ln_h_group_model_canopy_1, ln_h_group_model_canopy_1a, 
@@ -86,27 +89,28 @@ ln_height_group_canopy_models
 
 
 
-# Adding Climatic Variables
-height_group_harvest_models$climatic_var <- ClimaticVarList
 
-height_group_canopy_models$climatic_var <- ClimaticVarList
+# Adding Climatic Variables
+ln_height_group_harvest_models$climatic_var <- ClimaticVarList
+
+ln_height_group_canopy_models$climatic_var <- ClimaticVarList
 
 
 # 6. Saving models as a RDS file --------------------------------------------------
 
 # Harvest models
-# saveRDS(height_group_harvest_models, file = here("Data/04_Temp", "height_group_harvest_models_df.rds"))
+saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_harvest_models_OutEdit_Bv1.rds" )))
 
 # Canopy models
-# saveRDS(height_group_canopy_models, file = here("Data/04_Temp", "height_group_canopy_models_df.rds"))
+saveRDS(ln_height_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_canopy_models_OutEdit_Bv1.rds" )))
 
 # 7. Calling RDS File  ------------------------------------------------------------
 
-ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "202401301_ln_height_group_harvest_models_OutEdit.rds"))
+ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-02_ln_height_group_harvest_models_OutEdit_Bv1.rds" ))
 
 ln_height_group_harvest_models
 
-ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp", "202401301_ln_height_group_canopy_models_OutEdit.rds"))
+ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp", "2024-02-02_ln_height_group_canopy_models_OutEdit_Bv1.rds" ))
 
 ln_height_group_canopy_models
 
@@ -193,9 +197,10 @@ names(ln_height_group_harvest_models)
 
 
 # rename columns
-colnames(ln_height_group_harvest_models) <- c("ClimaticVarList", "model_0", "model_h", "model_a", 
+colnames(ln_height_group_harvest_models) <- c("model_0", "model_h", "model_a", 
                                            "model_1", "model_1a", "model_2", "model_2a", 
-                                           "model_3", "model_3a")
+                                           "model_3", "model_3a", 
+                                           "ClimaticVarList")
 ln_height_group_harvest_models
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
@@ -271,9 +276,11 @@ HH_group_sig_p_vals <- removeNonSigPVals(HH_group_p_vals)
 HH_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
-write.csv(HH_group_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Harvest_group_p_vals.csv"), row.names = FALSE)
+write.csv(HH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_group_p_vals.csv")),
+          row.names = FALSE)
 
-write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Harvest_group_sig_p_vals.csv"), row.names = FALSE)
+write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_group_sig_p_vals.csv")), 
+                                           row.names = FALSE)
 
 
 # 10. Testing Caonpy Models ----------------------------------------------------
@@ -281,9 +288,10 @@ names(ln_height_group_canopy_models)
 
 
 # rename columns
-colnames(ln_height_group_canopy_models) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
+colnames(ln_height_group_canopy_models) <- c("model_0", "model_c", "model_a", 
                                               "model_1", "model_1a", "model_2", "model_2a", 
-                                              "model_3", "model_3a")
+                                              "model_3", "model_3a",
+                                              "ClimaticVarList")
 ln_height_group_canopy_models
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
@@ -359,6 +367,9 @@ HC_group_sig_p_vals <- removeNonSigPVals(HC_group_p_vals)
 HC_group_sig_p_vals
 
 ###### 10.3 Saving p-values ----
-write.csv(HC_group_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Canopy_group_p_vals.csv"), row.names = FALSE)
 
-write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Canopy_group_sig_p_vals.csv"), row.names = FALSE)
+write.csv(HC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_group_p_vals.csv")),
+          row.names = FALSE)
+
+write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_group_sig_p_vals.csv")), 
+                                           row.names = FALSE)

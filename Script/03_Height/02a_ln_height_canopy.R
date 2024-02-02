@@ -25,18 +25,13 @@ regen_prepped <- universalDataPrepFunction(regen)
 
 regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
 
-# Removing NAs from height
-regen_height <- subset(regen_prepped, !(is.na(height)))
+regen_prepped$ln_height <- log(regen_prepped$height)
 
-# Removing NAs from tree cover 
-regen_canopy_height <- subset(regen_height, !(is.na(tree_cover)))
+regen_height <-  subset(regen_prepped, !(is.na(height)))
 
-regen_canopy_ln_height <- regen_canopy_height
+regen_height <- subset(regen_height, !(is.na(tree_cover)))
 
-regen_canopy_ln_height$ln_height <- log(regen_canopy_height$height)
-
-
-str(regen_canopy_ln_height)
+str(regen_height)
 
 # This function converts survival, harvestF, provenanceF, and all the random 
 # effects into factors. 
@@ -47,7 +42,7 @@ str(regen_canopy_ln_height)
 
 ###### 4.1 Grouping Data ------
 
-ln_height_loc_group_canopy <- regen_canopy_ln_height %>% 
+ln_height_loc_group_canopy <- regen_height %>% 
   group_by(location) %>% 
   nest()
 
@@ -86,12 +81,12 @@ ln_height_canopy_models$model_0
 ln_height_canopy_models$model_1
 ln_height_canopy_models$model_2
 ln_height_canopy_models$model_3
-ln_height_canopy_models$model_h
+ln_height_canopy_models$model_c
 
 
 # 5. Saving models as a RDS file --------------------------------------------------
 
-saveRDS(ln_height_canopy_models, file = here("Data/04_Temp", "2024-01-31_ln_height_canopy_models_OutEdit.rds"))
+saveRDS(ln_height_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_canopy_models_OutEdit_Bv1.rds" )))
 
 
 # 6. Calling model RDS files  -----------------------------------------------------
@@ -210,6 +205,93 @@ graphingQQPlotFunction(melt_ln_height_canopy_df)
 
 # graphingFunction()
 
+
+# 9. Testing Models ------------------------------------------------------------
+
+source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
+
+# Expanding the lists 
+
+loc_list <- unique(ln_height_canopy_models$location)
+
+HC_models <- subset(ln_height_canopy_models, select = -c(data, location))
+
+HC_models <- HC_models %>%
+  unnest(c(model_1, model_2, model_3))
+
+HC_models$climatic_var <- rep(ClimaticVarList, times = 6)
+
+HC_models$location <- rep(loc_list, each = 15)
+
+HC_models
+
+# Testing models 
+
+# Null vs 1 variable
+HC_models$lr_test_0_1 <- unlist(modelsTest(df = HC_models,
+                                           model_x = HC_models$model_0,
+                                           model_y = HC_models$model_1), 
+                                recursive = FALSE)
+
+HC_models$lr_test_1_2 <- unlist(modelsTest(df = HC_models,
+                                           model_x = HC_models$model_1,
+                                           model_y = HC_models$model_2), 
+                                recursive = FALSE)
+
+HC_models$lr_test_2_3 <- unlist(modelsTest(df = HC_models,
+                                           model_x = HC_models$model_2,
+                                           model_y = HC_models$model_3), 
+                                recursive = FALSE)
+
+HC_models$lr_test_0_c <- unlist(modelsTest(df = HC_models,
+                                           model_x = HC_models$model_0,
+                                           model_y = HC_models$model_c), 
+                                recursive = FALSE)
+
+HC_models$lr_test_c_2 <- unlist(modelsTest(df = HC_models,
+                                           model_x = HC_models$model_c,
+                                           model_y = HC_models$model_2), 
+                                recursive = FALSE)
+
+
+
+# note the change from "_h" to "_trt" this is to keep functions consistent across 
+# multiple uses 
+# "_trt" denotes the "treatment" or non-climatic variable analysed (ie. harvest of tree_cover)
+# Look at the name  of the file to find the variable used. 
+
+
+HC_models
+HC_models$lr_test_0_1
+HC_models$lr_test_1_2
+HC_models$lr_test_2_3
+HC_models$lr_test_0_c
+HC_models$lr_test_c_2
+
+
+###### 9.1 Extracting P-Values ----------------------------------------------------------
+
+HC_models_p_vals <- extractPVals(HC_models)
+
+HC_models_p_vals
+
+HC_p_vals <- subset(HC_models_p_vals, 
+                    select = c("location", "climatic_var", "p_val_0_1", "p_val_1_2", 
+                               "p_val_2_3", "p_val_0_c", "p_val_c_2"))
+HC_p_vals
+
+# Isolating Significant P-Values 
+
+HC_sig_p_vals <- removeNonSigPVals(HC_p_vals)
+
+HC_sig_p_vals
+
+
+write.csv(HC_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Canopy_pvals_Bv1.csv")), 
+          row.names = FALSE)
+
+write.csv(HC_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Canopy_sig_pvals_Bv1.csv")), 
+          row.names = FALSE)
 
 
 

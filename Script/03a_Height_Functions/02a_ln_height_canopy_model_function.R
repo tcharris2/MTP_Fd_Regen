@@ -25,7 +25,8 @@ ClimaticVarList <- climaticVarListFunction()
 ln_heightCanopyNull <- function(df) {
   
   lmer(ln_height ~ 1 + (1|plotF/splitplotF), data = df,
-        REML = FALSE)
+        REML = FALSE,
+       control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 }
 
 # Models with only harvest. Needs 6 repeats as nothing changes in it 
@@ -33,7 +34,8 @@ ln_heightCanopyNull <- function(df) {
 ln_heightCanopy <- function(df) {
   
   lmer(ln_height ~ tree_cover + (1|plotF/splitplotF), data = df,
-       REML = FALSE)
+       REML = FALSE,
+       control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 }
 
 
@@ -49,7 +51,8 @@ ln_heightCanopy_1 <- function(df) {
   for (var in ClimaticVarList) {
     # Perform the regression
     model <- lmer(paste("ln_height ~", var, paste("+ (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE)
+                   data = df, REML = FALSE,
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
   }
@@ -72,7 +75,8 @@ ln_heightCanopy_2 <- function(df) {
   for (var in ClimaticVarList) {
     # Perform the regression
     model <- lmer(paste("ln_height ~", var, paste(" + tree_cover + (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE)
+                   data = df, REML = FALSE,
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
   }
@@ -94,7 +98,8 @@ ln_heightCanopy_3 <- function(df) {
   for (var in ClimaticVarList) {
     # Perform the regression
     model <- lmer(paste("ln_height ~", var, paste("+ tree_cover +"), var, paste(" * tree_cover + (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE)
+                   data = df, REML = FALSE,
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
   }

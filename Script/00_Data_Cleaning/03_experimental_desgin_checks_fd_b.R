@@ -2,6 +2,10 @@
 
 survival_fd_b_processed <- read.csv(here("Data/03_processed" , "20231130_survival_fd_b_processed.csv"), header = TRUE)
 
+survival_fd_b_processed <- subset(survival_fd_b_processed, !(is.na(tree_cover)))
+
+survival_fd_b_processed <- subset(survival_fd_b_processed, !survival_fd_b_processed$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
+
 # diving dataset by location 
 
 location1<-survival_fd_b_processed[(survival_fd_b_processed$locationNo==1),]
@@ -63,8 +67,6 @@ location2 %>%
 # has a future provenance 
 
 ######* Location 3 ######
-location3$countA <- 1
-
 unique(location3$ID_tag) # 6 provenances 
 unique(location3$provenance)
 
@@ -82,7 +84,7 @@ location3 %>%
 
 # Only 70 rows. Missing 2 provenances somewhere
 
-# has a future provenance 
+# has a future provenance
 
 # Douglas fir
 location3_Fd <- subset(location3, species == "Fd")
@@ -111,7 +113,7 @@ location4 %>%
 
 location4 %>%
   group_by(blockNo, plotNo) %>%
-  summarise( alive= n()) # 12 = 1 blocks X 4 plots per block
+  summarise( alive= n()) # 4 = 1 blocks X 4 plots per block
 
 location4 %>%
   group_by(blockNo, harvestNo, ID_tag) %>%
@@ -192,5 +194,6 @@ location6%>%
 
 # see "experimental design issues.csv" for list of blocks with issues 
 # Note: Redfish block 12 was completely removed so issues with Redfish's experimental design only consider blocks 11, 13, 14
+
 
 
