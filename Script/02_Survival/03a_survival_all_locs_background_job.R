@@ -68,11 +68,6 @@ survival_group_canopy_models <- tibble(ClimaticVarList,
 
 survival_group_canopy_models
 
-# Adding Climatic Variables
-survival_group_harvest_models$climatic_var <- ClimaticVarList
-
-survival_group_canopy_models$climatic_var <- ClimaticVarList
-
 
 # 6. Saving output ---------------------------------------------------------------
 
