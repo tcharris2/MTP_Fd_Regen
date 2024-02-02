@@ -13,6 +13,20 @@ Email - thomsonharris@gmail.com,
 
 Phone - 778-866-4198 
 
+# Purpose:
+
+This study aims at investigating the individual and interactive affects of climatic distance from provenance of origin and harvesting method on the the survival and performance of interior Douglas-fir seedlings.
+
+
+# Keywords:
+
+Forestry, Silviculture, Ecology, Interior Douglas-fir, Climatic Distance, Assisted Migration, Climate Change
+
+
+# Taxonomic Information:
+
+Interior Douglas-fir - Pseudotsuga menziesii var. glauca (Mayr) Franco
+		      Taxonomic Serial No.: 183428
 
  
 
