@@ -2,10 +2,17 @@
 
 Project Title: Douglas-fir B class regeneration analysis
 
-Principal Investigator: Thomson Harris 
-Contact: e. thomsonharris@gmail.com, tc.harris@ubc.ca 
-
-         p. 778-866-4198 
-
 Part of the Mother Tree Project (MTP) at the University of British Columbia (UBC). 
+
+Principal Investigator: Thomson Harris
+
+Contact: 
+
+Email - thomsonharris@gmail.com, 
+        tc.harris@ubc.ca 
+
+Phone - 778-866-4198 
+
+
+ 
 
