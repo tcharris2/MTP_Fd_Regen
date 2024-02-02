@@ -6,8 +6,6 @@ Part of the Mother Tree Project (MTP) at the University of British Columbia (UBC
 
 Principal Investigator: Thomson Harris
 
-Contact: 
-
 Email - thomsonharris@gmail.com, 
         tc.harris@ubc.ca 
 
