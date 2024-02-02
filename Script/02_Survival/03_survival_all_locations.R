@@ -101,11 +101,11 @@ survival_group_canopy_models$climatic_var <- ClimaticVarList
 
 # 7.Calling RDS File  ------------------------------------------------------------
 
-survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "survival_group_harvest_models.rds"))
+survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-02-02_survival_group_harvest_models_Bv1.rds"))
 
 survival_group_harvest_mods
 
-survival_group_canopy_mods <- readRDS(file = here("Data/04_Temp", "survival_group_canopy_models.rds"))
+survival_group_canopy_mods <- readRDS(file = here("Data/04_Temp", "2024-02-02_survival_group_canopy_models_Bv1.rds"))
 
 survival_group_canopy_mods
 
@@ -119,7 +119,7 @@ colnames(survival_group_harvest_mods) <- c("ClimaticVarList", "model_0", "model_
                                                 "model_3", "model_3a")
 survival_group_harvest_mods
 
-source("Script/01a_Survival_Functions/04_lrtest_function_updated.R")
+source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 
 ###### 8.1 Test models ----
 
@@ -192,9 +192,11 @@ SH_group_sig_p_vals <- removeNonSigPVals(SH_group_p_vals)
 SH_group_sig_p_vals
 
 ###### 8.3 Saving p-values ----
-write.csv(SH_group_p_vals, file = here("Data/05_Output", "20231214_SH_group_p_vals.csv"), row.names = FALSE)
+write.csv(SH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_p_vals.csv")),
+          row.names = FALSE)
 
-write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", "20231214_SH_group_sig_p_vals.csv"), row.names = FALSE)
+write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_sig_p_vals.csv")),
+          row.names = FALSE)
 
 
 # 9. Testing Canopy Models  -------------------------------------------------------
@@ -276,7 +278,9 @@ SC_group_sig_p_vals <- removeNonSigPVals(SC_group_p_vals)
 SC_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
-write.csv(SC_group_p_vals, file = here("Data/05_Output", "20231214_SC_group_p_vals.csv"), row.names = FALSE)
+write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Canopy_group_p_vals.csv")),
+          row.names = FALSE)
 
-write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", "20231214)SC_group_sig_p_vals.csv"), row.names = FALSE)
+write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Canopy_group_sig_p_vals.csv")),
+          row.names = FALSE)
 
