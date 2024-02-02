@@ -5,22 +5,27 @@
 
 # Importing Data ---------------------------------------------------------------
 
-regen <- read.csv(here("Data/03_Processed", "20231130_survival_fd_b_processed.csv"), header = TRUE)
+regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
+
+ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # Importing Functions ----------------------------------------------------------
 
-source("Script/01a_Survival_Functions/survival_harvest_model_function.R")
+source("Script/02a_Survival_Functions/01_survival_harvest_model_function.R")
 
-source("Script/01a_Survival_Functions/survival_data_prep_function copy.R")
+source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 source("Script/01a_Survival_Functions/lrtest_function.R")
 
 
 # Correcting Variable types ----------------------------------------------------
 
-regen <- dataPrepFunction(regen)
+regen_prepped <- universalDataPrepFunction(regen)
 
-str(regen)
+regen_survival <- subset(regen_prepped, !(is.na(tree_cover)))
+
+str(regen_survival)
+
 
 # This function converts survival, harvestF, provenanceF, and all the random 
 # effects into factors. 
@@ -29,7 +34,7 @@ str(regen)
 
 # Grouping Data ----------------------------------------------------------------
 
-loc_group_harvest <- regen %>% 
+loc_group_harvest <- regen_survival %>% 
   group_by(location) %>% 
   nest()
 
@@ -73,7 +78,7 @@ survival_harvest_models$model_h
 
 # Saving models as a RDS file --------------------------------------------------
 
-saveRDS(survival_harvest_models, file = here("Data/04_Temp", "survival_harvest_models_dataframe_BG.rds"))
+saveRDS(survival_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_harvest_models_dataframe_Bv1.rds")))
 
 # Calling model RDS files  -----------------------------------------------------
 

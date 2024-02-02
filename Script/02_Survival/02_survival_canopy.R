@@ -5,25 +5,26 @@
 
 # Importing Data ---------------------------------------------------------------
 
-regen <- read.csv(here("Data/03_Processed", "survival_fd_b.csv"), header = TRUE)
+regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
+
+ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # Importing Functions ----------------------------------------------------------
 
-source("Script/01a_Survival_Functions/canopy_model_function.R")
+source("Script/02a_Survival_Functions/02_survival_canopy_model_function.R")
 
-source("Script/01a_Survival_Functions/data_prep_function.R")
+source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 source("Script/01a_Survival_Functions/canopy_lrtest_function.R")
 
 
 # Correcting Variable types ----------------------------------------------------
 
-regen <- dataPrepFunction()
+regen_prepped <- universalDataPrepFunction(regen)
 
-str(regen)
+regen_survival <- subset(regen_prepped, !(is.na(tree_cover)))
 
-regen_canopy <- subset(regen, !(is.na(tree_cover)))
-regen_canopy <- regen %>% drop_na(tree_cover)
+str(regen_survival)
 
 # This function converts survival, harvestF, provenanceF, and all the random 
 # effects into factors. 
@@ -32,7 +33,7 @@ regen_canopy <- regen %>% drop_na(tree_cover)
 
 # Grouping Data ----------------------------------------------------------------
 
-loc_group_canopy <- regen_canopy %>% 
+loc_group_canopy <- regen_survival %>% 
   group_by(location) %>% 
   nest()
 
@@ -76,7 +77,7 @@ survival_canopy_models$model_c
 
 # Saving models as a RDS file --------------------------------------------------
 
-saveRDS(survival_canopy_models, file = here("Data/04_Temp", "survival_canopy_models_dataframe.rds"))
+saveRDS(survival_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_canopy_models_dataframe_Bv1.rds")))
 
 # Calling RDS files ------------------------------------------------------------
 
