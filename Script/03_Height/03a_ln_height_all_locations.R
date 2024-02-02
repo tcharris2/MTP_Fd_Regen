@@ -21,8 +21,6 @@ source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
-source("Script/02a_Height_Functions/lrtest_function.R")
-
 
 # 3. Correcting Variable types ----------------------------------------------------
 
@@ -32,38 +30,39 @@ regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9
 
 regen_prepped$ln_height <- log(regen_prepped$height)
 
-regen_harvest_height <-  subset(regen_prepped, !(is.na(height)))
+regen_height <-  subset(regen_prepped, !(is.na(height)))
 
-str(regen_harvest_height)
+regen_height <- subset(regen_height, !(is.na(tree_cover)))
 
-regen_canopy_height <- subset(regen_harvest_height, !(is.na(tree_cover)))
+str(regen_height)
+
 ## 4. Building out models ----------------------------------------------------------
 
 ###### 4.1 Null Model ----
-ln_h_group_model_null_harvest <- list(ln_groupHeightModelNull(regen_harvest_height))
-ln_h_group_model_null_canopy <- list(ln_groupHeightModelNull(regen_canopy_height))
+ln_h_group_model_null_harvest <- list(ln_groupHeightModelNull(regen_height))
+ln_h_group_model_null_canopy <- list(ln_groupHeightModelNull(regen_height))
 
 ###### 4.2 Treatment Models ----
-ln_h_group_model_harvest <- list(ln_groupHeightModelHarvest(regen_harvest_height))
-ln_h_group_model_canopy <- list(ln_groupHeightModelCanopy(regen_canopy_height))
-ln_h_group_model_age_har <- list(ln_groupHeightModelAge(regen_harvest_height))
-ln_h_group_model_age_can <- list(ln_groupHeightModelAge(regen_canopy_height))
+ln_h_group_model_harvest <- list(ln_groupHeightModelHarvest(regen_height))
+ln_h_group_model_canopy <- list(ln_groupHeightModelCanopy(regen_height))
+ln_h_group_model_age_har <- list(ln_groupHeightModelAge(regen_height))
+ln_h_group_model_age_can <- list(ln_groupHeightModelAge(regen_height))
 
 ###### 4.3 Harvest Models ----
-ln_h_group_model_harvest_1 <- ln_groupHeightHarvest_1(regen_harvest_height)
-ln_h_group_model_harvest_2 <- ln_groupHeightHarvest_2(regen_harvest_height)
-ln_h_group_model_harvest_3 <- ln_groupHeightHarvest_3(regen_harvest_height)
-ln_h_group_model_harvest_1a <- ln_groupHeightHarvest_1a(regen_harvest_height)
-ln_h_group_model_harvest_2a <- ln_groupHeightHarvest_2a(regen_harvest_height)
-ln_h_group_model_harvest_3a <- ln_groupHeightHarvest_3a(regen_harvest_height)
+ln_h_group_model_harvest_1 <- ln_groupHeightHarvest_1(regen_height)
+ln_h_group_model_harvest_2 <- ln_groupHeightHarvest_2(regen_height)
+ln_h_group_model_harvest_3 <- ln_groupHeightHarvest_3(regen_height)
+ln_h_group_model_harvest_1a <- ln_groupHeightHarvest_1a(regen_height)
+ln_h_group_model_harvest_2a <- ln_groupHeightHarvest_2a(regen_height)
+ln_h_group_model_harvest_3a <- ln_groupHeightHarvest_3a(regen_height)
 
 ###### 4.4 Canopy Models ----
-ln_h_group_model_canopy_1 <- ln_groupHeightCanopy_1(regen_canopy_height)
-ln_h_group_model_canopy_2 <- ln_groupHeightCanopy_2(regen_canopy_height)
-ln_h_group_model_canopy_3 <- ln_groupHeightCanopy_3(regen_canopy_height)
-ln_h_group_model_canopy_1a <- ln_groupHeightCanopy_1a(regen_canopy_height)
-ln_h_group_model_canopy_2a <- ln_groupHeightCanopy_2a(regen_canopy_height)
-ln_h_group_model_canopy_3a <- ln_groupHeightCanopy_3a(regen_canopy_height)
+ln_h_group_model_canopy_1 <- ln_groupHeightCanopy_1(regen_height)
+ln_h_group_model_canopy_2 <- ln_groupHeightCanopy_2(regen_height)
+ln_h_group_model_canopy_3 <- ln_groupHeightCanopy_3(regen_height)
+ln_h_group_model_canopy_1a <- ln_groupHeightCanopy_1a(regen_height)
+ln_h_group_model_canopy_2a <- ln_groupHeightCanopy_2a(regen_height)
+ln_h_group_model_canopy_3a <- ln_groupHeightCanopy_3a(regen_height)
 
 
 # 5. Grouping Models -----------------------------------------------------------
@@ -87,26 +86,26 @@ ln_height_group_canopy_models
 
 
 # Adding Climatic Variables
-height_group_harvest_models$climatic_var <- ClimaticVarList
+ln_height_group_harvest_models$climatic_var <- ClimaticVarList
 
-height_group_canopy_models$climatic_var <- ClimaticVarList
+ln_height_group_canopy_models$climatic_var <- ClimaticVarList
 
 
 # 6. Saving models as a RDS file --------------------------------------------------
 
 # Harvest models
-# saveRDS(height_group_harvest_models, file = here("Data/04_Temp", "height_group_harvest_models_df.rds"))
+saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_harvest_models_OutEdit_Bv1.rds" )))
 
 # Canopy models
-# saveRDS(height_group_canopy_models, file = here("Data/04_Temp", "height_group_canopy_models_df.rds"))
+saveRDS(ln_height_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_canopy_models_OutEdit_Bv1.rds" )))
 
 # 7. Calling RDS File  ------------------------------------------------------------
 
-ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "202401301_ln_height_group_harvest_models_OutEdit.rds"))
+ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_harvest_models_OutEdit_Bv1.rds" )))
 
 ln_height_group_harvest_models
 
-ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp", "202401301_ln_height_group_canopy_models_OutEdit.rds"))
+ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp",  paste0(Sys.date(), "_ln_height_group_canopy_models_OutEdit_Bv1.rds" )))
 
 ln_height_group_canopy_models
 
@@ -288,7 +287,7 @@ ln_height_group_canopy_models
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 
-###### 9.1 Test models ----
+###### 10.1 Test models ----
 
 # Null vs 1 variable
 ln_height_group_canopy_models$lr_test_0_c <- unlist(modelsTest(df = ln_height_group_canopy_models,
@@ -358,7 +357,7 @@ HC_group_sig_p_vals <- removeNonSigPVals(HC_group_p_vals)
 
 HC_group_sig_p_vals
 
-###### 9.3 Saving p-values ----
+###### 10.3 Saving p-values ----
 write.csv(HC_group_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Canopy_group_p_vals.csv"), row.names = FALSE)
 
 write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Canopy_group_sig_p_vals.csv"), row.names = FALSE)
