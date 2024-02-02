@@ -91,7 +91,6 @@ saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(),
 
 # 6. Calling model RDS files  -----------------------------------------------------
 
-
 ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-02_ln_height_harvest_models_OutEdit_Bv1.rds"))
 
 ln_height_harvest_models
@@ -205,4 +204,90 @@ graphingQQPlotFunction(melt_ln_height_harvest_df)
 # graphingFunction()
 
 
+# 9. Testing Models ------------------------------------------------------------
+
+source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
+
+# Expanding the lists 
+
+loc_list <- unique(ln_height_harvest_models$location)
+
+HH_models <- subset(ln_height_harvest_models, select = -c(data, location))
+
+HH_models <- HH_models %>%
+  unnest(c(model_1, model_2, model_3))
+
+HH_models$climatic_var <- rep(ClimaticVarList, times = 6)
+
+HH_models$location <- rep(loc_list, each = 15)
+
+HH_models
+
+# Testing models 
+
+# Null vs 1 variable
+HH_models$lr_test_0_1 <- unlist(modelsTest(df = HH_models,
+                                           model_x = HH_models$model_0,
+                                           model_y = HH_models$model_1), 
+                                recursive = FALSE)
+
+HH_models$lr_test_1_2 <- unlist(modelsTest(df = HH_models,
+                                           model_x = HH_models$model_1,
+                                           model_y = HH_models$model_2), 
+                                recursive = FALSE)
+
+HH_models$lr_test_2_3 <- unlist(modelsTest(df = HH_models,
+                                           model_x = HH_models$model_2,
+                                           model_y = HH_models$model_3), 
+                                recursive = FALSE)
+
+HH_models$lr_test_0_h <- unlist(modelsTest(df = HH_models,
+                                           model_x = HH_models$model_0,
+                                           model_y = HH_models$model_h), 
+                                recursive = FALSE)
+
+HH_models$lr_test_h_2 <- unlist(modelsTest(df = HH_models,
+                                           model_x = HH_models$model_h,
+                                           model_y = HH_models$model_2), 
+                                recursive = FALSE)
+
+
+
+# note the change from "_h" to "_trt" this is to keep functions consistent across 
+# multiple uses 
+# "_trt" denotes the "treatment" or non-climatic variable analysed (ie. harvest of tree_cover)
+# Look at the name  of the file to find the variable used. 
+
+
+HH_models
+HH_models$lr_test_0_1
+HH_models$lr_test_1_2
+HH_models$lr_test_2_3
+HH_models$lr_test_0_h
+HH_models$lr_test_h_2
+
+
+###### 9.1 Extracting P-Values ----------------------------------------------------------
+
+HH_models_p_vals <- extractPVals(HH_models)
+
+HH_models_p_vals
+
+HH_p_vals <- subset(HH_models_p_vals, 
+                    select = c("location", "climatic_var", "p_val_0_1", "p_val_1_2", 
+                               "p_val_2_3", "p_val_0_h", "p_val_h_2"))
+HH_p_vals
+
+# Isolating Significant P-Values 
+
+HH_sig_p_vals <- removeNonSigPVals(HH_p_vals)
+
+HH_sig_p_vals
+
+
+write.csv(HH_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_pvals_Bv1.csv")), 
+          row.names = FALSE)
+
+write.csv(HH_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_sig_pvals_Bv1.csv")), 
+          row.names = FALSE)
 

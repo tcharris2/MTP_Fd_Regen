@@ -15,6 +15,9 @@
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE) 
 # check for most recent CSV file
 
+ClimaticVarList <- names(regen %>% select(starts_with("d_")))
+
+
 # 2. Importing Functions ----------------------------------------------------------
 
 source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
@@ -194,9 +197,10 @@ names(ln_height_group_harvest_models)
 
 
 # rename columns
-colnames(ln_height_group_harvest_models) <- c("ClimaticVarList", "model_0", "model_h", "model_a", 
+colnames(ln_height_group_harvest_models) <- c("model_0", "model_h", "model_a", 
                                            "model_1", "model_1a", "model_2", "model_2a", 
-                                           "model_3", "model_3a")
+                                           "model_3", "model_3a", 
+                                           "ClimaticVarList")
 ln_height_group_harvest_models
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
@@ -272,9 +276,11 @@ HH_group_sig_p_vals <- removeNonSigPVals(HH_group_p_vals)
 HH_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
-write.csv(HH_group_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Harvest_group_p_vals.csv"), row.names = FALSE)
+write.csv(HH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_group_p_vals.csv")),
+          row.names = FALSE)
 
-write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", "2024-01-31_Height_Harvest_group_sig_p_vals.csv"), row.names = FALSE)
+write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_group_sig_p_vals.csv")), 
+                                           row.names = FALSE)
 
 
 # 10. Testing Caonpy Models ----------------------------------------------------
@@ -282,9 +288,10 @@ names(ln_height_group_canopy_models)
 
 
 # rename columns
-colnames(ln_height_group_canopy_models) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
+colnames(ln_height_group_canopy_models) <- c("model_0", "model_c", "model_a", 
                                               "model_1", "model_1a", "model_2", "model_2a", 
-                                              "model_3", "model_3a")
+                                              "model_3", "model_3a",
+                                              "ClimaticVarList")
 ln_height_group_canopy_models
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
@@ -360,6 +367,8 @@ HC_group_sig_p_vals <- removeNonSigPVals(HC_group_p_vals)
 HC_group_sig_p_vals
 
 ###### 10.3 Saving p-values ----
-write.csv(HC_group_p_vals, file = here("Data/05_Output", "2024-01-31_ln_Height_Canopy_group_p_vals.csv"), row.names = FALSE)
+write.csv(HC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_group_p_vals.csv")),
+          row.names = FALSE)
 
-write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", "2024-01-31_ln_Height_Canopy_group_sig_p_vals.csv"), row.names = FALSE)
+write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_group_sig_p_vals.csv")), 
+                                           row.names = FALSE)
