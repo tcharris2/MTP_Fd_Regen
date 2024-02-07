@@ -49,6 +49,22 @@ ln_groupHeightModelAge <- function(df) {
 }
 
 
+# AgeHarvestModel 
+ln_groupHeightModelAgeHarvest <- function(df) {
+  
+  lmer(ln_height ~ age + harvestF + (1|locationF/blockF/plotF/splitplotF), data = df,
+       REML = FALSE)
+}
+
+
+# AgeCanopytModel 
+ln_groupHeightModelAgeCanopy <- function(df) {
+  
+  lmer(ln_height ~ age + tree_cover + (1|locationF/blockF/plotF/splitplotF), data = df,
+       REML = FALSE)
+}
+
+
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
