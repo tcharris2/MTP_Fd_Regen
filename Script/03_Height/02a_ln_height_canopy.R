@@ -17,8 +17,6 @@ source("Script/03a_Height_Functions/02a_ln_height_canopy_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
-source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
-
 
 # 3.  Correcting Variable types ----------------------------------------------------
 regen_prepped <- universalDataPrepFunction(regen)
@@ -30,6 +28,11 @@ regen_prepped$ln_height <- log(regen_prepped$height)
 regen_height <-  subset(regen_prepped, !(is.na(height)))
 
 regen_height <- subset(regen_height, !(is.na(tree_cover)))
+
+regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
+                                                                     "Peterhope future Fd", "Alex Fraser future Fd", 
+                                                                     "Twobit B class Fd"))
+
 
 str(regen_height)
 
@@ -86,7 +89,7 @@ ln_height_canopy_models$model_c
 
 # 5. Saving models as a RDS file --------------------------------------------------
 
-saveRDS(ln_height_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_canopy_models_OutEdit_Bv1.rds" )))
+saveRDS(ln_height_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_canopy_models_OutEdit_NoFutures.rds" )))
 
 
 # 6. Calling model RDS files  -----------------------------------------------------
@@ -287,10 +290,10 @@ HC_sig_p_vals <- removeNonSigPVals(HC_p_vals)
 HC_sig_p_vals
 
 
-write.csv(HC_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Canopy_pvals_Bv1.csv")), 
+write.csv(HC_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Canopy_pvals_NoFutures.csv")), 
           row.names = FALSE)
 
-write.csv(HC_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Canopy_sig_pvals_Bv1.csv")), 
+write.csv(HC_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Canopy_sig_pvals_NoFutures.csv")), 
           row.names = FALSE)
 
 

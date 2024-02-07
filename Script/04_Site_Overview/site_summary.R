@@ -9,7 +9,7 @@
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
 
 
-regen <- regen[regen$blockNo != 9 & df$blockNo != 13, ]
+regen <- regen[regen$blockNo != 9 & regen$blockNo != 13, ]
 
 regen <- subset(regen, !(is.na(tree_cover)))
 
@@ -50,7 +50,9 @@ loc_group_survival_summary
 
 ###### 2.1 Graphing avg survival ----
 ggplot(data = loc_group_survival_summary) +
-  geom_bar(mapping = aes(x = location, y = avg_survival), stat = "identity")
+  geom_bar(mapping = aes(x = location, y = avg_survival), stat = "identity") +
+  labs(title = "loc_group_survival_summary")
+  
 
 
 
@@ -79,7 +81,12 @@ loc_group_height_summary
 
 ###### 3.1 Graphing avg height ---- 
 ggplot(data = loc_group_height_summary) +
-  geom_bar(mapping = aes(x = location, y = avg_height), stat = "identity")
+  geom_bar(mapping = aes(x = location, y = avg_height), stat = "identity") +
+  labs(title = "loc_group_height_summary")
+
+ggplot(data = loc_group_height_summary) +
+  geom_bar(mapping = aes(x = location, y = log(avg_height)), stat = "identity") +
+  labs(title = "loc_group_ln_height_summary")
 
 
 # 4. Spread of Climatic Variables ----------------------------------------------
@@ -400,7 +407,7 @@ summary(regen)
 # dropping NAs and creating a new dataframe 
 regen_canopy <- regen %>% drop_na(tree_cover)
 
-harvest_grouped <- regen_canopy %>% 
+harvest_grouped <- regen %>% 
   group_by(harvest_name) %>% 
   nest()
 
@@ -426,24 +433,32 @@ harvest_group_summary
 # bar graph
 ggplot(data = harvest_group_summary) +
   geom_bar(mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
-                         y = avg_cover), stat = "identity") + 
-  xlab("harvest_name")
+                         y = avg_cover), stat = "identity") +
+  geom_text(aes(label = avg_cover))
+  labs(x = "harvest_name", title = "tree cover by harvest")
+
+ggplot(data = harvest_group_summary,
+    mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
+    y = avg_cover)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = round(avg_cover))) +
+  labs(x = "harvest_name", title = "tree cover by harvest")
 
 # box plot 
-ggplot(data = regen_canopy) +
+ggplot(data = regen) +
   geom_boxplot(mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
                              y = tree_cover)) + 
-  xlab("harvest_name")
+  labs(x = "harvest_name", title = "tree cover by harvest")
 
 # box plot by location
-ggplot(data = regen_canopy) +
+ggplot(data = regen) +
   geom_boxplot(mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
                              y = tree_cover)) + 
   facet_wrap( ~ location, nrow = 2) + 
-  xlab("harvest_name")
+  labs(x = "harvest_name", title = "tree cover by harvest")
 
 # scatterplot by location 
-ggplot(data = regen_canopy) +
+ggplot(data = regen) +
   geom_point(mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
                            y = tree_cover), position = "jitter") + 
   facet_wrap( ~ location, nrow = 2)+ 
