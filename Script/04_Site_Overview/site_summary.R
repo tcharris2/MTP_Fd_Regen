@@ -8,6 +8,15 @@
 
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
 
+
+regen <- regen[regen$blockNo != 9 & df$blockNo != 13, ]
+
+regen <- subset(regen, !(is.na(tree_cover)))
+
+regen <- subset(regen, !regen$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
+                                                "Peterhope future Fd", "Alex Fraser future Fd", 
+                                                 "Twobit B class Fd"))
+
 # nesting data
 loc_group_summary <- regen %>% 
   group_by(location) %>% 
@@ -112,6 +121,9 @@ ggplot(prov_climatic_vars_df, aes(y = c_var))+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
   geom_point(aes(x = mean))
+  
+ggsave(paste0(Sys.Date(), "prov_climatic_range.pdf"))
+
 
 ggplot(site_climatic_vars_df, aes(y = c_var), inherit.aes = TRUE)+
   geom_linerange(aes(xmin = min, xmax = max)) +
@@ -119,6 +131,9 @@ ggplot(site_climatic_vars_df, aes(y = c_var), inherit.aes = TRUE)+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
   geom_point(aes(x = mean))
+  
+ggsave(paste0(Sys.Date(), "site_climatic_range.pdf"))
+
 
 ggplot(dist_climatic_vars_df, aes(y = c_var), inherit.aes = TRUE)+
   geom_linerange(aes(xmin = min, xmax = max)) +
@@ -126,6 +141,9 @@ ggplot(dist_climatic_vars_df, aes(y = c_var), inherit.aes = TRUE)+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
   geom_point(aes(x = mean))
+
+ggsave(paste0(Sys.Date(), "dist_climatic_range.pdf"))
+
 
 
 ###### 4.2 Normalized ----
@@ -168,19 +186,28 @@ ggplot(norm_prov_climatic_df, aes(y = c_var))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
   geom_point(aes(x = mean))
 
+ggsave(paste0(Sys.Date(), "norm_prov_climatic_range.pdf"))
+
+
 ggplot(norm_site_climatic_df, aes(y = c_var))+
   geom_linerange(aes(xmin = min, xmax = max)) +
   geom_point(aes(x = min))+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
-  geom_point(aes(x = mean))
+  geom_point(aes(x = mean)) 
+
+ggsave(paste0(Sys.Date(), "norm_site_climatic_range.pdf"))
+
 
 ggplot(norm_dist_climatic_df, aes(y = c_var))+
   geom_linerange(aes(xmin = min, xmax = max)) +
   geom_point(aes(x = min))+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
-  geom_point(aes(x = mean))
+  geom_point(aes(x = mean)) 
+
+ggsave(paste0(Sys.Date(), "norm_dist_climatic_range.pdf"))
+
 
 
 # 5. Climate at Each Site ------------------------------------------------------

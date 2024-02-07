@@ -37,6 +37,11 @@ regen_height <-  subset(regen_prepped, !(is.na(height)))
 
 regen_height <- subset(regen_height, !(is.na(tree_cover)))
 
+regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
+                                                                     "Peterhope future Fd", "Alex Fraser future Fd", 
+                                                                     "Twobit B class Fd"))
+
+
 str(regen_height)
 
 ## 4. Building out models ----------------------------------------------------------
@@ -99,18 +104,18 @@ ln_height_group_canopy_models$climatic_var <- ClimaticVarList
 # 6. Saving models as a RDS file --------------------------------------------------
 
 # Harvest models
-saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_harvest_models_OutEdit_Bv1.rds" )))
+saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_harvest_models_NoFutures.rds" )))
 
 # Canopy models
-saveRDS(ln_height_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_canopy_models_OutEdit_Bv1.rds" )))
+saveRDS(ln_height_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_canopy_models_NoFutures.rds" )))
 
 # 7. Calling RDS File  ------------------------------------------------------------
 
-ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-02_ln_height_group_harvest_models_OutEdit_Bv1.rds" ))
+ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-05_ln_height_group_harvest_models_NoFutures.rds" ))
 
 ln_height_group_harvest_models
 
-ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp", "2024-02-02_ln_height_group_canopy_models_OutEdit_Bv1.rds" ))
+ln_height_group_canopy_models <- readRDS(file = here("Data/04_Temp", "2024-02-05_ln_height_group_canopy_models_NoFutures.rds" ))
 
 ln_height_group_canopy_models
 
@@ -276,10 +281,10 @@ HH_group_sig_p_vals <- removeNonSigPVals(HH_group_p_vals)
 HH_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
-write.csv(HH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_group_p_vals.csv")),
+write.csv(HH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_group_p_vals_NoFutures.csv")),
           row.names = FALSE)
 
-write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_group_sig_p_vals.csv")), 
+write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_group_sig_p_vals_NoFutures.csv")), 
                                            row.names = FALSE)
 
 
@@ -368,8 +373,8 @@ HC_group_sig_p_vals
 
 ###### 10.3 Saving p-values ----
 
-write.csv(HC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_group_p_vals.csv")),
+write.csv(HC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_group_p_vals_NoFutures.csv")),
           row.names = FALSE)
 
-write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_group_sig_p_vals.csv")), 
+write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_group_sig_p_vals_NoFutures.csv")), 
                                            row.names = FALSE)

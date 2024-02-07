@@ -17,6 +17,10 @@ regen_prepped <- universalDataPrepFunction(regen)
 
 regen_survival <- subset(regen_prepped, !(is.na(tree_cover)))
 
+regen_survival <- subset(regen_survival, !regen_survival$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
+                                                                     "Peterhope future Fd", "Alex Fraser future Fd", 
+                                                                     "Twobit B class Fd"))
+
 str(regen_survival)
 
 # 4. Building out models ----------------------------------------------------------
@@ -72,7 +76,7 @@ survival_group_canopy_models
 # 6. Saving output ---------------------------------------------------------------
 
 # Harvest models
-saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models_Bv1.rds")))
+saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models_NoFutures.rds")))
 
 # Canopy models
-saveRDS(survival_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_canopy_models_Bv1.rds")))
+saveRDS(survival_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_canopy_models_NoFutures.rds")))
