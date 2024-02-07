@@ -290,10 +290,10 @@ HC_sig_p_vals <- removeNonSigPVals(HC_p_vals)
 HC_sig_p_vals
 
 
-write.csv(HC_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Canopy_pvals_NoFutures.csv")), 
+write.csv(HC_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_pvals_NoFutures.csv")), 
           row.names = FALSE)
 
-write.csv(HC_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Canopy_sig_pvals_NoFutures.csv")), 
+write.csv(HC_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Canopy_sig_pvals_NoFutures.csv")), 
           row.names = FALSE)
 
 
