@@ -10,16 +10,6 @@
 
 # Model Functions --------------------------------------------------------------
 
-climaticVarListFunction <- function() {
-  
-  ClimaticVarList <- names(regen %>% select(starts_with("d_")))
-  
-  ClimaticVarList
-  
-}
-
-ClimaticVarList <- climaticVarListFunction()
-
 
 # Null models only needs 6 repeats as nothing changes in it 
 ln_heightCoverNull <- function(df) {

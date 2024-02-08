@@ -1,9 +1,9 @@
 # Content: Functions needed to create GLMER models for survival ----------------
-    
-    # Will create functions that run all the specified climatic variables 
-    # created in the vector "ClimaticVarList". 
-    # If more climatic variables are wanted they need to be manually entered 
-    # into "climaticVarListFunction"
+
+# Will create functions that run all the specified climatic variables 
+# created in the vector "ClimaticVarList". 
+# If more climatic variables are wanted they need to be manually entered 
+# into "climaticVarListFunction"
 
 # Author: Thomson Harris 
 # Date: Oct 4th 2023
@@ -14,8 +14,8 @@
 # Null models only needs 6 repeats as nothing changes in it 
 ln_heightHarvestNull <- function(df) {
   
-  lmer(ln_height ~ 1 + (1|plotF/splitplotF), data = df,
-        REML = FALSE,
+  lmer(ln_height ~ 1 + (1|blockF/plotF/splitplotF), data = df,
+       REML = FALSE,
        control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 }
 
@@ -23,7 +23,7 @@ ln_heightHarvestNull <- function(df) {
 
 ln_heightHarvest <- function(df) {
   
-  lmer(ln_height ~ harvestF + (1|plotF/splitplotF), data = df,
+  lmer(ln_height ~ harvestF + (1|blockF/plotF/splitplotF), data = df,
        REML = FALSE,
        control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 }
@@ -40,8 +40,8 @@ ln_heightHarvest_1 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE,
+    model <- lmer(paste("ln_height ~", var, paste("+ (1|blockF/plotF/splitplotF)")), 
+                  data = df, REML = FALSE,
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
@@ -64,8 +64,8 @@ ln_heightHarvest_2 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste(" + harvestF + (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE,
+    model <- lmer(paste("ln_height ~", var, paste(" + harvestF + (1|blockF/plotF/splitplotF)")), 
+                  data = df, REML = FALSE,
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
@@ -87,8 +87,8 @@ ln_heightHarvest_3 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ harvestF +"), var, paste(" * harvestF + (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE,
+    model <- lmer(paste("ln_height ~", var, paste("+ harvestF +"), var, paste(" * harvestF + (1|blockF/plotF/splitplotF)")), 
+                  data = df, REML = FALSE,
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
