@@ -27,11 +27,11 @@ str(regen_survival)
 
 ###### 4.1 Null Model ----
 s_group_model_null_harvest <- list(groupSurvivalModelNull(regen_survival))
-s_group_model_null_canopy <- list(groupSurvivalModelNull(regen_survival))
+s_group_model_null_cover <- list(groupSurvivalModelNull(regen_survival))
 
 ###### 4.2 Treatment Models ----
 s_group_model_harvest <- list(groupSurvivalModelHarvest(regen_survival))
-s_group_model_canopy <- list(groupSurvivalModelCanopy(regen_survival))
+s_group_model_cover <- list(groupSurvivalModelcover(regen_survival))
 s_group_model_age_har <- list(groupSurvivalModelAge(regen_survival))
 s_group_model_age_can <- list(groupSurvivalModelAge(regen_survival))
 
@@ -43,13 +43,13 @@ s_group_model_harvest_2a <- groupSurvivalHarvest_2a(regen_survival)
 s_group_model_harvest_3 <- groupSurvivalHarvest_3(regen_survival)
 s_group_model_harvest_3a <- groupSurvivalHarvest_3a(regen_survival)
 
-###### 4.4 Canopy Models ----
-s_group_model_canopy_1 <- groupSurvivalCanopy_1(regen_survival)
-s_group_model_canopy_1a <- groupSurvivalCanopy_1a(regen_survival)
-s_group_model_canopy_2 <- groupSurvivalCanopy_2(regen_survival)
-s_group_model_canopy_2a <- groupSurvivalCanopy_2a(regen_survival)
-s_group_model_canopy_3 <- groupSurvivalCanopy_3(regen_survival)
-s_group_model_canopy_3a <- groupSurvivalCanopy_3a(regen_survival)
+###### 4.4 cover Models ----
+s_group_model_cover_1 <- groupSurvivalcover_1(regen_survival)
+s_group_model_cover_1a <- groupSurvivalcover_1a(regen_survival)
+s_group_model_cover_2 <- groupSurvivalcover_2(regen_survival)
+s_group_model_cover_2a <- groupSurvivalcover_2a(regen_survival)
+s_group_model_cover_3 <- groupSurvivalcover_3(regen_survival)
+s_group_model_cover_3a <- groupSurvivalcover_3a(regen_survival)
 
 
 # 5. Grouping Models ------------------------------------------------------------
@@ -63,14 +63,14 @@ survival_group_harvest_models <- tibble(ClimaticVarList,
 survival_group_harvest_models
 
 
-survival_group_canopy_models <- tibble(ClimaticVarList,
-                                       s_group_model_null_canopy,
-                                       s_group_model_canopy,s_group_model_age_can,
-                                       s_group_model_canopy_1, s_group_model_canopy_1a,
-                                       s_group_model_canopy_2, s_group_model_canopy_2a,
-                                       s_group_model_canopy_3, s_group_model_canopy_3a)
+survival_group_cover_models <- tibble(ClimaticVarList,
+                                       s_group_model_null_cover,
+                                       s_group_model_cover,s_group_model_age_can,
+                                       s_group_model_cover_1, s_group_model_cover_1a,
+                                       s_group_model_cover_2, s_group_model_cover_2a,
+                                       s_group_model_cover_3, s_group_model_cover_3a)
 
-survival_group_canopy_models
+survival_group_cover_models
 
 
 # 6. Saving output ---------------------------------------------------------------
@@ -78,5 +78,5 @@ survival_group_canopy_models
 # Harvest models
 saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models_NoFutures.rds")))
 
-# Canopy models
-saveRDS(survival_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_canopy_models_NoFutures.rds")))
+# cover models
+saveRDS(survival_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_cover_models_NoFutures.rds")))
