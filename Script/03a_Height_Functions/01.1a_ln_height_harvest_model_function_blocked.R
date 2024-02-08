@@ -12,7 +12,7 @@
 
 
 # Null models only needs 6 repeats as nothing changes in it 
-ln_heightHarvestNull <- function(df) {
+ln_heightHarvestNullB <- function(df) {
   
   lmer(ln_height ~ 1 + (1|blockF/plotF/splitplotF), data = df,
        REML = FALSE,
@@ -21,7 +21,7 @@ ln_heightHarvestNull <- function(df) {
 
 # Models with only harvest. Needs 6 repeats as nothing changes in it 
 
-ln_heightHarvest <- function(df) {
+ln_heightHarvestB <- function(df) {
   
   lmer(ln_height ~ harvestF + (1|blockF/plotF/splitplotF), data = df,
        REML = FALSE,
@@ -32,7 +32,7 @@ ln_heightHarvest <- function(df) {
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-ln_heightHarvest_1 <- function(df) {
+ln_heightHarvest_1B <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -56,7 +56,7 @@ ln_heightHarvest_1 <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-ln_heightHarvest_2 <- function(df) {
+ln_heightHarvest_2B <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -79,7 +79,7 @@ ln_heightHarvest_2 <- function(df) {
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-ln_heightHarvest_3 <- function(df) {
+ln_heightHarvest_3B <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 

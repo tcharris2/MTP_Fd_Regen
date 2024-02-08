@@ -12,7 +12,7 @@
 
 
 # Null models only needs 6 repeats as nothing changes in it 
-survivalModelNull <- function(df) {
+survivalModelNullB <- function(df) {
   
   glmer(survival ~ 1 + (1|blockF/plotF/splitplotF), data = df,
         family = binomial)
@@ -20,7 +20,7 @@ survivalModelNull <- function(df) {
 
 # Models with only harvest. Needs 6 repeats as nothing changes in it 
 
-survivalModelCover <- function(df) {
+survivalModelCoverB <- function(df) {
   
   glmer(survival ~ tree_cover + (1|blockF/plotF/splitplotF), data = df,
         family = binomial)
@@ -30,7 +30,7 @@ survivalModelCover <- function(df) {
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-survivalCover_1 <- function(df) {
+survivalCover_1B <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -54,7 +54,7 @@ survivalCover_1 <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-survivalCover_2 <- function(df) {
+survivalCover_2B <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -78,7 +78,7 @@ survivalCover_2 <- function(df) {
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-survivalCover_3 <- function(df) {
+survivalCover_3B <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
