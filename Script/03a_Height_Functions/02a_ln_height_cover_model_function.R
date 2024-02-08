@@ -22,7 +22,7 @@ ClimaticVarList <- climaticVarListFunction()
 
 
 # Null models only needs 6 repeats as nothing changes in it 
-ln_heightCanopyNull <- function(df) {
+ln_heightCoverNull <- function(df) {
   
   lmer(ln_height ~ 1 + (1|plotF/splitplotF), data = df,
         REML = FALSE,
@@ -31,7 +31,7 @@ ln_heightCanopyNull <- function(df) {
 
 # Models with only harvest. Needs 6 repeats as nothing changes in it 
 
-ln_heightCanopy <- function(df) {
+ln_heightCover <- function(df) {
   
   lmer(ln_height ~ tree_cover + (1|plotF/splitplotF), data = df,
        REML = FALSE,
@@ -42,7 +42,7 @@ ln_heightCanopy <- function(df) {
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-ln_heightCanopy_1 <- function(df) {
+ln_heightCover_1 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -66,7 +66,7 @@ ln_heightCanopy_1 <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-ln_heightCanopy_2 <- function(df) {
+ln_heightCover_2 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -89,7 +89,7 @@ ln_heightCanopy_2 <- function(df) {
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-ln_heightCanopy_3 <- function(df) {
+ln_heightCover_3 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
