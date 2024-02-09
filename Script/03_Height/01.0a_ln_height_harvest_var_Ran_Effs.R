@@ -2,7 +2,7 @@
 #' @Content: Height ------------------------------------------------------------
   
 #' @Author Thomson Harris
-#' @Date Nov 10th 2023
+#' @Date Feb 09th 2024
 
   
 # 1. Importing Data ---------------------------------------------------------------
@@ -13,7 +13,9 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 #  2. Importing Functions ----------------------------------------------------------
 
-source("Script/03a_Height_Functions/01a_ln_height_harvest_model_function.R")
+source("Script/03a_Height_Functions/01.1a_ln_height_harvest_model_function_splitplot.R")
+source("Script/03a_Height_Functions/01.2a_ln_height_harvest_model_function_plot.R")
+source("Script/03a_Height_Functions/01.3a_ln_height_harvest_model_function_block.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
@@ -38,66 +40,118 @@ str(regen_height)
 
 # 4. Building Out Models ----------------------------------------------------
 
-###### 4.1 Grouping Data ------
+# 4. Grouping Data by Random Effects ---------------------------------------------
 
 ln_height_loc_group_harvest <- regen_height %>% 
   group_by(location) %>% 
   nest()
 
-###### 4.2 Storing models in a tibble ----
+###### 4.1 Block dataframe ----
+ln_height_harvest_models_B <- ln_height_loc_group_harvest[ln_height_loc_group_harvest$location 
+                                                          == "Jaffray", ]
 
-# Create a new tibble 
-ln_height_harvest_models <- ln_height_loc_group_harvest
+###### 4.2 Plot dataframe ----
+ln_height_harvest_models_P <- ln_height_loc_group_harvest[ln_height_loc_group_harvest$location 
+                                                          %in% c("Narrows", "Redfish", "Twobit"), ]
 
-# Run the model functions with mutate to store them 
-
-# Stores the null model as Model_0
-ln_height_harvest_models <- ln_height_harvest_models %>% 
-  mutate(model_0 = map(data, ln_heightHarvestNull))
-
-# Stores Model_1
-ln_height_harvest_models <- ln_height_harvest_models %>% 
-  mutate(model_1 = map(data, ln_heightHarvest_1))
-
-# Stores Model_2
-ln_height_harvest_models <- ln_height_harvest_models %>% 
-  mutate(model_2 = map(data, ln_heightHarvest_2))
-
-# Stores Model_3
-ln_height_harvest_models <- ln_height_harvest_models %>% 
-  mutate(model_3 = map(data, ln_heightHarvest_3))
-
-# Stores ModelHarvest 
-ln_height_harvest_models <- ln_height_harvest_models %>% 
-  mutate(model_h = map(data, ln_heightHarvest))
+###### 4.3 Splitplot dataframe ----
+ln_height_harvest_models_S <- ln_height_loc_group_harvest[ln_height_loc_group_harvest$location 
+                                                          %in% c("Alex Fraser", "John Prince"), ]
 
 
-# looking at the models within the tibble 
+# 5. Storing Block Models ------------------------------------------------------
+
+###### 5.1 Model_0B ----
+ln_height_harvest_models_B <- ln_height_harvest_models_B %>% 
+  mutate(model_0 = map(data, ln_heightHarvestNullB))
+
+###### 5.2 Model_1B ----
+ln_height_harvest_models_B <- ln_height_harvest_models_B %>% 
+  mutate(model_1 = map(data, ln_heightHarvest_1B))
+
+###### 5.3 Model_2B ----
+ln_height_harvest_models_B <- ln_height_harvest_models_B %>% 
+  mutate(model_2 = map(data, ln_heightHarvest_2B))
+
+###### 5.4 Model_3B ----
+ln_height_harvest_models_B <- ln_height_harvest_models_B %>% 
+  mutate(model_3 = map(data, ln_heightHarvest_3B))
+
+###### 5.5 Model_hB ----
+ln_height_harvest_models_B <- ln_height_harvest_models_B %>% 
+  mutate(model_h = map(data, ln_heightHarvestB))
+
+
+# 6. Storing Plot Models ------------------------------------------------------
+
+###### 6.1 Model_0P ----
+ln_height_harvest_models_P <- ln_height_harvest_models_P %>% 
+  mutate(model_0 = map(data, ln_heightHarvestNullP))
+
+###### 6.2 Model_1P ----
+ln_height_harvest_models_P <- ln_height_harvest_models_P %>% 
+  mutate(model_1 = map(data, ln_heightHarvest_1P))
+
+###### 6.3 Model_2P ----
+ln_height_harvest_models_P <- ln_height_harvest_models_P %>% 
+  mutate(model_2 = map(data, ln_heightHarvest_2P))
+
+###### 6.4 Model_3P ----
+ln_height_harvest_models_P <- ln_height_harvest_models_P %>% 
+  mutate(model_3 = map(data, ln_heightHarvest_3P))
+
+###### 6.6 Model_hP ----
+ln_height_harvest_models_P <- ln_height_harvest_models_P %>% 
+  mutate(model_h = map(data, ln_heightHarvestP))
+
+
+# 7. Storing Splitplot Models ------------------------------------------------------
+
+###### 7.1 Model_0S ----
+ln_height_harvest_models_S <- ln_height_harvest_models_S %>% 
+  mutate(model_0 = map(data, ln_heightHarvestNullS))
+
+###### 7.2 Model_1S ----
+ln_height_harvest_models_S <- ln_height_harvest_models_S %>% 
+  mutate(model_1 = map(data, ln_heightHarvest_1S))
+
+###### 7.3 Model_2S ----
+ln_height_harvest_models_S <- ln_height_harvest_models_S %>% 
+  mutate(model_2 = map(data, ln_heightHarvest_2S))
+
+###### 7.4 Model_3S ----
+ln_height_harvest_models_S <- ln_height_harvest_models_S %>% 
+  mutate(model_3 = map(data, ln_heightHarvest_3S))
+
+###### 7.7 Model_hS ----
+ln_height_harvest_models_S <- ln_height_harvest_models_S %>% 
+  mutate(model_h = map(data, ln_heightHarvestS))
+
+
+
+# 8. Merging Model Dataframes -----------------------------------------------
+
+ln_height_harvest_models <- rbind(ln_height_harvest_models_B, ln_height_harvest_models_P, ln_height_harvest_models_S) 
+
 ln_height_harvest_models
 
-ln_height_harvest_models$model_0
-ln_height_harvest_models$model_1
-ln_height_harvest_models$model_2
-ln_height_harvest_models$model_3
-ln_height_harvest_models$model_h
+
+# 9. Saving models as a RDS file --------------------------------------------------
+
+saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_harvest_models_var_Ran_Effs.rds" )))
 
 
-# 5. Saving models as a RDS file --------------------------------------------------
+# 10. Calling model RDS files  -----------------------------------------------------
 
-saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_harvest_models_OutEdit.rds" )))
-
-
-# 6. Calling model RDS files  -----------------------------------------------------
-
-ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-09_ln_height_harvest_models_OutEdit.rds"))
+ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-09_ln_height_harvest_models_var_Ran_Effs.rds"))
 
 ln_height_harvest_models
 
-# 7. Extracting Diagnostic Values ---------------------------------------------
+# 11. Extracting Diagnostic Values ---------------------------------------------
 
 source("Script/03a_Height_Functions/04_individual_loc_assumptions_diagnostic_functions.R")
 
-###### 7.1 Model 0 ----
+###### 11.1 Model 0 ----
 
 # Keeping only nessecary models/information
 ln_height_harvest_model_0_resid <- subset(ln_height_harvest_models, select = c("location", "data", "model_0"))
@@ -125,7 +179,7 @@ ggplot(data = ln_harvest_model_0_fits) +
   facet_wrap( ~ location, nrow = 2) +
   labs(title = "ln_harvest_model_0_QQplot")
 
-###### 7.2 Model H -------
+###### 11.2 Model H -------
 
 # Keeping only nessecary models/information
 ln_height_harvest_model_h_resid <- subset(ln_height_harvest_models, select = c("location", "data", "model_h"))
@@ -153,7 +207,7 @@ ggplot(data = ln_harvest_model_h_fits) +
   facet_wrap( ~ location, nrow = 2) +
   labs(title = "ln_harvest_model_h_QQplot")
 
-# 8. Diagnostic Values by Climatic Var -----------------
+# 12. Diagnostic Values by Climatic Var -----------------
 
 # This step is to change the format of the data 
 # So it can be operated on
@@ -181,7 +235,7 @@ renest_ln_height_harvest_models <- unnest_ln_height_harvest_models %>%
 
 renest_ln_height_harvest_models
 
-###### 8.1 Creating a dataframe to graph from -----
+###### 12.1 Creating a dataframe to graph from -----
 
 ln_height_harvest_graphing_df <- graphingDfFunction(renest_ln_height_harvest_models)
 ln_height_harvest_graphing_df
@@ -192,7 +246,7 @@ melt_ln_height_harvest_df
 # This step is needed for saving the graphs with the correct names
 names(melt_ln_height_harvest_df) <- paste0("ln_harvest_", ClimaticVarList)
 
-###### 8.2 Graphing ----
+###### 12.2 Graphing ----
 
 # This will save outputs in the working directory when run
 
@@ -201,14 +255,13 @@ graphingMeltFunction(melt_ln_height_harvest_df)
 graphingQQPlotFunction(melt_ln_height_harvest_df)
 
 
-# graphingFunction()
 
+# 13. Testing Models ------------------------------------------------------------
 
-# 9. Testing Models ------------------------------------------------------------
-
+###### 13.1 Importing Functions -----
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 
-# Expanding the lists 
+###### 13.2 Un-nesting Models ----- 
 
 loc_list <- unique(ln_height_harvest_models$location)
 
@@ -223,7 +276,7 @@ HH_models$location <- rep(loc_list, each = 15)
 
 HH_models
 
-# Testing models 
+###### 13.3 Running Tests ----- 
 
 # Null vs 1 variable
 HH_models$lr_test_0_1 <- unlist(modelsTest(df = HH_models,
@@ -267,7 +320,7 @@ HH_models$lr_test_0_h
 HH_models$lr_test_h_2
 
 
-###### 9.1 Extracting P-Values ----------------------------------------------------------
+###### 13.4 Extracting P-Values ----------------------------------------------------------
 
 HH_models_p_vals <- extractPVals(HH_models)
 
@@ -278,16 +331,17 @@ HH_p_vals <- subset(HH_models_p_vals,
                                "p_val_2_3", "p_val_0_h", "p_val_h_2"))
 HH_p_vals
 
-# Isolating Significant P-Values 
+###### 13.5 Isolating Significant P-Values ------
 
 HH_sig_p_vals <- removeNonSigPVals(HH_p_vals)
 
 HH_sig_p_vals
 
+# 14. Saving P-Values as .CSV --------------------------------------------------
 
-write.csv(HH_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Harvest_pvals_NoFutures.csv")), 
+write.csv(HH_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Harvest_pvals_var_Ran_Effs.csv")), 
           row.names = FALSE)
 
-write.csv(HH_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Harvest_sig_pvals_NoFutures.csv")), 
+write.csv(HH_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Harvest_sig_pvals_var_Ran_Effs.csv")), 
           row.names = FALSE)
 
