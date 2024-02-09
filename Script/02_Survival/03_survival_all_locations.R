@@ -22,17 +22,20 @@ source("Script/01a_Survival_Functions/survival_all_locs_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
-source("Script/01a_Survival_Functions/lrtest_function.R")
 
 # 3. Correcting Variable types ----------------------------------------------------
+
 
 
 regen_prepped <- universalDataPrepFunction(regen)
 
 regen_survival <- subset(regen_prepped, !(is.na(tree_cover)))
 
-str(regen_survival)
+regen_survival <- subset(regen_survival, !regen_survival$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
+                                                                           "Peterhope future Fd", "Alex Fraser future Fd", 
+                                                                           "Twobit B class Fd"))
 
+str(regen_survival)
 # This function converts survival, harvestF, provenanceF, and all the random 
 # effects into factors. 
 
@@ -42,11 +45,11 @@ str(regen_survival)
 
 ###### 4.1 Null Model ----
 s_group_model_null_harvest <- list(groupSurvivalModelNull(regen_survival))
-s_group_model_null_canopy <- list(groupSurvivalModelNull(regen_survival))
+s_group_model_null_cover <- list(groupSurvivalModelNull(regen_survival))
 
 ###### 4.2 Treatment Models ----
 s_group_model_harvest <- list(groupSurvivalModelHarvest(regen_survival))
-s_group_model_canopy <- list(groupSurvivalModelCanopy(regen_survival))
+s_group_model_cover <- list(groupSurvivalModelcover(regen_survival))
 s_group_model_age_har <- list(groupSurvivalModelAge(regen_survival))
 s_group_model_age_can <- list(groupSurvivalModelAge(regen_survival))
 
@@ -58,13 +61,13 @@ s_group_model_harvest_2a <- groupSurvivalHarvest_2a(regen_survival)
 s_group_model_harvest_3 <- groupSurvivalHarvest_3(regen_survival)
 s_group_model_harvest_3a <- groupSurvivalHarvest_3a(regen_survival)
 
-###### 4.4 Canopy Models ----
-s_group_model_canopy_1 <- groupSurvivalCanopy_1(regen_survival)
-s_group_model_canopy_1a <- groupSurvivalCanopy_1a(regen_survival)
-s_group_model_canopy_2 <- groupSurvivalCanopy_2(regen_survival)
-s_group_model_canopy_2a <- groupSurvivalCanopy_2a(regen_survival)
-s_group_model_canopy_3 <- groupSurvivalCanopy_3(regen_survival)
-s_group_model_canopy_3a <- groupSurvivalCanopy_3a(regen_survival)
+###### 4.4 Cover Models ----
+s_group_model_cover_1 <- groupSurvivalCover_1(regen_survival)
+s_group_model_cover_1a <- groupSurvivalCover_1a(regen_survival)
+s_group_model_cover_2 <- groupSurvivalCover_2(regen_survival)
+s_group_model_cover_2a <- groupSurvivalCover_2a(regen_survival)
+s_group_model_cover_3 <- groupSurvivalCover_3(regen_survival)
+s_group_model_cover_3a <- groupSurvivalCover_3a(regen_survival)
 
 
 # 5. Grouping Models ------------------------------------------------------------
@@ -77,18 +80,18 @@ survival_group_harvest_models <- tibble(s_group_model_null_harvest,
 survival_group_harvest_models
 
 
-survival_group_canopy_models <- tibble(s_group_model_null_canopy,
-                                       s_group_model_canopy,s_group_model_age_can,
-                                       s_group_model_canopy_1, s_group_model_canopy_1a,
-                                       s_group_model_canopy_2, s_group_model_canopy_2a,
-                                       s_group_model_canopy_3, s_group_model_canopy_3a)
+survival_group_cover_models <- tibble(s_group_model_null_cover,
+                                       s_group_model_cover,s_group_model_age_can,
+                                       s_group_model_cover_1, s_group_model_cover_1a,
+                                       s_group_model_cover_2, s_group_model_cover_2a,
+                                       s_group_model_cover_3, s_group_model_cover_3a)
 
-survival_group_canopy_models
+survival_group_cover_models
 
 # Adding Climatic Variables
 survival_group_harvest_models$climatic_var <- ClimaticVarList
 
-survival_group_canopy_models$climatic_var <- ClimaticVarList
+survival_group_cover_models$climatic_var <- ClimaticVarList
 
 
 # 6. Saving models as a RDS file --------------------------------------------------
@@ -96,18 +99,18 @@ survival_group_canopy_models$climatic_var <- ClimaticVarList
 # Harvest models
 # saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models_Bv1.rds")))
 
-# Canopy models
-# saveRDS(survival_group_canopy_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_canopy_models_Bv1.rds")))
+# cover models
+# saveRDS(survival_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_cover_models_Bv1.rds")))
 
 # 7.Calling RDS File  ------------------------------------------------------------
 
-survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-02-02_survival_group_harvest_models_Bv1.rds"))
+survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-02-05_survival_group_harvest_models_NoFutures.rds"))
 
 survival_group_harvest_mods
 
-survival_group_canopy_mods <- readRDS(file = here("Data/04_Temp", "2024-02-02_survival_group_canopy_models_Bv1.rds"))
+survival_group_cover_mods <- readRDS(file = here("Data/04_Temp", "2024-02-05_survival_group_cover_models_NoFutures.rds"))
 
-survival_group_canopy_mods
+survival_group_cover_mods
 
 
 
@@ -172,6 +175,11 @@ survival_group_harvest_mods$lr_test_3_3a <- unlist(modelsTest(df = survival_grou
                                                              model_y = survival_group_harvest_mods$model_3a), 
                                                   recursive = FALSE)
 
+survival_group_harvest_mods$lr_test_1_3 <- unlist(modelsTest(df = survival_group_harvest_mods,
+                                                             model_x = survival_group_harvest_mods$model_1,
+                                                             model_y = survival_group_harvest_mods$model_3), 
+                                                  recursive = FALSE)
+
 survival_group_harvest_mods
 
 
@@ -183,7 +191,7 @@ SH_group_p_vals
 SH_group_p_vals <- subset(SH_group_p_vals, 
                     select = c("ClimaticVarList", "p_val_0_h", "p_val_0_a", 
                                "p_val_0_1", "p_val_1_1a", "p_val_1_2", "p_val_h_2",
-                               "p_val_2_2a", "p_val_2_3", "p_val_3_3a"))
+                               "p_val_2_2a", "p_val_2_3", "p_val_3_3a", "p_val_1_3"))
 SH_group_p_vals
 
 # Isolating Significant P-Values 
@@ -192,77 +200,92 @@ SH_group_sig_p_vals <- removeNonSigPVals(SH_group_p_vals)
 SH_group_sig_p_vals
 
 ###### 8.3 Saving p-values ----
-write.csv(SH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_p_vals.csv")),
+write.csv(SH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_p_vals_NoFutures.csv")),
           row.names = FALSE)
 
-write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_sig_p_vals.csv")),
+write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_sig_p_vals_NoFutures.csv")),
           row.names = FALSE)
 
+###### 8.4 Testing 3 vs 0 -----
 
-# 9. Testing Canopy Models  -------------------------------------------------------
+test_3_1 <- data.frame(1:15)
+
+test_3_1$lr_test_1_3 <- unlist(modelsTest(df = survival_group_harvest_mods,
+                                                             model_x = survival_group_harvest_mods$model_1,
+                                                             model_y = survival_group_harvest_mods$model_3), 
+                                                  recursive = FALSE)
+
+test_3_1_p_vals <- extractPVals(test_3_1)
+
+test_3_1_p_vals <- subset(test_3_1_p_vals, 
+                          select = c("p_val_1_3"))
+test_3_1_p_vals
+
+
+# 9. Testing cover Models  -------------------------------------------------------
 
 # rename columns
-colnames(survival_group_canopy_mods) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
+colnames(survival_group_cover_mods) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
                                            "model_1", "model_1a", "model_2", "model_2a", 
                                            "model_3", "model_3a")
-survival_group_canopy_mods
+survival_group_cover_mods
 
 ###### 9.1 Test models ----
 # Null vs 1 variable
-survival_group_canopy_mods$lr_test_0_c <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                             model_x = survival_group_canopy_mods$model_0,
-                                                             model_y = survival_group_canopy_mods$model_c), 
+survival_group_cover_mods$lr_test_0_c <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                             model_x = survival_group_cover_mods$model_0,
+                                                             model_y = survival_group_cover_mods$model_c), 
                                                   recursive = FALSE)
 
-survival_group_canopy_mods$lr_test_0_a <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                             model_x = survival_group_canopy_mods$model_0,
-                                                             model_y = survival_group_canopy_mods$model_a), 
+survival_group_cover_mods$lr_test_0_a <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                             model_x = survival_group_cover_mods$model_0,
+                                                             model_y = survival_group_cover_mods$model_a), 
                                                   recursive = FALSE)
 
-survival_group_canopy_mods$lr_test_0_1 <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                             model_x = survival_group_canopy_mods$model_0,
-                                                             model_y = survival_group_canopy_mods$model_1), 
+survival_group_cover_mods$lr_test_0_1 <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                             model_x = survival_group_cover_mods$model_0,
+                                                             model_y = survival_group_cover_mods$model_1), 
                                                   recursive = FALSE)
 
 # Model 1 vs n + 1
-survival_group_canopy_mods$lr_test_1_1a <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                              model_x = survival_group_canopy_mods$model_1,
-                                                              model_y = survival_group_canopy_mods$model_1a), 
+survival_group_cover_mods$lr_test_1_1a <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                              model_x = survival_group_cover_mods$model_1,
+                                                              model_y = survival_group_cover_mods$model_1a), 
                                                    recursive = FALSE)
 
-survival_group_canopy_mods$lr_test_1_2 <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                             model_x = survival_group_canopy_mods$model_1,
-                                                             model_y = survival_group_canopy_mods$model_2), 
+survival_group_cover_mods$lr_test_1_2 <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                             model_x = survival_group_cover_mods$model_1,
+                                                             model_y = survival_group_cover_mods$model_2), 
                                                   recursive = FALSE)
 
-# canopy model vs Havest + Climatic
-survival_group_canopy_mods$lr_test_c_2 <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                             model_x = survival_group_canopy_mods$model_c,
-                                                             model_y = survival_group_canopy_mods$model_2), 
+# cover model vs Havest + Climatic
+survival_group_cover_mods$lr_test_c_2 <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                             model_x = survival_group_cover_mods$model_c,
+                                                             model_y = survival_group_cover_mods$model_2), 
                                                   recursive = FALSE)
 
 # Model 2 vs n + 1
-survival_group_canopy_mods$lr_test_2_2a <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                              model_x = survival_group_canopy_mods$model_2,
-                                                              model_y = survival_group_canopy_mods$model_2a), 
+survival_group_cover_mods$lr_test_2_2a <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                              model_x = survival_group_cover_mods$model_2,
+                                                              model_y = survival_group_cover_mods$model_2a), 
                                                    recursive = FALSE)
 
-survival_group_canopy_mods$lr_test_2_3 <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                             model_x = survival_group_canopy_mods$model_2,
-                                                             model_y = survival_group_canopy_mods$model_3), 
+survival_group_cover_mods$lr_test_2_3 <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                             model_x = survival_group_cover_mods$model_2,
+                                                             model_y = survival_group_cover_mods$model_3), 
                                                   recursive = FALSE)
 # Model 3 vs n + 1
-survival_group_canopy_mods$lr_test_3_3a <- unlist(modelsTest(df = survival_group_canopy_mods,
-                                                              model_x = survival_group_canopy_mods$model_3,
-                                                              model_y = survival_group_canopy_mods$model_3a), 
+survival_group_cover_mods$lr_test_3_3a <- unlist(modelsTest(df = survival_group_cover_mods,
+                                                              model_x = survival_group_cover_mods$model_3,
+                                                              model_y = survival_group_cover_mods$model_3a), 
                                                    recursive = FALSE)
 
-survival_group_canopy_mods
+survival_group_cover_mods
 
 
 
 ###### 9.2 Extracting p-values ----
-SC_group_p_vals <- extractPVals(survival_group_canopy_mods)
+SC_group_p_vals <- extractPVals(survival_group_cover_mods)
 
 SC_group_p_vals
 
@@ -278,9 +301,9 @@ SC_group_sig_p_vals <- removeNonSigPVals(SC_group_p_vals)
 SC_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
-write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Canopy_group_p_vals.csv")),
+write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_p_vals_NoFutures.csv")),
           row.names = FALSE)
 
-write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Canopy_group_sig_p_vals.csv")),
+write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_sig_p_vals_NoFutures.csv")),
           row.names = FALSE)
 

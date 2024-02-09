@@ -1,46 +1,36 @@
 # Content: Functions needed to create GLMER models for survival ----------------
-    
-    # Will create functions that run all the specified climatic variables 
-    # created in the vector "ClimaticVarList". 
-    # If more climatic variables are wanted they need to be manually entered 
-    # into "climaticVarListFunction"
+
+# Will create functions that run all the specified climatic variables 
+# created in the vector "ClimaticVarList". 
+# If more climatic variables are wanted they need to be manually entered 
+# into "climaticVarListFunction"
 
 # Author: Thomson Harris 
 # Date: Oct 4th 2023
 
 # Model Functions --------------------------------------------------------------
 
-climaticVarListFunction <- function() {
-  
-  ClimaticVarList <- names(regen %>% select(starts_with("d_")))
-  
-  ClimaticVarList
-  
-}
-
-ClimaticVarList <- climaticVarListFunction()
-
 
 # Null models only needs 6 repeats as nothing changes in it 
-heightCanopyNull <- function(df) {
+survivalModelNullP <- function(df) {
   
-  lmer(height ~ 1 + (1|plotF/splitplotF), data = df,
-        REML = FALSE)
+  glmer(survival ~ 1 + (1|splitplotF), data = df,
+        family = binomial)
 }
 
 # Models with only harvest. Needs 6 repeats as nothing changes in it 
 
-heightCanopy <- function(df) {
+survivalModelCoverP <- function(df) {
   
-  lmer(height ~ tree_cover + (1|plotF/splitplotF), data = df,
-       REML = FALSE)
+  glmer(survival ~ tree_cover + (1|splitplotF), data = df,
+        family = binomial)
 }
 
 
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-heightCanopy_1 <- function(df) {
+survivalCover_1P <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -48,8 +38,9 @@ heightCanopy_1 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("height ~", var, paste("+ (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE)
+    model <- glmer(paste("survival ~", var, paste("+ (1|splitplotF)")), 
+                   data = df, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
   }
@@ -63,7 +54,7 @@ heightCanopy_1 <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-heightCanopy_2 <- function(df) {
+survivalCover_2P <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -71,8 +62,9 @@ heightCanopy_2 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("height ~", var, paste(" + tree_cover + (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE)
+    model <- glmer(paste("survival ~", var, paste(" + tree_cover + (1|splitplotF)")), 
+                   data = df, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
   }
@@ -82,10 +74,11 @@ heightCanopy_2 <- function(df) {
 }
 
 
+
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-heightCanopy_3 <- function(df) {
+survivalCover_3P <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -93,8 +86,9 @@ heightCanopy_3 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("height ~", var, paste("+ tree_cover +"), var, paste(" * tree_cover + (1|plotF/splitplotF)")), 
-                   data = df, REML = FALSE)
+    model <- glmer(paste("survival ~", var, paste("+ tree_cover +"), var, paste(" * tree_cover + (1|splitplotF)")), 
+                   data = df, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
     results[[var]] <- model
   }

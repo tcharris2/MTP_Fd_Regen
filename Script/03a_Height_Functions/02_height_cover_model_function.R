@@ -22,25 +22,25 @@ ClimaticVarList <- climaticVarListFunction()
 
 
 # Null models only needs 6 repeats as nothing changes in it 
-survivalModelNull <- function(df) {
+heightCoverNull <- function(df) {
   
-  glmer(survival ~ 1 + (1|plotF/splitplotF), data = df,
-        family = binomial)
+  lmer(height ~ 1 + (1|plotF/splitplotF), data = df,
+        REML = FALSE)
 }
 
 # Models with only harvest. Needs 6 repeats as nothing changes in it 
 
-survivalModelCanopy <- function(df) {
+heightCover <- function(df) {
   
-  glmer(survival ~ tree_cover + (1|plotF/splitplotF), data = df,
-        family = binomial)
+  lmer(height ~ tree_cover + (1|plotF/splitplotF), data = df,
+       REML = FALSE)
 }
 
 
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-survivalCanopy_1 <- function(df) {
+heightCover_1 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -48,9 +48,8 @@ survivalCanopy_1 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste("+ (1|plotF/splitplotF)")), 
-                   data = df, family = binomial, 
-                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+    model <- lmer(paste("height ~", var, paste("+ (1|plotF/splitplotF)")), 
+                   data = df, REML = FALSE)
     # Store the results in the list
     results[[var]] <- model
   }
@@ -64,7 +63,7 @@ survivalCanopy_1 <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-survivalCanopy_2 <- function(df) {
+heightCover_2 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -72,9 +71,8 @@ survivalCanopy_2 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste(" + tree_cover + (1|plotF/splitplotF)")), 
-                   data = df, family = binomial, 
-                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+    model <- lmer(paste("height ~", var, paste(" + tree_cover + (1|plotF/splitplotF)")), 
+                   data = df, REML = FALSE)
     # Store the results in the list
     results[[var]] <- model
   }
@@ -84,11 +82,10 @@ survivalCanopy_2 <- function(df) {
 }
 
 
-
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-survivalCanopy_3 <- function(df) {
+heightCover_3 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -96,9 +93,8 @@ survivalCanopy_3 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste("+ tree_cover +"), var, paste(" * tree_cover + (1|plotF/splitplotF)")), 
-                   data = df, family = binomial, 
-                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+    model <- lmer(paste("height ~", var, paste("+ tree_cover +"), var, paste(" * tree_cover + (1|plotF/splitplotF)")), 
+                   data = df, REML = FALSE)
     # Store the results in the list
     results[[var]] <- model
   }

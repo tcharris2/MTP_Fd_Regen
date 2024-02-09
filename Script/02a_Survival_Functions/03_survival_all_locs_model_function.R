@@ -32,7 +32,7 @@ groupSurvivalModelHarvest <- function(df) {
 
 
 # CanopyModel 
-groupSurvivalModelCanopy <- function(df) {
+groupSurvivalModelCover <- function(df) {
   
   glmer(survival ~ tree_cover + (1|locationF/blockF/plotF/splitplotF), data = df,
         family = binomial)
@@ -184,7 +184,7 @@ groupSurvivalHarvest_3a <- function(df) {
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-groupSurvivalCanopy_1 <- function(df) {
+groupSurvivalCover_1 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -206,7 +206,7 @@ groupSurvivalCanopy_1 <- function(df) {
 # Model_1a: Model Containing only the climatic variables and AGE
 # Stored as a large list inside the dataframe 
 
-groupSurvivalCanopy_1a <- function(df) {
+groupSurvivalCover_1a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -230,7 +230,7 @@ groupSurvivalCanopy_1a <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-groupSurvivalCanopy_2 <- function(df) {
+groupSurvivalCover_2 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -253,7 +253,7 @@ groupSurvivalCanopy_2 <- function(df) {
 # Model_2a: Model Containing the climatic variables and harvestF term and AGE
 # Stored as a large list inside the dataframe 
 
-groupSurvivalCanopy_2a <- function(df) {
+groupSurvivalCover_2a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -276,7 +276,7 @@ groupSurvivalCanopy_2a <- function(df) {
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-groupSurvivalCanopy_3 <- function(df) {
+groupSurvivalCover_3 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -299,7 +299,7 @@ groupSurvivalCanopy_3 <- function(df) {
 # Model_3a: Model Containing the climatic variables, harvestF, and interaction term and AGE
 # Stored as a large list inside the dataframe
 
-groupSurvivalCanopy_3a <- function(df) {
+groupSurvivalCover_3a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 

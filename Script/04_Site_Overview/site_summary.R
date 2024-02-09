@@ -8,6 +8,15 @@
 
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
 
+
+regen <- regen[regen$blockNo != 9 & regen$blockNo != 13, ]
+
+regen <- subset(regen, !(is.na(tree_cover)))
+
+regen <- subset(regen, !regen$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
+                                                "Peterhope future Fd", "Alex Fraser future Fd", 
+                                                 "Twobit B class Fd"))
+
 # nesting data
 loc_group_summary <- regen %>% 
   group_by(location) %>% 
@@ -41,7 +50,9 @@ loc_group_survival_summary
 
 ###### 2.1 Graphing avg survival ----
 ggplot(data = loc_group_survival_summary) +
-  geom_bar(mapping = aes(x = location, y = avg_survival), stat = "identity")
+  geom_bar(mapping = aes(x = location, y = avg_survival), stat = "identity") +
+  labs(title = "loc_group_survival_summary")
+  
 
 
 
@@ -70,7 +81,12 @@ loc_group_height_summary
 
 ###### 3.1 Graphing avg height ---- 
 ggplot(data = loc_group_height_summary) +
-  geom_bar(mapping = aes(x = location, y = avg_height), stat = "identity")
+  geom_bar(mapping = aes(x = location, y = avg_height), stat = "identity") +
+  labs(title = "loc_group_height_summary")
+
+ggplot(data = loc_group_height_summary) +
+  geom_bar(mapping = aes(x = location, y = log(avg_height)), stat = "identity") +
+  labs(title = "loc_group_ln_height_summary")
 
 
 # 4. Spread of Climatic Variables ----------------------------------------------
@@ -112,6 +128,9 @@ ggplot(prov_climatic_vars_df, aes(y = c_var))+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
   geom_point(aes(x = mean))
+  
+ggsave(paste0(Sys.Date(), "prov_climatic_range.pdf"))
+
 
 ggplot(site_climatic_vars_df, aes(y = c_var), inherit.aes = TRUE)+
   geom_linerange(aes(xmin = min, xmax = max)) +
@@ -119,6 +138,9 @@ ggplot(site_climatic_vars_df, aes(y = c_var), inherit.aes = TRUE)+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
   geom_point(aes(x = mean))
+  
+ggsave(paste0(Sys.Date(), "site_climatic_range.pdf"))
+
 
 ggplot(dist_climatic_vars_df, aes(y = c_var), inherit.aes = TRUE)+
   geom_linerange(aes(xmin = min, xmax = max)) +
@@ -126,6 +148,9 @@ ggplot(dist_climatic_vars_df, aes(y = c_var), inherit.aes = TRUE)+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
   geom_point(aes(x = mean))
+
+ggsave(paste0(Sys.Date(), "dist_climatic_range.pdf"))
+
 
 
 ###### 4.2 Normalized ----
@@ -168,19 +193,28 @@ ggplot(norm_prov_climatic_df, aes(y = c_var))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
   geom_point(aes(x = mean))
 
+ggsave(paste0(Sys.Date(), "norm_prov_climatic_range.pdf"))
+
+
 ggplot(norm_site_climatic_df, aes(y = c_var))+
   geom_linerange(aes(xmin = min, xmax = max)) +
   geom_point(aes(x = min))+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
-  geom_point(aes(x = mean))
+  geom_point(aes(x = mean)) 
+
+ggsave(paste0(Sys.Date(), "norm_site_climatic_range.pdf"))
+
 
 ggplot(norm_dist_climatic_df, aes(y = c_var))+
   geom_linerange(aes(xmin = min, xmax = max)) +
   geom_point(aes(x = min))+
   geom_point(aes(x = max))+
   geom_vline(xintercept = 0, color = "red", linewidth = 0.25) +
-  geom_point(aes(x = mean))
+  geom_point(aes(x = mean)) 
+
+ggsave(paste0(Sys.Date(), "norm_dist_climatic_range.pdf"))
+
 
 
 # 5. Climate at Each Site ------------------------------------------------------
@@ -373,7 +407,7 @@ summary(regen)
 # dropping NAs and creating a new dataframe 
 regen_canopy <- regen %>% drop_na(tree_cover)
 
-harvest_grouped <- regen_canopy %>% 
+harvest_grouped <- regen %>% 
   group_by(harvest_name) %>% 
   nest()
 
@@ -399,24 +433,32 @@ harvest_group_summary
 # bar graph
 ggplot(data = harvest_group_summary) +
   geom_bar(mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
-                         y = avg_cover), stat = "identity") + 
-  xlab("harvest_name")
+                         y = avg_cover), stat = "identity") +
+  geom_text(aes(label = avg_cover))
+  labs(x = "harvest_name", title = "tree cover by harvest")
+
+ggplot(data = harvest_group_summary,
+    mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
+    y = avg_cover)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = round(avg_cover))) +
+  labs(x = "harvest_name", title = "tree cover by harvest")
 
 # box plot 
-ggplot(data = regen_canopy) +
+ggplot(data = regen) +
   geom_boxplot(mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
                              y = tree_cover)) + 
-  xlab("harvest_name")
+  labs(x = "harvest_name", title = "tree cover by harvest")
 
 # box plot by location
-ggplot(data = regen_canopy) +
+ggplot(data = regen) +
   geom_boxplot(mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
                              y = tree_cover)) + 
   facet_wrap( ~ location, nrow = 2) + 
-  xlab("harvest_name")
+  labs(x = "harvest_name", title = "tree cover by harvest")
 
 # scatterplot by location 
-ggplot(data = regen_canopy) +
+ggplot(data = regen) +
   geom_point(mapping = aes(x = factor(harvest_name, level = c('clearcut', 'seed', '30Ret', '60Ret')), 
                            y = tree_cover), position = "jitter") + 
   facet_wrap( ~ location, nrow = 2)+ 

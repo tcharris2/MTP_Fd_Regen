@@ -17,8 +17,6 @@ source("Script/03a_Height_Functions/01a_ln_height_harvest_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
-source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
-
 
 # 3.  Correcting Variable types ----------------------------------------------------
 regen_prepped <- universalDataPrepFunction(regen)
@@ -86,7 +84,7 @@ ln_height_harvest_models$model_h
 
 # 5. Saving models as a RDS file --------------------------------------------------
 
-saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_harvest_models_OutEdit_Bv1.rds" )))
+saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_harvest_models_OutEdit_NoFutures.rds" )))
 
 
 # 6. Calling model RDS files  -----------------------------------------------------
@@ -119,7 +117,8 @@ ln_harvest_model_0_fits
 ggplot(data = ln_harvest_model_0_fits) +
   geom_point(aes(x = fitted,
                  y = resid)) +
-  facet_wrap( ~ location, nrow = 2)
+  facet_wrap( ~ location, nrow = 2) +
+  labs(title = "ln_harvest_model_0_resid_fitted")
 
 ggplot(data = ln_harvest_model_0_fits) +
   geom_qq(aes(sample = resid)) +
@@ -146,7 +145,8 @@ ln_harvest_model_h_fits
 ggplot(data = ln_harvest_model_h_fits) +
   geom_point(aes(x = fitted,
                  y = resid)) +
-  facet_wrap( ~ location, nrow = 2)
+  facet_wrap( ~ location, nrow = 2)+
+  labs(title = "ln_harvest_model_h_resid_fitted")
 
 ggplot(data = ln_harvest_model_h_fits) +
   geom_qq(aes(sample = resid)) +
@@ -285,9 +285,9 @@ HH_sig_p_vals <- removeNonSigPVals(HH_p_vals)
 HH_sig_p_vals
 
 
-write.csv(HH_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_pvals_Bv1.csv")), 
+write.csv(HH_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Harvest_pvals_NoFutures.csv")), 
           row.names = FALSE)
 
-write.csv(HH_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Height_Harvest_sig_pvals_Bv1.csv")), 
+write.csv(HH_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_ln_Height_Harvest_sig_pvals_NoFutures.csv")), 
           row.names = FALSE)
 

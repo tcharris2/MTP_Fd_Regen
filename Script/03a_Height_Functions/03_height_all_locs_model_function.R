@@ -33,8 +33,8 @@ groupHeightModelHarvest <- function(df) {
 }
 
 
-# CanopyModel 
-groupHeightModelCanopy <- function(df) {
+# CoverModel 
+groupHeightModelCover <- function(df) {
   
   lmer(height ~ tree_cover + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE)
@@ -183,7 +183,7 @@ groupHeightHarvest_3a <- function(df) {
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-groupHeightCanopy_1 <- function(df) {
+groupHeightCover_1 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -205,7 +205,7 @@ groupHeightCanopy_1 <- function(df) {
 # Model_1a: Model Containing only the climatic variables and AGE
 # Stored as a large list inside the dataframe 
 
-groupHeightCanopy_1a <- function(df) {
+groupHeightCover_1a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -227,7 +227,7 @@ groupHeightCanopy_1a <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-groupHeightCanopy_2 <- function(df) {
+groupHeightCover_2 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -248,7 +248,7 @@ groupHeightCanopy_2 <- function(df) {
 # Model_2a: Model Containing the climatic variables and harvestF term and AGE
 # Stored as a large list inside the dataframe 
 
-groupHeightCanopy_2a <- function(df) {
+groupHeightCover_2a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -271,7 +271,7 @@ groupHeightCanopy_2a <- function(df) {
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-groupHeightCanopy_3 <- function(df) {
+groupHeightCover_3 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -293,7 +293,7 @@ groupHeightCanopy_3 <- function(df) {
 # Model_3a: Model Containing the climatic variables, harvestF, and interaction term and AGE
 # Stored as a large list inside the dataframe
 
-groupHeightCanopy_3a <- function(df) {
+groupHeightCover_3a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
