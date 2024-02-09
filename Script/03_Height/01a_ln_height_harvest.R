@@ -84,12 +84,12 @@ ln_height_harvest_models$model_h
 
 # 5. Saving models as a RDS file --------------------------------------------------
 
-saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_harvest_models_OutEdit_NoFutures.rds" )))
+saveRDS(ln_height_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_harvest_models_OutEdit.rds" )))
 
 
 # 6. Calling model RDS files  -----------------------------------------------------
 
-ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-02_ln_height_harvest_models_OutEdit_Bv1.rds"))
+ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-09_ln_height_harvest_models_OutEdit.rds"))
 
 ln_height_harvest_models
 

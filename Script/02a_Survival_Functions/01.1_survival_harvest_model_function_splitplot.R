@@ -1,9 +1,9 @@
 # Content: Functions needed to create GLMER models for survival ----------------
-    
-    # Will create functions that run all the specified climatic variables 
-    # created in the vector "ClimaticVarList". 
-    # If more climatic variables are wanted they need to be manually entered 
-    # into "climaticVarListFunction"
+
+# Will create functions that run all the specified climatic variables 
+# created in the vector "ClimaticVarList". 
+# If more climatic variables are wanted they need to be manually entered 
+# into "climaticVarListFunction"
 
 # Author: Thomson Harris 
 # Date: Oct 4th 2023
@@ -11,17 +11,17 @@
 # Model Functions --------------------------------------------------------------
 
 # Null models only needs 6 repeats as nothing changes in it 
-survivalModelNull <- function(df) {
+survivalModelNullS <- function(df) {
   
-  glmer(survival ~ 1 + (1|plotF/splitplotF), data = df,
+  glmer(survival ~ 1 + (1|splitplotF), data = df,
         family = binomial)
 }
 
 # Models with only harvest. Needs 6 repeats as nothing changes in it 
 
-survivalModelHarvest <- function(df) {
+survivalModelHarvestS <- function(df) {
   
-  glmer(survival ~ harvestF + (1|plotF/splitplotF), data = df,
+  glmer(survival ~ harvestF + (1|splitplotF), data = df,
         family = binomial)
 }
 
@@ -29,7 +29,7 @@ survivalModelHarvest <- function(df) {
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-survivalHarvest_1 <- function(df) {
+survivalHarvest_1S <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -37,7 +37,7 @@ survivalHarvest_1 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste("+ (1|plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", var, paste("+ (1|splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -53,7 +53,7 @@ survivalHarvest_1 <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-survivalHarvest_2 <- function(df) {
+survivalHarvest_2S <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -61,7 +61,7 @@ survivalHarvest_2 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste(" + harvestF + (1|plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", var, paste(" + harvestF + (1|splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -77,7 +77,7 @@ survivalHarvest_2 <- function(df) {
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-survivalHarvest_3 <- function(df) {
+survivalHarvest_3S <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -85,7 +85,7 @@ survivalHarvest_3 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste("+ harvestF +"), var, paste(" * harvestF + (1|plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", var, paste("+ harvestF +"), var, paste(" * harvestF + (1|splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list

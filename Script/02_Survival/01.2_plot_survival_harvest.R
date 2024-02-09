@@ -101,7 +101,7 @@ saveRDS(survival_harvest_plot, file = here("Data/04_Temp", paste0(Sys.Date(), "_
 
 # Calling model RDS files  -----------------------------------------------------
 
-survival_harvest_plot <- readRDS(file = here("Data/04_Temp", "2024-02-02_survival_harvest_models_plot.rds"))
+survival_harvest_plot <- readRDS(file = here("Data/04_Temp", "2024-02-08_survival_harvest_models_plot.rds"))
 
 survival_harvest_plot
 

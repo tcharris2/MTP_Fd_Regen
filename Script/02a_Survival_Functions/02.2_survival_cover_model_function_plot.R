@@ -1,20 +1,19 @@
 # Content: Functions needed to create GLMER models for survival ----------------
-
-# Will create functions that run all the specified climatic variables 
-# created in the vector "ClimaticVarList". 
-# If more climatic variables are wanted they need to be manually entered 
-# into "climaticVarListFunction"
+    
+    # Will create functions that run all the specified climatic variables 
+    # created in the vector "ClimaticVarList". 
+    # If more climatic variables are wanted they need to be manually entered 
+    # into "climaticVarListFunction"
 
 # Author: Thomson Harris 
 # Date: Oct 4th 2023
 
 # Model Functions --------------------------------------------------------------
 
-
 # Null models only needs 6 repeats as nothing changes in it 
 survivalModelNullP <- function(df) {
   
-  glmer(survival ~ 1 + (1|splitplotF), data = df,
+  glmer(survival ~ 1 + (1|plotF/splitplotF), data = df,
         family = binomial)
 }
 
@@ -22,7 +21,7 @@ survivalModelNullP <- function(df) {
 
 survivalModelCoverP <- function(df) {
   
-  glmer(survival ~ tree_cover + (1|splitplotF), data = df,
+  glmer(survival ~ tree_cover + (1|plotF/splitplotF), data = df,
         family = binomial)
 }
 
@@ -38,7 +37,7 @@ survivalCover_1P <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste("+ (1|splitplotF)")), 
+    model <- glmer(paste("survival ~", var, paste("+ (1|plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -62,7 +61,7 @@ survivalCover_2P <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste(" + tree_cover + (1|splitplotF)")), 
+    model <- glmer(paste("survival ~", var, paste(" + tree_cover + (1|plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -86,7 +85,7 @@ survivalCover_3P <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", var, paste("+ tree_cover +"), var, paste(" * tree_cover + (1|splitplotF)")), 
+    model <- glmer(paste("survival ~", var, paste("+ tree_cover +"), var, paste(" * tree_cover + (1|plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list

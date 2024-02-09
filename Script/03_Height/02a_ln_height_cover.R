@@ -29,10 +29,6 @@ regen_height <-  subset(regen_prepped, !(is.na(height)))
 
 regen_height <- subset(regen_height, !(is.na(tree_cover)))
 
-regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
-                                                                     "Peterhope future Fd", "Alex Fraser future Fd", 
-                                                                     "Twobit B class Fd"))
-
 
 str(regen_height)
 
@@ -89,12 +85,12 @@ ln_height_cover_models$model_c
 
 # 5. Saving models as a RDS file --------------------------------------------------
 
-saveRDS(ln_height_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_cover_models_OutEdit_NoFutures.rds" )))
+saveRDS(ln_height_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_cover_models_OutEdit.rds" )))
 
 
 # 6. Calling model RDS files  -----------------------------------------------------
 
-ln_height_cover_models <- readRDS(file = here("Data/04_Temp", "2024-01-31_ln_height_cover_models_OutEdit.rds"))
+ln_height_cover_models <- readRDS(file = here("Data/04_Temp", "2024-02-09_ln_height_cover_models_OutEdit.rds"))
 
 ln_height_cover_models
 
