@@ -29,11 +29,6 @@ regen_height <-  subset(regen_prepped, !(is.na(height)))
 
 regen_height <- subset(regen_height, !(is.na(tree_cover)))
 
-regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
-                                                                     "Peterhope future Fd", "Alex Fraser future Fd", 
-                                                                     "Twobit B class Fd"))
-
-
 str(regen_height)
 
 # This function converts survival, harvestF, provenanceF, and all the random 
