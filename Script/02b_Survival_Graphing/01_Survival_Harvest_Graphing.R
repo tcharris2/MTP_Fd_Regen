@@ -79,12 +79,58 @@ survivalProbs <- function (df, model_column) {
 fun_test <- survivalProbs(climatic_models, climatic_models$model_1)
 
 
-my_title <- "d_MAT"
+c_var <- "d_MAT"
 
 
-ggplot(data = fun_test$data[[1]], mapping = aes(x = d_MAT, y = survival_probs)) +
+ggplot(data = fun_test$data[[1]], mapping = aes(x = .data[[c_var]], y = survival_probs)) +
   geom_point() +
   geom_smooth(method = "glm", formula = y ~ poly(x, 2)) +
-  labs(title = my_title, x = paste(my_title, "Climatic Distance"), y = "Estimated Probability of Survival")
+  labs(title = c_var, x = paste(c_var, "Climatic Distance"), y = "Estimated Probability of Survival")
 
+
+graphingESTSurvivalProb <-  function(df) {
+  
+  for (i in 1:length(df)) {
+    
+    c_var <- df[["ClimaticVarList"]][[i]]
+    
+    print(ggplot(data = df$data[[i]], mapping = aes(x = noqoute(c_var), y = survival_probs)) + 
+            geom_point() +
+            geom_smooth(method = "glm", formula = y ~ poly(x, 2)) +
+            labs(title = c_var, x = paste(c_var, "Climatic Distance"), y = "Estimated Probability of Survival") +
+            theme(legend.title=element_blank()))
+          
+    
+    # Saving plots as PDFs
+    # Long piece of code that just specifics the name of the file
+    # Could be done manually if wanted 
+    ggsave(paste0(Sys.Date(),
+                  
+                  # check to see if it a natural log transformed dataset            
+                  if (grepl("ln_", names(df[1]))) {
+                    
+                    paste0("_ln_")
+                    
+                  } else {
+                    
+                    paste0("_")
+                    
+                  },
+                  
+                  # check to see if the treatment is harvest or tree cover
+                  if (grepl("harvest", names(df[1]))) {
+                    
+                    paste("harvest_")
+                    
+                  } else {
+                    
+                    paste("canopy_")
+                    
+                  }, 
+                  
+                  "mod_123_resid_fit_", df[[i]][["climatic_var"]], ".pdf"))
+    
+  }
+  
+} 
 
