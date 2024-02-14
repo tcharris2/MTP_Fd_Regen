@@ -1,0 +1,42 @@
+
+
+
+
+survivalProbs <- function (df, model_column) {
+  
+  for (i in 1:length(model_column)) {
+    
+    # Creates new column "survival_probs" and fills it with the estimated probabilities 
+    df$data[[i]][["survival_probs"]] <- (exp(predict(model_column[[i]]))) / (1 + exp(predict(model_column[[i]])))
+    
+  }
+  
+  # Function output
+  return(df)
+  
+}
+
+
+
+
+graphingESTSurvivalProb <-  function(df) {
+  
+  for (i in 1:nrow(df)) {
+    
+    c_var <- df[["ClimaticVarList"]][[i]]
+    
+    print(ggplot(data = df$data[[i]], mapping = aes(x = .data[[c_var]], y = survival_probs)) + 
+            geom_point() +
+            geom_smooth(method = "glm", formula = y ~ poly(x, 2)) +
+            labs(title = c_var, x = paste(c_var, "Climatic Distance"), y = "Estimated Probability of Survival") +
+            theme(legend.title=element_blank()))
+    
+    
+    # Saving plots as PDFs
+    # Long piece of code that just specifics the name of the file
+    # Could be done manually if wanted 
+    ggsave(paste(Sys.Date(), c_var, "Est_Surivival_Prob_Survival_Harvest_All_Locs.pdf", sep = "_"))
+    
+  }
+  
+} 
