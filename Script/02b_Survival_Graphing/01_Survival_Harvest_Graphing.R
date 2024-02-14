@@ -53,7 +53,7 @@ inter_models <- survival_harvest_models[c(8:9, 11, 15), c("ClimaticVarList", "mo
 rm(regen, regen_prepped, universalDataPrepFunction)
 
 
-# 4. Estimated Probability of Survival --------------------------------------------------
+# 4. Estimated Probability of Survival -----------------------------------------
 
 ##### 4.1 Adding data -----
 
@@ -61,76 +61,71 @@ climatic_models$data <- list(regen_survival)
 
 climatic_models
 
+inter_models$data <- list(regen_survival)
 
-survivalProbs <- function (df, model_column) {
-  
-  for (i in 1:length(model_column)) {
-    
-    # Creates new column "survival_probs" and fills it with the estimated probabilities 
-    df$data[[i]][["survival_probs"]] <- (exp(fitted(model_column[[i]]))) / (1 + exp(fitted(model_column[[i]])))
-    
-  }
-  
-  # Function output
-  return(df)
-  
-}
+# Adding esitmated probability of survival 
+climatic_models <- survivalProbs(climatic_models, climatic_models$model_1)
 
-fun_test <- survivalProbs(climatic_models, climatic_models$model_1)
+inter_models <- survivalProbs(inter_models, inter_models$model_3)
 
 
-c_var <- "d_MAT"
+# 5. Graphing models -----------------------------------------------------------
+
+graphingESTSurvivalProb(climatic_models)
 
 
-ggplot(data = fun_test$data[[1]], mapping = aes(x = .data[[c_var]], y = survival_probs)) +
+
+# ggPlots - similar too above function. 
+
+ggplot(data = climatic_models$data[[1]], mapping = aes(x = d_MAT, y = survival_probs)) + 
   geom_point() +
   geom_smooth(method = "glm", formula = y ~ poly(x, 2)) +
-  labs(title = c_var, x = paste(c_var, "Climatic Distance"), y = "Estimated Probability of Survival")
+  labs(title = "d_MAT", x = paste("Climatic Distance"), y = "Estimated Probability of Survival") +
+  theme(legend.title=element_blank())
+
+ggplot() + 
+  geom_point(data = climatic_models$data[[6]], mapping = aes(x = d_MSP, y = survival_probs, colour = location)) +
+  geom_smooth(data = climatic_models$data[[6]], mapping = aes(x = d_MSP, y = survival_probs),
+              method = "glm", formula = y ~ poly(x, 2), se = FALSE) +
+  geom_smooth(data = climatic_models$data[[6]], mapping = aes(x = d_MSP, y = ReMSP.prob), colour = "red", se = FALSE)+
+  labs(title = "d_MSP", x = paste("Climatic Distance"), y = "Estimated Probability of Survival") +
+  theme(legend.title=element_blank())
 
 
-graphingESTSurvivalProb <-  function(df) {
-  
-  for (i in 1:length(df)) {
-    
-    c_var <- df[["ClimaticVarList"]][[i]]
-    
-    print(ggplot(data = df$data[[i]], mapping = aes(x = noqoute(c_var), y = survival_probs)) + 
-            geom_point() +
-            geom_smooth(method = "glm", formula = y ~ poly(x, 2)) +
-            labs(title = c_var, x = paste(c_var, "Climatic Distance"), y = "Estimated Probability of Survival") +
-            theme(legend.title=element_blank()))
-          
-    
-    # Saving plots as PDFs
-    # Long piece of code that just specifics the name of the file
-    # Could be done manually if wanted 
-    ggsave(paste0(Sys.Date(),
-                  
-                  # check to see if it a natural log transformed dataset            
-                  if (grepl("ln_", names(df[1]))) {
-                    
-                    paste0("_ln_")
-                    
-                  } else {
-                    
-                    paste0("_")
-                    
-                  },
-                  
-                  # check to see if the treatment is harvest or tree cover
-                  if (grepl("harvest", names(df[1]))) {
-                    
-                    paste("harvest_")
-                    
-                  } else {
-                    
-                    paste("canopy_")
-                    
-                  }, 
-                  
-                  "mod_123_resid_fit_", df[[i]][["climatic_var"]], ".pdf"))
-    
-  }
-  
-} 
+
+
+
+# Manually calculate by hand for model_1 
+fixef(climatic_models[[2]][[5]])
+ReMSP.log <- 1.3193627 + 0.3536144 * climatic_models[[3]][[1]][["d_MSP"]]
+ReMSP.prob <- (exp((ReMSP.log))) / (1+exp((ReMSP.log)))
+plot(climatic_models[[3]][[1]][["d_MAT"]], ReMAT.prob, ylim = c(0,1), 
+     main = "Survival vs MAT", xlab = "MAP Climatic Distance", ylab = "Survival") ## probabilities
+
+A<-fitted(climatic_models[[2]][[1]]) # These are the probabilities already calculated.
+B<-predict(climatic_models[[2]][[1]])
+C<-exp(B)/(1+exp(B)) # Using xbeta from predict( ), we can calculate
+
+
+
+
+# using sjPlots ----------------------------------------------------------------
+
+
+inter_models
+climatic_models
+
+
+
+sjPlot::plot_model(climatic_models$model_1[[1]], type = "pred", terms = c("d_MAT [all]")) + 
+  geom_point(data = climatic_models$data[[1]], mapping = aes(x = d_MAT, y = survival_probs)) +
+  labs(x = "MAT Climatic Distance", y = "Estimated Probability of Survival", title = NULL) +
+  geom_smooth(data = climatic_models$data[[1]], mapping = aes(x = d_MAT, y = ReMAT.prob), colour = "blue")
+
+
+
+
+sjPlot::plot_model(inter_models$model_3[[3]], type = "pred", terms = c("d_EMT [all]", "harvestF")) + 
+      geom_point(data = inter_models$data[[3]], mapping = aes(x = d_EMT, y = survival_probs), 
+                 inherit.aes = FALSE, size = 0.5)  
 
