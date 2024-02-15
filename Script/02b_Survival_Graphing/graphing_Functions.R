@@ -1,6 +1,5 @@
 
-
-
+# 1. Survival Probability Calculation ------------------------------------------
 
 survivalProbs <- function (df, model_column) {
   
@@ -18,31 +17,7 @@ survivalProbs <- function (df, model_column) {
 
 
 
-
-graphESTSurvivalProb_poly <-  function(df) {
-  
-  for (i in 1:nrow(df)) {
-    
-    c_var <- df[["ClimaticVarList"]][[i]]
-    
-    print(ggplot(data = df$data[[i]], mapping = aes(x = .data[[c_var]], y = survival_probs)) + 
-            geom_point() +
-            geom_smooth(method = "glm", formula = y ~ poly(x, 2)) +
-            labs(title = c_var, x = paste(c_var, "Climatic Distance"), y = "Estimated Probability of Survival") +
-            theme(legend.title=element_blank()))
-    
-    
-    # Saving plots as PDFs
-    # Long piece of code that just specifics the name of the file
-    # Could be done manually if wanted 
-    ggsave(paste(Sys.Date(), c_var, "Est_Surivival_Prob_Survival_Harvest_All_Locs.pdf", sep = "_"))
-    
-  }
-  
-} 
-
-
-
+# 2. Est. Prob Graphing -----------------------------------------------------------
 
 graphESTSurvivalProb <- function (df) {
   
@@ -57,13 +32,13 @@ graphESTSurvivalProb <- function (df) {
     
     
     # List of model varaibles 
-    VARIABLES <- if (grepl("_3", names(df[MODEL_NAME]))) {
+    VARIABLES <- if (grepl("_1", names(df[MODEL_NAME]))) {
       
-      c( paste(C_VAR, "[all]"), paste("harvestF"))
+      c(paste(C_VAR, "[all]"))
       
     } else {
       
-      c(paste(C_VAR, "[all]"))
+      c( paste(C_VAR, "[all]"), paste("harvestF"))
       
     }
     
@@ -86,3 +61,57 @@ graphESTSurvivalProb <- function (df) {
 
 
 
+graphESTSurvivalProb_2 <- function (df) {
+  
+  # List of model name
+  MODEL_NAME <- names(df %>% select(starts_with("model")))
+  
+  
+  for (i in 1:nrow(df)) {
+    
+    # List of climatic variables
+    C_VAR <- df[["ClimaticVarList"]][[i]]
+    
+    
+    # List of model varaibles 
+    VARIABLES <- as.character(attr(attr(df[[MODEL_NAME]][[i]]@frame, "terms"), "predvars.fixed"))
+    
+    VARIABLES <- VARIABLES[-c(1:2)]
+    
+    # Printing plots
+    print(sjPlot::plot_model(df[[MODEL_NAME]][[i]], type = "pred", terms = c(VARIABLES)) + 
+            
+            geom_point(data = df$data[[i]], mapping = aes(x = .data[[C_VAR]], y = survival_probs), 
+                       inherit.aes = FALSE, size = 0.5) +
+            labs(x = paste( C_VAR, "Climatic Distance"), 
+                 y = "Estimated Probability of Survival",
+                 title = NULL) )
+    
+    ggsave(paste(Sys.Date(), C_VAR, MODEL_NAME,
+                 
+                 "Est_Surivival_Prob_Survival_Harvest_All_Locs.pdf", sep = "_"))
+    
+  }
+  
+}
+
+
+
+
+mod <- inter_models[[2]][[1]]
+
+mod_terms <- attr(mod@frame, "terms")
+mod_terms
+attr(mod@frame, "predvars.fixed")
+
+fixef_terms <- as.character(attr(attr(mod@frame, "terms"), "predvars.fixed"))
+
+fixef_terms <- fixef_terms[-c(1:2)]
+
+fixef_terms
+
+grepl("survival", attr(attr(mod@frame, "terms"),"predvars.fixed"))
+
+str(mod)
+
+mod

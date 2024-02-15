@@ -71,61 +71,16 @@ inter_models <- survivalProbs(inter_models, inter_models$model_3)
 
 # 5. Graphing models -----------------------------------------------------------
 
-graphESTSurvivalProb(inter_models)
+graphESTSurvivalProb(climatic_models)
 
-
-
-# ggPlots - similar too above function. 
-
-ggplot(data = climatic_models$data[[1]], mapping = aes(x = d_MAT, y = survival_probs)) + 
-  geom_point() +
-  geom_smooth(method = "glm", formula = y ~ poly(x, 2)) +
-  labs(title = "d_MAT", x = paste("Climatic Distance"), y = "Estimated Probability of Survival") +
-  theme(legend.title=element_blank())
-
-ggplot() + 
-  geom_point(data = climatic_models$data[[6]], mapping = aes(x = d_MSP, y = survival_probs, colour = location)) +
-  geom_smooth(data = climatic_models$data[[6]], mapping = aes(x = d_MSP, y = survival_probs),
-              method = "glm", formula = y ~ poly(x, 2), se = FALSE) +
-  geom_smooth(data = climatic_models$data[[6]], mapping = aes(x = d_MSP, y = ReMSP.prob), colour = "red", se = FALSE)+
-  labs(title = "d_MSP", x = paste("Climatic Distance"), y = "Estimated Probability of Survival") +
-  theme(legend.title=element_blank())
+graphESTSurvivalProb_2(inter_models)
 
 
 
 
 
-# Manually calculate by hand for model_1 ----------------------------------------
-fixef(climatic_models[[2]][[5]])
-ReMSP.log <- 1.3193627 + 0.3536144 * climatic_models[[3]][[1]][["d_MSP"]]
-ReMSP.prob <- (exp((ReMSP.log))) / (1+exp((ReMSP.log)))
-plot(climatic_models[[3]][[1]][["d_MAT"]], ReMAT.prob, ylim = c(0,1), 
-     main = "Survival vs MAT", xlab = "MAP Climatic Distance", ylab = "Survival") ## probabilities
-
-A<-fitted(climatic_models[[2]][[1]]) # These are the probabilities already calculated.
-B<-predict(climatic_models[[2]][[1]])
-C<-exp(B)/(1+exp(B)) # Using xbeta from predict( ), we can calculate
 
 
 
 
-# using sjPlots ----------------------------------------------------------------
-# need to be written into a function 
-
-inter_models
-climatic_models
-
-
-
-sjPlot::plot_model(climatic_models$model_1[[1]], type = "pred", terms = c("d_MAT [all]")) + 
-  geom_point(data = climatic_models$data[[1]], mapping = aes(x = d_MAT, y = survival_probs)) +
-  labs(x = "MAT Climatic Distance", y = "Estimated Probability of Survival", title = NULL) +
-  geom_smooth(data = climatic_models$data[[1]], mapping = aes(x = d_MAT, y = ReMAT.prob), colour = "blue")
-
-
-
-
-sjPlot::plot_model(inter_models$model_3[[3]], type = "pred", terms = c(terms)) + 
-      geom_point(data = inter_models$data[[3]], mapping = aes(x = d_EMT, y = survival_probs), 
-                 inherit.aes = FALSE, size = 0.5)  
 
