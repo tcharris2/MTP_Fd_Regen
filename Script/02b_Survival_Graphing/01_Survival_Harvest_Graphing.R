@@ -71,7 +71,7 @@ inter_models <- survivalProbs(inter_models, inter_models$model_3)
 
 # 5. Graphing models -----------------------------------------------------------
 
-graphingESTSurvivalProb(climatic_models)
+graphESTSurvivalProb(climatic_models)
 
 
 
@@ -95,7 +95,7 @@ ggplot() +
 
 
 
-# Manually calculate by hand for model_1 
+# Manually calculate by hand for model_1 ----------------------------------------
 fixef(climatic_models[[2]][[5]])
 ReMSP.log <- 1.3193627 + 0.3536144 * climatic_models[[3]][[1]][["d_MSP"]]
 ReMSP.prob <- (exp((ReMSP.log))) / (1+exp((ReMSP.log)))
@@ -110,7 +110,7 @@ C<-exp(B)/(1+exp(B)) # Using xbeta from predict( ), we can calculate
 
 
 # using sjPlots ----------------------------------------------------------------
-
+# need to be written into a function 
 
 inter_models
 climatic_models

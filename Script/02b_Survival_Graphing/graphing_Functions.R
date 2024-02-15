@@ -19,7 +19,7 @@ survivalProbs <- function (df, model_column) {
 
 
 
-graphingESTSurvivalProb <-  function(df) {
+graphESTSurvivalProb_poly <-  function(df) {
   
   for (i in 1:nrow(df)) {
     
@@ -40,3 +40,29 @@ graphingESTSurvivalProb <-  function(df) {
   }
   
 } 
+
+
+
+
+graphESTSurvivalProb <- function (df) {
+  
+  
+  for (i in 1:nrow(df)) {
+    
+    C_VAR <- df[["ClimaticVarList"]][[i]]
+    
+    
+    print(sjPlot::plot_model(df$model_1[[i]], type = "pred", terms = c(paste(C_VAR, "[all]"))) + 
+            
+            geom_point(data = df$data[[i]], mapping = aes(x = .data[[C_VAR]], y = survival_probs), 
+                       inherit.aes = FALSE, size = 0.5) +
+            labs(x = paste( C_VAR, " Climatic Distance"), 
+                 y = "Estimated Probability of Survival",
+                 title = NULL) )
+    
+    ggsave(paste(Sys.Date(), C_VAR, "Est_Surivival_Prob_Survival_Harvest_All_Locs.pdf", sep = "_"))
+    
+  }
+  
+}
+
