@@ -71,7 +71,7 @@ inter_models <- survivalProbs(inter_models, inter_models$model_3)
 
 # 5. Graphing models -----------------------------------------------------------
 
-graphESTSurvivalProb(climatic_models)
+graphESTSurvivalProb(inter_models)
 
 
 
@@ -125,7 +125,7 @@ sjPlot::plot_model(climatic_models$model_1[[1]], type = "pred", terms = c("d_MAT
 
 
 
-sjPlot::plot_model(inter_models$model_3[[3]], type = "pred", terms = c("d_EMT [all]", "harvestF")) + 
+sjPlot::plot_model(inter_models$model_3[[3]], type = "pred", terms = c(terms)) + 
       geom_point(data = inter_models$data[[3]], mapping = aes(x = d_EMT, y = survival_probs), 
                  inherit.aes = FALSE, size = 0.5)  
 
