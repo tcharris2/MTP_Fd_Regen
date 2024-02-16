@@ -34,7 +34,7 @@ graphESTSurvivalProb <- function (df) {
     # List of model varaibles 
     VARIABLES <- if (grepl("_1", names(df[MODEL_NAME]))) {
       
-      c(paste(C_VAR, "[all]"))
+      c( paste(C_VAR, "[all]"))
       
     } else {
       
@@ -99,16 +99,31 @@ graphESTSurvivalProb_2 <- function (df) {
 
 
 mod <- inter_models[[2]][[1]]
+mod_2 <- climatic_models[[2]][[1]]
 
 mod_terms <- attr(mod@frame, "terms")
 mod_terms
 attr(mod@frame, "predvars.fixed")
 
-fixef_terms <- as.character(attr(attr(mod@frame, "terms"), "predvars.fixed"))
+fixef_terms <- unlist(as.character(attr(attr(mod@frame, "terms"), "predvars.fixed")))
+fixef_terms_2 <- as.character(attr(attr(mod@frame, "terms"), "predvars.fixed"))
+fixef_terms_3 <- as.character(attr(attr(mod_2@frame, "terms"), "predvars.fixed"))
+
+
 
 fixef_terms <- fixef_terms[-c(1:2)]
 
+fixef_terms_test <- fixef_terms_3[c("d_MAT", "harvestF", "tree_cover")]
+fixef_terms_test
+
 fixef_terms
+fixef_terms_2
+fixef_terms_3
+
+# Create a vector with the unwanted variables 
+KeepVars <- c("d_MAT", "harvestF")
+# use subsetting to remove them
+fixef_terms_3_test <- fixef_terms_3[ , (names(fixef_terms_3) %in% KeepVars)]
 
 grepl("survival", attr(attr(mod@frame, "terms"),"predvars.fixed"))
 

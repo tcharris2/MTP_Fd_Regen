@@ -34,19 +34,34 @@ survival_harvest_models <- readRDS(file = here("Data/04_Temp",
 
 survival_harvest_models
 
+
+survival_cover_models <- readRDS(file = here("Data/04_Temp", 
+                                               "2024-02-05_survival_group_cover_models_NoFutures.rds"))
+
+survival_cover_models
+
+
 # 2. Selecting Best Models ---------------------------------------------------
 
 # See 2024-02-06_MODEL_SLECTION_survival_Harvest_group_sig_p_vals_NoFutures.csv for list of selected models
 
-colnames(survival_harvest_models) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
+colnames(survival_harvest_models) <- c("ClimaticVarList", "model_0", "model_h", "model_a", 
                                          "model_1", "model_1a", "model_2", "model_2a", 
                                          "model_3", "model_3a")
+
+colnames(survival_cover_models) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
+                                       "model_1", "model_1a", "model_2", "model_2a", 
+                                       "model_3", "model_3a")
 
 
 climatic_models <- survival_harvest_models[c(1:6, 10, 12:13), c("ClimaticVarList", "model_1")]
 
-inter_models <- survival_harvest_models[c(8:9, 11, 15), c("ClimaticVarList", "model_3")]
+inter_harvest_models <- survival_harvest_models[c(8:9, 11, 15), c("ClimaticVarList", "model_3")]
 
+
+climatic_cover_models <- survival_cover_models[c(4:6, 10), c("ClimaticVarList", "model_2")]
+
+inter_cover_models <- survival_cover_models[c(1:3, 7:9, 11:13, 15), c("ClimaticVarList", "model_3")]
 
 # 3. Clean up Global env. ------------------------------------------------------
 
@@ -63,10 +78,26 @@ climatic_models
 
 inter_models$data <- list(regen_survival)
 
+inter_models
+
+
+climatic_cover_models$data <- list(regen_survival)
+
+climatic_cover_models
+
+inter_cover_models$data <- list(regen_survival)
+
+inter_cover_models
+
 # Adding esitmated probability of survival 
 climatic_models <- survivalProbs(climatic_models, climatic_models$model_1)
 
 inter_models <- survivalProbs(inter_models, inter_models$model_3)
+
+climatic_cover_models <- survivalProbs(climatic_cover_models, climatic_cover_models$model_2)
+
+inter_cover_models <- survivalProbs(inter_cover_models, inter_cover_models$model_3)
+
 
 
 # 5. Graphing models -----------------------------------------------------------
