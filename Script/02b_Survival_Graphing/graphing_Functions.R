@@ -89,7 +89,7 @@ graphESTSurvivalProb_2 <- function (df) {
     
     ggsave(paste(Sys.Date(), C_VAR, MODEL_NAME,
                  
-                 "Est_Surivival_Prob_Survival_Harvest_All_Locs.pdf", sep = "_"))
+                 "Est_Surivival_Prob_Survival_Cover_All_Locs.pdf", sep = "_"))
     
   }
   

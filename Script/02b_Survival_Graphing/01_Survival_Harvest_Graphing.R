@@ -106,6 +106,7 @@ graphESTSurvivalProb(climatic_models)
 
 graphESTSurvivalProb_2(inter_models)
 
+graphESTSurvivalProb_2(inter_cover_models)
 
 
 
