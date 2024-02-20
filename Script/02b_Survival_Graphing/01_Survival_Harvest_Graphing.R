@@ -24,6 +24,7 @@ regen_survival <- subset(regen_survival,
                          !regen_survival$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
                                                           "Peterhope future Fd", "Alex Fraser future Fd", 
                                                           "Twobit B class Fd"))
+regen_survival$sqrt_tree_cover <- sqrt(regen_survival$tree_cover)
 
 str(regen_survival)
 
@@ -36,7 +37,7 @@ survival_harvest_models
 
 
 survival_cover_models <- readRDS(file = here("Data/04_Temp", 
-                                               "2024-02-05_survival_group_cover_models_NoFutures.rds"))
+                                               "2024-02-20_survival_group_cover_models_NoFutures_sqrt.rds"))
 
 survival_cover_models
 
@@ -59,9 +60,9 @@ climatic_models <- survival_harvest_models[c(1:6, 10, 12:13), c("ClimaticVarList
 inter_harvest_models <- survival_harvest_models[c(8:9, 11, 15), c("ClimaticVarList", "model_3")]
 
 
-climatic_cover_models <- survival_cover_models[c(4:6, 10), c("ClimaticVarList", "model_2")]
+climatic_cover_models <- survival_cover_models[c(5:6, 10), c("ClimaticVarList", "model_2")]
 
-inter_cover_models <- survival_cover_models[c(1:3, 7:9, 11:13, 15), c("ClimaticVarList", "model_3")]
+inter_cover_models <- survival_cover_models[c(1:4, 8:9, 11:13, 15), c("ClimaticVarList", "model_3")]
 
 # 3. Clean up Global env. ------------------------------------------------------
 
@@ -70,15 +71,17 @@ rm(regen, regen_prepped, universalDataPrepFunction)
 
 # 4. Estimated Probability of Survival -----------------------------------------
 
+source("Script/02b_Survival_Graphing/graphing_Functions.R")
+
 ##### 4.1 Adding data -----
 
 climatic_models$data <- list(regen_survival)
 
 climatic_models
 
-inter_models$data <- list(regen_survival)
+inter_harvest_models$data <- list(regen_survival)
 
-inter_models
+inter_harvest_models
 
 
 climatic_cover_models$data <- list(regen_survival)
@@ -92,7 +95,7 @@ inter_cover_models
 # Adding esitmated probability of survival 
 climatic_models <- survivalProbs(climatic_models, climatic_models$model_1)
 
-inter_models <- survivalProbs(inter_models, inter_models$model_3)
+inter_harvest_models <- survivalProbs(inter_harvest_models, inter_harvest_models$model_3)
 
 climatic_cover_models <- survivalProbs(climatic_cover_models, climatic_cover_models$model_2)
 
@@ -106,11 +109,26 @@ graphESTSurvivalProb(climatic_models)
 
 graphESTSurvivalProb_2(inter_models)
 
-graphESTSurvivalProb_2(inter_cover_models)
+graphESTSurvivalProb_3(inter_cover_models)
 
+graphESTSurvivalProb_2(climatic_cover_models)
 
+inter_harvest_models
 
-
+sjPlot::plot_model(inter_harvest_models[["model_3"]][[4]], type = "pred", terms = c("d_RH [all]", "harvestF"), 
+                   fullrange=TRUE) + 
+  
+  geom_point(data = inter_harvest_models$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
+             inherit.aes = FALSE, size = 0.5) +
+  
+  theme(panel.background = element_rect(
+    fill = "white", color = "black", linewidth = 1),
+    panel.grid.major = element_line(color = "gray10", linewidth = .15),
+    panel.grid.minor = element_blank()) +
+  
+  labs(x = paste( "d_RH", "Climatic Distance"), 
+       y = "Estimated Probability of Survival",
+       title = NULL)
 
 
 
