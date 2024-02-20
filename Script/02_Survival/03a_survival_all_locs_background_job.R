@@ -6,7 +6,7 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # 2.  Importing Functions ----------------------------------------------------------
 
-source("Script/02a_Survival_Functions/03_survival_all_locs_model_function.R")
+source("Script/02a_Survival_Functions/03.1_survival_all_locs_model_function_sqrt.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
@@ -20,6 +20,8 @@ regen_survival <- subset(regen_prepped, !(is.na(tree_cover)))
 regen_survival <- subset(regen_survival, !regen_survival$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
                                                                      "Peterhope future Fd", "Alex Fraser future Fd", 
                                                                      "Twobit B class Fd"))
+
+regen_survival$sqrt_tree_cover <- sqrt(regen_survival$tree_cover)
 
 str(regen_survival)
 
