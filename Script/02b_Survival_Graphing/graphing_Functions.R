@@ -130,3 +130,56 @@ grepl("survival", attr(attr(mod@frame, "terms"),"predvars.fixed"))
 str(mod)
 
 mod
+
+
+cov_1 <- mean(regen_survival$tree_cover) + sd(regen_survival$tree_cover)
+cov_m <- mean(regen_survival$tree_cover)
+cov_2 <- mean(regen_survival$tree_cover) - sd(regen_survival$tree_cover)
+
+regen_survival$scaled_tree_cover <- scale(regen_survival$tree_cover)
+regen_survival$log_tree_cover <- log(regen_survival$tree_cover)
+regen_survival$sqrt_tree_cover <- sqrt(regen_survival$tree_cover)
+
+
+summary(regen_survival$scaled_tree_cover)
+summary(regen_survival$log_tree_cover)
+summary(regen_survival$sqrt_tree_cover)
+summary(regen_survival$inv_tree_cover)
+
+
+
+plot(regen_survival$scaled_tree_cover, regen_survival$height)
+plot(regen_survival$log_tree_cover, regen_survival$height)
+plot(regen_survival$tree_cover, regen_survival$height)
+plot(regen_survival$sqrt_tree_cover, regen_survival$height)
+
+
+test_1 <- glmer(survival ~ d_MAT * sqrt_tree_cover + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                family = binomial,
+                control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+test_2 <- glmer(survival ~ d_MAT * tree_cover + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                family = binomial,
+                control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+test_1
+test_2
+
+
+test_3 <- glmer(survival ~ sqrt_tree_cover + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                family = binomial,
+                control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+test_4 <- glmer(survival ~ tree_cover + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                family = binomial,
+                control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+test_5 <- glmer(survival ~ tree_cover + sqrt_tree_cover + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                family = binomial,
+                control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+test_3
+test_4
+
+lrtest(test_4, test_5)
+
+
