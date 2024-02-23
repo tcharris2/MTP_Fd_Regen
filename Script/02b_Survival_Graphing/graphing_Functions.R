@@ -120,18 +120,27 @@ graphESTSurvivalProb_3 <- function (df) {
     }
     
     # Printing plots
-    print(sjPlot::plot_model(df[[MODEL_NAME]][[i]], type = "pred", terms = c(VARIABLES)) + 
+    ggarrange(print(sjPlot::plot_model(df[[MODEL_NAME]][[i]], 
+                             type = "pred", 
+                             terms = c(VARIABLES),
+                             legend.title = "Square Root \nTree Cover") + 
             
-            geom_point(data = df$data[[i]], mapping = aes(x = .data[[C_VAR]], y = survival_probs), 
+            geom_point(data = df$data[[i]], 
+                       mapping = aes(x = .data[[C_VAR]], y = survival_probs), 
                        inherit.aes = FALSE, size = 0.5) +
-            labs(x = paste( C_VAR, "Climatic Distance"), 
+           
+             labs(x = paste( C_VAR, "Climatic Distance"), 
                  y = "Estimated Probability of Survival",
                  title = NULL) ) +
-           coord_cartesian(xlim = c(0, 100) )
+      
+      theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+            panel.grid.major = element_line(color = "gray30", linewidth = .15),
+            panel.grid.minor = element_blank()) )
+      
     
     ggsave(paste(Sys.Date(), C_VAR, MODEL_NAME,
                  
-                 "Est_Surivival_Prob_Survival_Harvest_All_Locs_test_2.pdf", sep = "_"))
+                 "Est_Surivival_Prob_Survival_Harvest_All_Locs.pdf", sep = "_"))
     
   }
   

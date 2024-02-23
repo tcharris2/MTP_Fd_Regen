@@ -111,26 +111,64 @@ graphESTSurvivalProb_2(inter_models)
 
 graphESTSurvivalProb_3(inter_cover_models)
 
-graphESTSurvivalProb_2(climatic_cover_models)
+graphESTSurvivalProb_3(climatic_cover_models)
 
 inter_harvest_models
 
-sjPlot::plot_model(inter_harvest_models[["model_3"]][[4]], type = "pred", terms = c("d_RH [all]", "harvestF"), 
-                   fullrange=TRUE) + 
+
+a <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[4]],
+                   type = "pred", 
+                   terms = c("d_RH [all]", "harvestF"),
+                   legend.title = "Harvest",
+                   legend_style(pos= "Top Right")) +
+
+        geom_point(data = inter_harvest_models$data[[4]], 
+                   aes(x = d_RH, y = survival_probs), 
+                   inherit.aes = FALSE, size = 0.5) +
   
-  geom_point(data = inter_harvest_models$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
+        theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+              panel.grid.major = element_line(color = "gray30", linewidth = .15),
+              panel.grid.minor = element_blank()) +
+
+        labs(x = paste( "d_RH", "Climatic Distance"), 
+             y = "Estimated Probability of Survival",
+             title = NULL)
+  
+b <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[3]],
+                        type = "pred", 
+                        terms = c("d_EMT [all]", "harvestF"),
+                        legend.title = "Harvest",
+                        legend.position = "top",
+                        palette = "jco") +
+  
+  geom_point(data = inter_harvest_models$data[[4]], 
+             aes(x = d_RH, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
-  theme(panel.background = element_rect(
-    fill = "white", color = "black", linewidth = 1),
-    panel.grid.major = element_line(color = "gray10", linewidth = .15),
-    panel.grid.minor = element_blank()) +
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray30", linewidth = .15),
+        panel.grid.minor = element_blank()) +
   
-  labs(x = paste( "d_RH", "Climatic Distance"), 
+  labs(x = paste( "d_EMT", "Climatic Distance"), 
        y = "Estimated Probability of Survival",
        title = NULL)
 
+b
+ggarrange(a, b, common.legend = TRUE, label.y = 0) 
 
 
+inter_harvest_models
+scale_fill_discrete(labels = c("Clearcut", 'Seed Tree', "30Ret", "60Ret"))
 
 
+ggdensity(data = inter_harvest_models$data[[4]], "survival_probs", fill = "harvestF", 
+          palette = "jco")
+
+
+ReMSP.log <- 1.3193627 + 0.3536144 * climatic_models[[3]][[1]][["d_MSP"]]
+
+ReMSP.prob <- (exp((ReMSP.log))) / (1+exp((ReMSP.log)))
+
+
+plot(climatic_models[[3]][[1]][["d_MSP"]], ReMSP.prob, ylim = c(0,1), 
+     main = "Survival vs MSP", xlab = "MSP Climatic Distance", ylab = "Survival") ## probabilities

@@ -20,7 +20,7 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # 2. Importing Functions ----------------------------------------------------------
 
-source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
+source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function_sqrt.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
@@ -40,6 +40,59 @@ regen_height <- subset(regen_height, !(is.na(tree_cover)))
 regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
                                                                      "Peterhope future Fd", "Alex Fraser future Fd", 
                                                                      "Twobit B class Fd"))
+regen_height$sqrt_tree_cover <- sqrt(regen_height$tree_cover)
+
+ClimaticVarList
+
+regen$p_MAT_sqrd <- (regen$p_MAT)^2
+regen$p_MWMT_sqrd <- (regen$p_MWMT)^2
+regen$p_MCMT_sqrd <- (regen$p_MCMT)^2
+regen$p_MAP_sqrd <- (regen$p_MAP)^2
+regen$p_MSP_sqrd <- (regen$p_MSP)^2
+regen$p_AHM_sqrd <- (regen$p_AHM)^2
+regen$p_SHM_sqrd <- (regen$p_SHM)^2
+regen$p_NFFD_sqrd <- (regen$p_NFFD)^2
+regen$p_FFP_sqrd <- (regen$p_FFP)^2
+regen$p_PAS_sqrd <- (regen$p_PAS)^2
+regen$p_EMT_sqrd <- (regen$p_EMT)^2
+regen$p_EXT_sqrd <- (regen$p_EXT)^2
+regen$p_Eref_sqrd <- (regen$p_Eref)^2
+regen$p_CMD_sqrd <- (regen$p_CMD)^2
+regen$p_RH_sqrd <- (regen$p_RH)^2
+
+regen$s_MAT_sqrd <- (regen$s_MAT)^2
+regen$s_MWMT_sqrd <- (regen$s_MWMT)^2
+regen$s_MCMT_sqrd <- (regen$s_MCMT)^2
+regen$s_MAP_sqrd <- (regen$s_MAP)^2
+regen$s_MSP_sqrd <- (regen$s_MSP)^2
+regen$s_AHM_sqrd <- (regen$s_AHM)^2
+regen$s_SHM_sqrd <- (regen$s_SHM)^2
+regen$s_NFFD_sqrd <- (regen$s_NFFD)^2
+regen$s_FFP_sqrd <- (regen$s_FFP)^2
+regen$s_PAS_sqrd <- (regen$s_PAS)^2
+regen$s_EMT_sqrd <- (regen$s_EMT)^2
+regen$s_EXT_sqrd <- (regen$s_EXT)^2
+regen$s_Eref_sqrd <- (regen$s_Eref)^2
+regen$s_CMD_sqrd <- (regen$s_CMD)^2
+regen$s_RH_sqrd <- (regen$s_RH)^2
+
+
+regen$d_MAT_sqrd <- (regen$s_MAT) - (regen$p_MAT)
+regen$d_MWMT_sqrd <- (regen$s_MWMT) - (regen$p_MWMT)
+regen$d_MCMT_sqrd <- (regen$s_MCMT) - (regen$p_MCMT)
+regen$d_MAP_sqrd <- (regen$s_MAP) - (regen$p_MAP)
+regen$d_MSP_sqrd <- (regen$s_MSP) - (regen$p_MSP)
+regen$d_AHM_sqrd <- (regen$s_AHM) - (regen$p_AHM)
+regen$d_SHM_sqrd <- (regen$s_SHM) - (regen$p_SHM)
+regen$d_NFFD_sqrd <- (regen$s_NFFD) - (regen$p_NFFD)
+regen$d_FFP_sqrd <- (regen$s_FFP) - (regen$p_FFP)
+regen$d_PAS_sqrd <- (regen$s_PAS) - (regen$p_PAS)
+regen$d_EMT_sqrd <- (regen$s_EMT) - (regen$p_EMT)
+regen$d_EXT_sqrd <- (regen$s_EXT) - (regen$p_EXT)
+regen$d_Eref_sqrd <- (regen$s_Eref) - (regen$p_Eref)
+regen$d_CMD_sqrd <- (regen$s_CMD) - (regen$p_CMD)
+regen$d_RH_sqrd <- (regen$s_RH) - (regen$p_RH)
+
 
 
 str(regen_height)
@@ -54,7 +107,7 @@ ln_h_group_model_harvest <- list(ln_groupHeightModelHarvest(regen_height))
 ln_h_group_model_cover <- list(ln_groupHeightModelCover(regen_height))
 ln_h_group_model_age <- list(ln_groupHeightModelAge(regen_height))
 ln_h_group_model_age_har <- list(ln_groupHeightModelAgeHarvest(regen_height))
-ln_h_group_model_age_can <- list(ln_groupHeightModelAgecover(regen_height))
+ln_h_group_model_age_can <- list(ln_groupHeightModelAgeCover(regen_height))
 
 ###### 4.3 Harvest Models ----
 ln_h_group_model_harvest_1 <- ln_groupHeightHarvest_1(regen_height)
@@ -72,6 +125,10 @@ ln_h_group_model_cover_1a <- ln_groupHeightCover_1a(regen_height)
 ln_h_group_model_cover_2a <- ln_groupHeightCover_2a(regen_height)
 ln_h_group_model_cover_3a <- ln_groupHeightCover_3a(regen_height)
 
+
+###### 4.5 squared models ----
+
+ln_h_group_model_1_sqrd <- ln_groupHeight_1_sqrd(regen_height)
 
 # 5. Grouping Models -----------------------------------------------------------
 ln_height_group_harvest_models <- tibble(ln_h_group_model_null, ln_h_group_model_harvest,
@@ -107,7 +164,7 @@ ln_height_group_cover_models$climatic_var <- ClimaticVarList
 saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_harvest_models_NoFutures.rds" )))
 
 # cover models
-saveRDS(ln_height_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_cover_models_NoFutures.rds" )))
+saveRDS(ln_height_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_cover_models_NoFutures_sqrt.rds" )))
 
 # 7. Calling RDS File  ------------------------------------------------------------
 
@@ -115,7 +172,7 @@ ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-0
 
 ln_height_group_harvest_models
 
-ln_height_group_cover_models <- readRDS(file = here("Data/04_Temp", "2024-02-07_ln_height_group_cover_models_NoFutures.rds" ))
+ln_height_group_cover_models <- readRDS(file = here("Data/04_Temp", "2024-02-22_ln_height_group_cover_models_NoFutures_sqrt.rds" ))
 
 ln_height_group_cover_models
 
@@ -393,6 +450,11 @@ ln_height_group_cover_models$lr_test_ac_2a <- unlist(modelsTest(df = ln_height_g
                                                                  model_y = ln_height_group_cover_models$model_2a), 
                                                       recursive = FALSE)
 
+ln_height_group_cover_models$lr_test_ac_3a <- unlist(modelsTest(df = ln_height_group_cover_models,
+                                                                model_x = ln_height_group_cover_models$model_ac,
+                                                                model_y = ln_height_group_cover_models$model_3a), 
+                                                     recursive = FALSE)
+
 
 ln_height_group_cover_models$lr_test_2a_3a <- unlist(modelsTest(df = ln_height_group_cover_models,
                                                                   model_x = ln_height_group_cover_models$model_2a,
@@ -411,7 +473,8 @@ HC_group_p_vals <- subset(HC_group_p_vals,
                           select = c("ClimaticVarList", "p_val_0_c", "p_val_0_a", 
                                      "p_val_0_1", "p_val_1_1a", "p_val_1_2", "p_val_c_2",
                                      "p_val_2_2a", "p_val_2_3", "p_val_3_3a",
-                                     "p_val_a_1a", "p_val_1a_2a", "p_val_ac_2a", "p_val_2a_3a"))
+                                     "p_val_a_1a", "p_val_1a_2a", "p_val_ac_2a", 
+                                     "p_val_ac_3a",  "p_val_2a_3a"))
 HC_group_p_vals
 
 # Isolating Significant P-Values 
@@ -422,9 +485,9 @@ HC_group_sig_p_vals
 ###### 10.3 Saving p-values ----
 
 write.csv(HC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
-                                                      "_ln_Height_Cover_group_p_vals_NoFutures.csv")),
+                                                      "_ln_Height_Cover_group_p_vals_NoFutures_sqrt.csv")),
           row.names = FALSE)
 
 write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(),
-                                                          "_ln_Height_Cover_group_sig_p_vals_NoFutures.csv")), 
+                                                          "_ln_Height_Cover_group_sig_p_vals_NoFutures_sqrt.csv")), 
                                            row.names = FALSE)
