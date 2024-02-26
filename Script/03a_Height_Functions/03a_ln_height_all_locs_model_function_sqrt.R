@@ -3,17 +3,7 @@
   #' @Author: Thomson Harris 
   #' @Date: Oct 4th 2023
   
-# Climatic Variables Functions --------------------------------------------------------------
 
-climaticVarListFunction <- function() {
-  
-  ClimaticVarList <- names(regen %>% select(starts_with("d_")))
-  
-  ClimaticVarList
-  
-}
-
-ClimaticVarList <- climaticVarListFunction()
 
 # Model Functions --------------------------------------------------------------
 
@@ -97,7 +87,7 @@ ln_groupHeight_1_sqrd <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste0("ln_height ~ ", var, paste("_sqrd + "), var, paste(" + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste0("ln_height ~ ", var, paste("_2 + "), var, paste(" + (1|locationF/blockF/plotF/splitplotF)")), 
                   data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list

@@ -27,8 +27,30 @@ source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 # 3. Correcting Variable types ----------------------------------------------------
 
+# Adding Squared Climatic Term
+regen$d_MAT_2 <- (regen$s_MAT)^2 - (regen$p_MAT)^2
+regen$d_MWMT_2 <- (regen$s_MWMT)^2 - (regen$p_MWMT)^2
+regen$d_MCMT_2 <- (regen$s_MCMT)^2 - (regen$p_MCMT)^2
+regen$d_MAP_2 <- (regen$s_MAP)^2 - (regen$p_MAP)^2
+regen$d_MSP_2 <- (regen$s_MSP)^2 - (regen$p_MSP)^2
+regen$d_AHM_2 <- (regen$s_AHM)^2 - (regen$p_AHM)^2
+regen$d_SHM_2 <- (regen$s_SHM)^2 - (regen$p_SHM)^2
+regen$d_NFFD_2 <- (regen$s_NFFD)^2 - (regen$p_NFFD)^2
+regen$d_FFP_2 <- (regen$s_FFP)^2 - (regen$p_FFP)^2
+regen$d_PAS_2 <- (regen$s_PAS)^2 - (regen$p_PAS)^2
+regen$d_EMT_2 <- (regen$s_EMT)^2 - (regen$p_EMT)^2
+regen$d_EXT_2 <- (regen$s_EXT)^2 - (regen$p_EXT)^2
+regen$d_Eref_2 <- (regen$s_Eref)^2 - (regen$p_Eref)^2
+regen$d_CMD_2 <- (regen$s_CMD)^2 - (regen$p_CMD)^2
+regen$d_RH_2 <- (regen$s_RH)^2 - (regen$p_RH)^2
+
+# Prepping Data
+
+# Universal prep
 regen_prepped <- universalDataPrepFunction(regen)
 
+
+# Height specific prep
 regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
 
 regen_prepped$ln_height <- log(regen_prepped$height)
@@ -37,61 +59,13 @@ regen_height <-  subset(regen_prepped, !(is.na(height)))
 
 regen_height <- subset(regen_height, !(is.na(tree_cover)))
 
+regen_height$sqrt_tree_cover <- sqrt(regen_height$tree_cover)
+
+# Removing Futures
 regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
                                                                      "Peterhope future Fd", "Alex Fraser future Fd", 
                                                                      "Twobit B class Fd"))
-regen_height$sqrt_tree_cover <- sqrt(regen_height$tree_cover)
 
-ClimaticVarList
-
-regen$p_MAT_sqrd <- (regen$p_MAT)^2
-regen$p_MWMT_sqrd <- (regen$p_MWMT)^2
-regen$p_MCMT_sqrd <- (regen$p_MCMT)^2
-regen$p_MAP_sqrd <- (regen$p_MAP)^2
-regen$p_MSP_sqrd <- (regen$p_MSP)^2
-regen$p_AHM_sqrd <- (regen$p_AHM)^2
-regen$p_SHM_sqrd <- (regen$p_SHM)^2
-regen$p_NFFD_sqrd <- (regen$p_NFFD)^2
-regen$p_FFP_sqrd <- (regen$p_FFP)^2
-regen$p_PAS_sqrd <- (regen$p_PAS)^2
-regen$p_EMT_sqrd <- (regen$p_EMT)^2
-regen$p_EXT_sqrd <- (regen$p_EXT)^2
-regen$p_Eref_sqrd <- (regen$p_Eref)^2
-regen$p_CMD_sqrd <- (regen$p_CMD)^2
-regen$p_RH_sqrd <- (regen$p_RH)^2
-
-regen$s_MAT_sqrd <- (regen$s_MAT)^2
-regen$s_MWMT_sqrd <- (regen$s_MWMT)^2
-regen$s_MCMT_sqrd <- (regen$s_MCMT)^2
-regen$s_MAP_sqrd <- (regen$s_MAP)^2
-regen$s_MSP_sqrd <- (regen$s_MSP)^2
-regen$s_AHM_sqrd <- (regen$s_AHM)^2
-regen$s_SHM_sqrd <- (regen$s_SHM)^2
-regen$s_NFFD_sqrd <- (regen$s_NFFD)^2
-regen$s_FFP_sqrd <- (regen$s_FFP)^2
-regen$s_PAS_sqrd <- (regen$s_PAS)^2
-regen$s_EMT_sqrd <- (regen$s_EMT)^2
-regen$s_EXT_sqrd <- (regen$s_EXT)^2
-regen$s_Eref_sqrd <- (regen$s_Eref)^2
-regen$s_CMD_sqrd <- (regen$s_CMD)^2
-regen$s_RH_sqrd <- (regen$s_RH)^2
-
-
-regen$d_MAT_sqrd <- (regen$s_MAT) - (regen$p_MAT)
-regen$d_MWMT_sqrd <- (regen$s_MWMT) - (regen$p_MWMT)
-regen$d_MCMT_sqrd <- (regen$s_MCMT) - (regen$p_MCMT)
-regen$d_MAP_sqrd <- (regen$s_MAP) - (regen$p_MAP)
-regen$d_MSP_sqrd <- (regen$s_MSP) - (regen$p_MSP)
-regen$d_AHM_sqrd <- (regen$s_AHM) - (regen$p_AHM)
-regen$d_SHM_sqrd <- (regen$s_SHM) - (regen$p_SHM)
-regen$d_NFFD_sqrd <- (regen$s_NFFD) - (regen$p_NFFD)
-regen$d_FFP_sqrd <- (regen$s_FFP) - (regen$p_FFP)
-regen$d_PAS_sqrd <- (regen$s_PAS) - (regen$p_PAS)
-regen$d_EMT_sqrd <- (regen$s_EMT) - (regen$p_EMT)
-regen$d_EXT_sqrd <- (regen$s_EXT) - (regen$p_EXT)
-regen$d_Eref_sqrd <- (regen$s_Eref) - (regen$p_Eref)
-regen$d_CMD_sqrd <- (regen$s_CMD) - (regen$p_CMD)
-regen$d_RH_sqrd <- (regen$s_RH) - (regen$p_RH)
 
 
 
@@ -130,6 +104,8 @@ ln_h_group_model_cover_3a <- ln_groupHeightCover_3a(regen_height)
 
 ln_h_group_model_1_sqrd <- ln_groupHeight_1_sqrd(regen_height)
 
+ln_h_group_model_1_sqrd
+
 # 5. Grouping Models -----------------------------------------------------------
 ln_height_group_harvest_models <- tibble(ln_h_group_model_null, ln_h_group_model_harvest,
                                          ln_h_group_model_age, ln_h_group_model_age_har,
@@ -150,7 +126,8 @@ ln_height_group_cover_models <- tibble(ln_h_group_model_null, ln_h_group_model_c
 ln_height_group_cover_models
 
 
-
+ln_height_group_sqrd_models <- tibble(ln_h_group_model_harvest_1, ln_h_group_model_1_sqrd, ClimaticVarList)
+ln_height_group_sqrd_models
 
 # Adding Climatic Variables
 ln_height_group_harvest_models$climatic_var <- ClimaticVarList
@@ -253,6 +230,31 @@ groupGraphingResidFitsFunction(ln_height_group_cover_fits_data)
 # QQ plot
 groupQQGraphingFunction(ln_height_group_cover_fits_data)
 
+
+# Testing for squared terms --------------------------------------------------
+
+colnames(ln_height_group_sqrd_models) <- c("model_1", "model_1_sqrd", 
+                                              "ClimaticVarList")
+ln_height_group_sqrd_models
+
+ln_height_group_sqrd_models$lr_test_1_1s <- unlist(modelsTest(df = ln_height_group_sqrd_models,
+                                                                model_x = ln_height_group_sqrd_models$model_1,
+                                                                model_y = ln_height_group_sqrd_models$model_1_sqrd), 
+                                                     recursive = FALSE)
+
+sqrd_group_p_vals <- extractPVals(ln_height_group_sqrd_models)
+sqrd_group_p_vals
+
+sqrd_group_p_vals <- subset(sqrd_group_p_vals, 
+                          select = c("ClimaticVarList", "p_val_1_1s"))
+sqrd_group_p_vals
+
+sqrd_group_p_vals <- removeNonSigPVals(sqrd_group_p_vals)
+sqrd_group_p_vals
+
+write.csv(sqrd_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
+                                                                "_ln_Height_Squared_group_p_vals_NoFutures.csv")),
+          row.names = FALSE)
 
 # 9. Testing Harvest Models ----------------------------------------------------
 names(ln_height_group_harvest_models)

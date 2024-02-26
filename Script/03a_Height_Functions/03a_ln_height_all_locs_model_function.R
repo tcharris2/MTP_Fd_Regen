@@ -3,17 +3,7 @@
   #' @Author: Thomson Harris 
   #' @Date: Oct 4th 2023
   
-# Climatic Variables Functions --------------------------------------------------------------
 
-climaticVarListFunction <- function() {
-  
-  ClimaticVarList <- names(regen %>% select(starts_with("d_")))
-  
-  ClimaticVarList
-  
-}
-
-ClimaticVarList <- climaticVarListFunction()
 
 # Model Functions --------------------------------------------------------------
 
