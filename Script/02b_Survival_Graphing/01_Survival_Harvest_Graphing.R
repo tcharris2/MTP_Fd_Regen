@@ -1,4 +1,4 @@
-# CONTENT: Graphing - Survival (Harvest) ----------------------------------------------------
+# CONTENT: Graphing - Survival  ----------------------------------------------------
 # ALL LOCATIONS -------------------------------------------------------
 
 # Author: Thomson Harris
@@ -116,7 +116,7 @@ graphESTSurvivalProb_3(climatic_cover_models)
 inter_harvest_models
 
 
-a <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[4]],
+sjPlot::plot_model(inter_harvest_models[["model_3"]][[4]],
                    type = "pred", 
                    terms = c("d_RH [all]", "harvestF"),
                    legend.title = "Harvest",

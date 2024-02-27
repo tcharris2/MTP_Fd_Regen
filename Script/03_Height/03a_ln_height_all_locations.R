@@ -17,6 +17,20 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
+ClimaticVarList[[1]] <- "d_MAT_2"
+ClimaticVarList[[2]] <- "d_MWMT_2"
+ClimaticVarList[[3]] <- "d_MCMT_2"
+ClimaticVarList[[4]] <- "d_MAP_2"
+ClimaticVarList[[8]] <- "d_NFFD_2"
+ClimaticVarList[[9]] <- "d_FFP_2"
+ClimaticVarList[[10]] <- "d_PAS_2"
+ClimaticVarList[[11]] <- "d_EMT_2"
+ClimaticVarList[[12]] <- "d_EXT_2"
+ClimaticVarList[[13]] <- "d_Eref_2"
+ClimaticVarList[[14]] <- "d_CMD_2"
+
+
+
 
 # 2. Importing Functions ----------------------------------------------------------
 
@@ -32,9 +46,9 @@ regen$d_MAT_2 <- (regen$s_MAT)^2 - (regen$p_MAT)^2
 regen$d_MWMT_2 <- (regen$s_MWMT)^2 - (regen$p_MWMT)^2
 regen$d_MCMT_2 <- (regen$s_MCMT)^2 - (regen$p_MCMT)^2
 regen$d_MAP_2 <- (regen$s_MAP)^2 - (regen$p_MAP)^2
-regen$d_MSP_2 <- (regen$s_MSP)^2 - (regen$p_MSP)^2
-regen$d_AHM_2 <- (regen$s_AHM)^2 - (regen$p_AHM)^2
-regen$d_SHM_2 <- (regen$s_SHM)^2 - (regen$p_SHM)^2
+#regen$d_MSP_2 <- (regen$s_MSP)^2 - (regen$p_MSP)^2
+#regen$d_AHM_2 <- (regen$s_AHM)^2 - (regen$p_AHM)^2
+#regen$d_SHM_2 <- (regen$s_SHM)^2 - (regen$p_SHM)^2
 regen$d_NFFD_2 <- (regen$s_NFFD)^2 - (regen$p_NFFD)^2
 regen$d_FFP_2 <- (regen$s_FFP)^2 - (regen$p_FFP)^2
 regen$d_PAS_2 <- (regen$s_PAS)^2 - (regen$p_PAS)^2
@@ -42,7 +56,7 @@ regen$d_EMT_2 <- (regen$s_EMT)^2 - (regen$p_EMT)^2
 regen$d_EXT_2 <- (regen$s_EXT)^2 - (regen$p_EXT)^2
 regen$d_Eref_2 <- (regen$s_Eref)^2 - (regen$p_Eref)^2
 regen$d_CMD_2 <- (regen$s_CMD)^2 - (regen$p_CMD)^2
-regen$d_RH_2 <- (regen$s_RH)^2 - (regen$p_RH)^2
+#regen$d_RH_2 <- (regen$s_RH)^2 - (regen$p_RH)^2
 
 # Prepping Data
 
@@ -130,26 +144,32 @@ ln_height_group_sqrd_models <- tibble(ln_h_group_model_harvest_1, ln_h_group_mod
 ln_height_group_sqrd_models
 
 # Adding Climatic Variables
-ln_height_group_harvest_models$climatic_var <- ClimaticVarList
+ln_height_group_harvest_models$ClimaticVarList <- ClimaticVarList
 
-ln_height_group_cover_models$climatic_var <- ClimaticVarList
+ln_height_group_cover_models$ClimaticVarList <- ClimaticVarList
 
 
 # 6. Saving models as a RDS file --------------------------------------------------
 
 # Harvest models
-saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_harvest_models_NoFutures.rds" )))
+saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp",
+                                                    paste0(Sys.Date(), 
+                                                    "_ln_height_group_harvest_models_sqrd_NoFutures.rds" )))
 
 # cover models
-saveRDS(ln_height_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_ln_height_group_cover_models_NoFutures_sqrt.rds" )))
+saveRDS(ln_height_group_cover_models, file = here("Data/04_Temp", 
+                                                  paste0(Sys.Date(), 
+                                                  "_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds" )))
 
 # 7. Calling RDS File  ------------------------------------------------------------
 
-ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", "2024-02-07_ln_height_group_harvest_models_NoFutures.rds" ))
+ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", 
+                                                      "2024-02-27_ln_height_group_harvest_models_sqrd_NoFutures.rds" ))
 
 ln_height_group_harvest_models
 
-ln_height_group_cover_models <- readRDS(file = here("Data/04_Temp", "2024-02-22_ln_height_group_cover_models_NoFutures_sqrt.rds" ))
+ln_height_group_cover_models <- readRDS(file = here("Data/04_Temp", 
+                                                    "2024-02-27_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds" ))
 
 ln_height_group_cover_models
 
@@ -162,7 +182,7 @@ source("Script/03a_Height_Functions/05_grouped_loc_assumption_functions.R")
 ###### 8.1 Harvest -------
 
 # creating a new nested dataframe for inputing resids and fits
-harvest_tree_numbers <- subset(regen_harvest_height, select = c(tree_number))
+harvest_tree_numbers <- subset(regen_height, select = c(tree_number))
 
 ln_height_group_harvest_models$data <- rep(list(harvest_tree_numbers))
 
@@ -179,7 +199,8 @@ ln_height_group_harvest_fits <- groupMeltDF(ln_height_group_harvest_models)
 # removing models from dataset for tidyness
 ln_height_group_harvest_fits_names <- names(ln_height_group_harvest_fits %>% select(contains("data")))
 
-ln_height_group_harvest_fits_data <- subset(ln_height_group_harvest_fits, select = c("ClimaticVarList", ln_height_group_harvest_fits_names))
+ln_height_group_harvest_fits_data <- subset(ln_height_group_harvest_fits,
+                                            select = c("ClimaticVarList", ln_height_group_harvest_fits_names))
 
 # adding a column for proper graphings names
 ln_height_group_harvest_fits_data$names <- rep("ln_harvest")
@@ -197,7 +218,7 @@ groupQQGraphingFunction(ln_height_group_harvest_fits_data)
 ###### 8.2 cover ---------
 
 # creating a new nested dataframe for inputing resids and fits
-cover_tree_numbers <- subset(regen_cover_height, select = c(tree_number))
+cover_tree_numbers <- subset(regen_height, select = c(tree_number))
 
 ln_height_group_cover_models$data <- rep(list(cover_tree_numbers))
 
@@ -363,11 +384,11 @@ HH_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
 write.csv(HH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
-                                                        "_ln_Height_Harvest_group_p_vals_NoFutures.csv")),
+                                                        "_ln_Height_Harvest_group_p_vals_sqrd_NoFutures.csv")),
           row.names = FALSE)
 
 write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
-                                                            "_ln_Height_Harvest_group_sig_p_vals_NoFutures.csv")), 
+                                                            "_ln_Height_Harvest_group_sig_p_vals_sqrd_NoFutures.csv")), 
                                            row.names = FALSE)
 
 
@@ -487,9 +508,9 @@ HC_group_sig_p_vals
 ###### 10.3 Saving p-values ----
 
 write.csv(HC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
-                                                      "_ln_Height_Cover_group_p_vals_NoFutures_sqrt.csv")),
+                                                      "_ln_Height_Cover_group_p_vals_NoFutures_sqrt_sqrd.csv")),
           row.names = FALSE)
 
 write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(),
-                                                          "_ln_Height_Cover_group_sig_p_vals_NoFutures_sqrt.csv")), 
+                                                          "_ln_Height_Cover_group_sig_p_vals_NoFutures_sqrt_sqrd.csv")), 
                                            row.names = FALSE)
