@@ -85,11 +85,12 @@ str(regen_height)
 ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", 
                                                       "2024-02-27_ln_height_group_harvest_models_sqrd_NoFutures.rds"))
 
+ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", 
+                                                "2024-02-27_ln_height_group_harvest_models_NoFutures.rds"))
+
+
 names(ln_height_harvest_models)
 
-
-ln_height_cover_models <- readRDS(file = here("Data/04_Temp", 
-                                                    "2024-02-27_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds"))
 
 names(ln_height_cover_models)
 
