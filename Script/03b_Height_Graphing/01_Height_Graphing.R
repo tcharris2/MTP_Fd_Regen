@@ -28,8 +28,6 @@ ClimaticVarList[[14]] <- "d_CMD_2"
 
 # 2. Importing Functions ----------------------------------------------------------
 
-source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function_sqrt.R")
-
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 
@@ -85,13 +83,13 @@ str(regen_height)
 
 
 ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", 
-                                                      "2024-02-27_ln_height_group_harvest_models_sqrd_NoFutures.rds" ))
+                                                      "2024-02-27_ln_height_group_harvest_models_sqrd_NoFutures.rds"))
 
 names(ln_height_harvest_models)
 
 
 ln_height_cover_models <- readRDS(file = here("Data/04_Temp", 
-                                                    "2024-02-27_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds" ))
+                                                    "2024-02-27_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds"))
 
 names(ln_height_cover_models)
 
@@ -113,11 +111,16 @@ colnames(ln_height_cover_models) <- c("model_0", "model_c", "model_a", "model_ac
 
 harvest_2a_models <- ln_height_harvest_models[c(2, 4:6, 8, 10:11, 15), c("ClimaticVarList", "model_2a")]
 
-cover_2a_models <- ln_height_cover_models[c(1:4, 7:9, 11:13, 15), c("ClimaticVarList", "model_2a")]
+cover_2a_models <- ln_height_cover_models[c(5:6, 10), c("ClimaticVarList", "model_2a")]
 
-cover_3a_models <- ln_height_cover_models[c(5:6, 10), c("ClimaticVarList", "model_3a")]
+cover_3a_models <- ln_height_cover_models[c(1:4, 7:9, 11:13, 15), c("ClimaticVarList", "model_3a")]
 
 
+# Graphing -----------------------------------
+graphHeighBeta(cover_3a_models)
+
+
+# Testing graph design ----------------
 sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
                    type = "std", show.p = TRUE, show.values = TRUE,
                    axis.labels=c("Age", "60Ret", "30Ret", "SeedTree", "MWMT")) +
@@ -134,5 +137,5 @@ sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
 
 graphHeighBeta(cover_3a_models)
 
-cover_3a_models$model_3a
+
 

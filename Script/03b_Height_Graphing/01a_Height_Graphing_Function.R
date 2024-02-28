@@ -12,6 +12,7 @@ sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
         panel.grid.major = element_line(color = "gray40", linewidth = .05),
         panel.grid.minor = element_blank()) 
 
+# Function --------------------------------------------------------------------
 
 graphHeighBeta <- function (df){
   
