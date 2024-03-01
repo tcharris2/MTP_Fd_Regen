@@ -58,6 +58,8 @@ survival_2 <- ggplot(data = loc_group_survival_summary,
   
   geom_col(width = 0.80, colour = "black") +
   
+  scale_fill_viridis_d() +
+  
   geom_text(aes(label = round(avg_survival, 1)), vjust = -0.3) +
   
   guides(fill = "none") +
@@ -108,6 +110,8 @@ height_2 <- ggplot(data = loc_group_height_summary,
   
   geom_col(width = 0.80, color = "black") +
   
+  scale_fill_viridis_d() +
+  
   geom_text(aes(label = round(avg_height, 1)), vjust = -0.3) +
   
   guides(fill = "none") +
@@ -128,6 +132,7 @@ height_2 <- ggplot(data = loc_group_height_summary,
 
 
 ggarrange(survival_2, height_2)
+ggarrange(survival, height)
 
 
 ggplot(data = loc_group_height_summary) +
