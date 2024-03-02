@@ -172,3 +172,48 @@ ReMSP.prob <- (exp((ReMSP.log))) / (1+exp((ReMSP.log)))
 
 plot(climatic_models[[3]][[1]][["d_MSP"]], ReMSP.prob, ylim = c(0,1), 
      main = "Survival vs MSP", xlab = "MSP Climatic Distance", ylab = "Survival") ## probabilities
+
+
+
+# 6. Editing selected graphs --------------------------------------------------
+
+
+  
+  # Printing plots
+NFFD_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[1]], type = "pred", 
+                   terms = c("d_NFFD [all]", "harvestF"),
+                   legend.title = "Harvest Type") + 
+  
+  scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30Ret", "60Ret")) +
+  
+          
+          geom_point(data = inter_harvest_models$data[[1]], mapping = aes(x = d_NFFD, y = survival_probs), 
+                     inherit.aes = FALSE, size = 0.5) +
+  
+          labs(x = "Normalized NFFD Climatic Distance", 
+               y = "Estimated Probability of Survival",
+               title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"))
+
+  
+NFFD_plot
+  
+NFFD_plot$data
+
+
+sjPlot::plot_model(inter_harvest_models[["model_3"]][[1]], type = "pred", 
+                                terms = c("d_NFFD [all]", "harvestF"),
+                               ) +
+  scale_x_discrete(labels = c("CC", "Seed", "30", "60"))
+
+
+scale_x_discrete(labels = "Harvest")
+
+m.labels = c("CC", "Seed", "30", "60")
+
+labs(harvestF = "Harvest Type")
