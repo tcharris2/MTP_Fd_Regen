@@ -42,16 +42,40 @@ for (i in 1:nrow(loc_group_survival_summary)){
 }
 
 # viewing and reducing dataframe
-loc_group_survival_summary$avg_survival
+loc_group_survival_summary$avg_survival <- 100 * loc_group_survival_summary$avg_survival
 
 loc_group_survival_summary <- loc_group_survival_summary %>% select(-contains(c("data")))
 
 loc_group_survival_summary
 
+loc_group_survival_summary$avg_height <- loc_group_height_summary$avg_height
+
 ###### 2.1 Graphing avg survival ----
-ggplot(data = loc_group_survival_summary) +
-  geom_bar(mapping = aes(x = location, y = avg_survival), stat = "identity") +
-  labs(title = "loc_group_survival_summary")
+library("forcats")
+
+survival_2 <- ggplot(data = loc_group_survival_summary, 
+       aes(x = fct_reorder(location, avg_survival), y = avg_survival, fill = location)) +
+  
+  geom_col(width = 0.80, colour = "black") +
+  
+  scale_fill_viridis_d() +
+  
+  geom_text(aes(label = round(avg_survival, 1)), vjust = -0.3) +
+  
+  guides(fill = "none") +
+  
+  labs(title = NULL,
+       x = "Location",
+       y = "Average Survival (%)",
+       size = 12,
+       fill = "Survival (%)") +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major.y = element_line(color = "gray40", linewidth = .05),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12))
   
 
 
@@ -80,9 +104,36 @@ loc_group_height_summary <- loc_group_height_summary %>% select(-contains(c("dat
 loc_group_height_summary
 
 ###### 3.1 Graphing avg height ---- 
-ggplot(data = loc_group_height_summary) +
-  geom_bar(mapping = aes(x = location, y = avg_height), stat = "identity") +
-  labs(title = "loc_group_height_summary")
+
+height_2 <- ggplot(data = loc_group_height_summary, 
+       aes(x = fct_reorder(location, avg_height), y = avg_height, fill = location)) +
+  
+  geom_col(width = 0.80, color = "black") +
+  
+  scale_fill_viridis_d() +
+  
+  geom_text(aes(label = round(avg_height, 1)), vjust = -0.3) +
+  
+  guides(fill = "none") +
+  
+  labs(title = NULL,
+       x = "Location",
+       y = "Average Height (cm)",
+       size = 12,
+       fill = "Height (cm)") +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major.y = element_line(color = "gray40", linewidth = .05),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12))
+
+
+
+ggarrange(survival_2, height_2)
+ggarrange(survival, height)
+
 
 ggplot(data = loc_group_height_summary) +
   geom_bar(mapping = aes(x = location, y = log(avg_height)), stat = "identity") +

@@ -104,11 +104,11 @@ survival_group_cover_models$climatic_var <- ClimaticVarList
 
 # 7.Calling RDS File  ------------------------------------------------------------
 
-survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-02-05_survival_group_harvest_models_NoFutures.rds"))
+survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-02-20_survival_group_harvest_models_NoFutures_sqrt.rds"))
 
 survival_group_harvest_mods
 
-survival_group_cover_mods <- readRDS(file = here("Data/04_Temp", "2024-02-05_survival_group_cover_models_NoFutures.rds"))
+survival_group_cover_mods <- readRDS(file = here("Data/04_Temp", "2024-02-20_survival_group_cover_models_NoFutures_sqrt.rds"))
 
 survival_group_cover_mods
 
@@ -200,26 +200,11 @@ SH_group_sig_p_vals <- removeNonSigPVals(SH_group_p_vals)
 SH_group_sig_p_vals
 
 ###### 8.3 Saving p-values ----
-write.csv(SH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_p_vals_NoFutures.csv")),
+write.csv(SH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_p_vals_NoFutures_sqrt.csv")),
           row.names = FALSE)
 
-write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_sig_p_vals_NoFutures.csv")),
+write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_sig_p_vals_NoFutures_sqrt.csv")),
           row.names = FALSE)
-
-###### 8.4 Testing 3 vs 0 -----
-
-test_3_1 <- data.frame(1:15)
-
-test_3_1$lr_test_1_3 <- unlist(modelsTest(df = survival_group_harvest_mods,
-                                                             model_x = survival_group_harvest_mods$model_1,
-                                                             model_y = survival_group_harvest_mods$model_3), 
-                                                  recursive = FALSE)
-
-test_3_1_p_vals <- extractPVals(test_3_1)
-
-test_3_1_p_vals <- subset(test_3_1_p_vals, 
-                          select = c("p_val_1_3"))
-test_3_1_p_vals
 
 
 # 9. Testing cover Models  -------------------------------------------------------
@@ -301,9 +286,9 @@ SC_group_sig_p_vals <- removeNonSigPVals(SC_group_p_vals)
 SC_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
-write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_p_vals_NoFutures.csv")),
+write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_p_vals_NoFutures_sqrt.csv")),
           row.names = FALSE)
 
-write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_sig_p_vals_NoFutures.csv")),
+write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_sig_p_vals_NoFutures_sqrt.csv")),
           row.names = FALSE)
 

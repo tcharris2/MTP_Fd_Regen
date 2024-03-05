@@ -6,7 +6,7 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # 2.  Importing Functions ----------------------------------------------------------
 
-source("Script/02a_Survival_Functions/03_survival_all_locs_model_function.R")
+source("Script/02a_Survival_Functions/03.1_survival_all_locs_model_function_sqrt.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
@@ -21,6 +21,8 @@ regen_survival <- subset(regen_survival, !regen_survival$provenance %in% c("Jaff
                                                                      "Peterhope future Fd", "Alex Fraser future Fd", 
                                                                      "Twobit B class Fd"))
 
+regen_survival$sqrt_tree_cover <- sqrt(regen_survival$tree_cover)
+
 str(regen_survival)
 
 # 4. Building out models ----------------------------------------------------------
@@ -31,7 +33,7 @@ s_group_model_null_cover <- list(groupSurvivalModelNull(regen_survival))
 
 ###### 4.2 Treatment Models ----
 s_group_model_harvest <- list(groupSurvivalModelHarvest(regen_survival))
-s_group_model_cover <- list(groupSurvivalModelcover(regen_survival))
+s_group_model_cover <- list(groupSurvivalModelCover(regen_survival))
 s_group_model_age_har <- list(groupSurvivalModelAge(regen_survival))
 s_group_model_age_can <- list(groupSurvivalModelAge(regen_survival))
 
@@ -44,12 +46,12 @@ s_group_model_harvest_3 <- groupSurvivalHarvest_3(regen_survival)
 s_group_model_harvest_3a <- groupSurvivalHarvest_3a(regen_survival)
 
 ###### 4.4 cover Models ----
-s_group_model_cover_1 <- groupSurvivalcover_1(regen_survival)
-s_group_model_cover_1a <- groupSurvivalcover_1a(regen_survival)
-s_group_model_cover_2 <- groupSurvivalcover_2(regen_survival)
-s_group_model_cover_2a <- groupSurvivalcover_2a(regen_survival)
-s_group_model_cover_3 <- groupSurvivalcover_3(regen_survival)
-s_group_model_cover_3a <- groupSurvivalcover_3a(regen_survival)
+s_group_model_cover_1 <- groupSurvivalCover_1(regen_survival)
+s_group_model_cover_1a <- groupSurvivalCover_1a(regen_survival)
+s_group_model_cover_2 <- groupSurvivalCover_2(regen_survival)
+s_group_model_cover_2a <- groupSurvivalCover_2a(regen_survival)
+s_group_model_cover_3 <- groupSurvivalCover_3(regen_survival)
+s_group_model_cover_3a <- groupSurvivalCover_3a(regen_survival)
 
 
 # 5. Grouping Models ------------------------------------------------------------
@@ -76,7 +78,7 @@ survival_group_cover_models
 # 6. Saving output ---------------------------------------------------------------
 
 # Harvest models
-saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models_NoFutures.rds")))
+saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models_NoFutures_sqrt.rds")))
 
 # cover models
-saveRDS(survival_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_cover_models_NoFutures.rds")))
+saveRDS(survival_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_cover_models_NoFutures_sqrt.rds")))

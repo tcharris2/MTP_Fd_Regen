@@ -21,7 +21,7 @@ universalDataPrepFunction <- function (df) {
     mutate(across(starts_with("d_"), scale))
   
   # Removing provenance and site climatic variables 
-  df <- df %>% select(-contains(c("p_", "s_")))
+  df <- df %>% select(-starts_with(c("p_", "s_")))
   
   df <- df[df$blockNo != 9 & df$blockNo != 13, ]
   
