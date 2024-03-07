@@ -10,7 +10,7 @@
 # NullModel 
 ln_groupHeightModelNull <- function(df) {
   
-  lmer(ln_height ~ 1 + (1|locationF/blockF/plotF/splitplotF), data = df,
+  lmer(log(height) ~ 1 + (1|locationF/blockF/plotF/splitplotF), data = df,
         REML = FALSE)
 }
 
@@ -18,7 +18,7 @@ ln_groupHeightModelNull <- function(df) {
 # HarvestModel 
 ln_groupHeightModelHarvest <- function(df) {
   
-  lmer(ln_height ~ harvestF + (1|locationF/blockF/plotF/splitplotF), data = df,
+  lmer(log(height) ~ harvestF + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE)
 }
 
@@ -26,7 +26,7 @@ ln_groupHeightModelHarvest <- function(df) {
 # CoverModel 
 ln_groupHeightModelCover <- function(df) {
   
-  lmer(ln_height ~ sqrt_tree_cover + (1|locationF/blockF/plotF/splitplotF), data = df,
+  lmer(log(height) ~ sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE, 
        control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 }
@@ -35,7 +35,7 @@ ln_groupHeightModelCover <- function(df) {
 # AgeModel 
 ln_groupHeightModelAge <- function(df) {
   
-  lmer(ln_height ~ age + (1|locationF/blockF/plotF/splitplotF), data = df,
+  lmer(log(height) ~ age + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE)
 }
 
@@ -43,7 +43,7 @@ ln_groupHeightModelAge <- function(df) {
 # AgeHarvestModel 
 ln_groupHeightModelAgeHarvest <- function(df) {
   
-  lmer(ln_height ~ age + harvestF + (1|locationF/blockF/plotF/splitplotF), data = df,
+  lmer(log(height) ~ age + harvestF + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE)
 }
 
@@ -51,7 +51,7 @@ ln_groupHeightModelAgeHarvest <- function(df) {
 # AgeCovertModel 
 ln_groupHeightModelAgeCover <- function(df) {
   
-  lmer(ln_height ~ age + sqrt_tree_cover + (1|locationF/blockF/plotF/splitplotF), data = df,
+  lmer(log(height) ~ age + sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE)
 }
 
@@ -67,7 +67,16 @@ ln_groupHeightHarvest_1 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")) , paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -79,24 +88,6 @@ ln_groupHeightHarvest_1 <- function(df) {
 }  
 
 
-ln_groupHeight_1_sqrd <- function(df) {
-  
-  # Create an empty list to fill 
-  results <- list() 
-  
-  # Loop over the variables
-  for (var in ClimaticVarList) {
-    # Perform the regression
-    model <- lmer(paste0("ln_height ~ ", var, paste("_2 + "), var, paste(" + (1|locationF/blockF/plotF/splitplotF)")), 
-                  data = df, REML = FALSE, 
-                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-    # Store the results in the list
-    results[[var]] <- model
-  }
-  # Create an output
-  results
-  
-}
 
 # Model_1a: Model Containing only the climatic variables and AGE
 # Stored as a large list inside the dataframe 
@@ -109,7 +100,16 @@ ln_groupHeightHarvest_1a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")) , paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
                   data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -132,7 +132,16 @@ ln_groupHeightHarvest_2 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste(" + harvestF + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")), paste(" + harvestF + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -154,7 +163,16 @@ ln_groupHeightHarvest_2a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste(" + harvestF + age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")), paste(" + harvestF + age + (1|locationF/blockF/plotF/splitplotF)")), 
                   data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -178,7 +196,16 @@ ln_groupHeightHarvest_3 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ harvestF +"), var, paste(" * harvestF + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")), paste("* harvestF +"), paste(" (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -201,7 +228,16 @@ ln_groupHeightHarvest_3a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ harvestF +"), var, paste(" * harvestF + age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")), paste("* harvestF +"), paste(" + age + (1|locationF/blockF/plotF/splitplotF)")), 
                   data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -224,7 +260,16 @@ ln_groupHeightCover_1 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -247,7 +292,16 @@ ln_groupHeightCover_1a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")), paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
                   data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -270,7 +324,16 @@ ln_groupHeightCover_2 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste(" + sqrt_tree_cover + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")) , paste(" + sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -292,7 +355,16 @@ ln_groupHeightCover_2a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste(" + sqrt_tree_cover + age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")) , paste(" + sqrt(tree_cover) + age + (1|locationF/blockF/plotF/splitplotF)")), 
                   data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -316,7 +388,16 @@ ln_groupHeightCover_3 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ sqrt_tree_cover +"), var, paste(" * sqrt_tree_cover + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")), paste("* sqrt(tree_cover) + "), paste(" (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -339,7 +420,16 @@ ln_groupHeightCover_3a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- lmer(paste("ln_height ~", var, paste("+ sqrt_tree_cover +"), var, paste(" * sqrt_tree_cover + age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- lmer(paste("log(height) ~", paste0("scale(", paste0(var, if (var == "d_MAP" | var == "d_PAS") {
+      
+      paste("^2")
+      
+    } else {
+      
+      paste("")
+      
+    }
+    ), paste0(")")), paste("* sqrt(tree_cover) +"), paste(" age + (1|locationF/blockF/plotF/splitplotF)")), 
                   data = df, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list

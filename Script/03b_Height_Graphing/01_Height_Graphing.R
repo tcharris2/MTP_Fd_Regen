@@ -11,19 +11,6 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
-ClimaticVarList[[1]] <- "d_MAT_2"
-ClimaticVarList[[2]] <- "d_MWMT_2"
-ClimaticVarList[[3]] <- "d_MCMT_2"
-ClimaticVarList[[4]] <- "d_MAP_2"
-ClimaticVarList[[8]] <- "d_NFFD_2"
-ClimaticVarList[[9]] <- "d_FFP_2"
-ClimaticVarList[[10]] <- "d_PAS_2"
-ClimaticVarList[[11]] <- "d_EMT_2"
-ClimaticVarList[[12]] <- "d_EXT_2"
-ClimaticVarList[[13]] <- "d_Eref_2"
-ClimaticVarList[[14]] <- "d_CMD_2"
-
-
 
 
 # 2. Importing Functions ----------------------------------------------------------
@@ -33,22 +20,6 @@ source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 # 3. Correcting Variable types ----------------------------------------------------
 
-# Adding Squared Climatic Term
-regen$d_MAT_2 <- (regen$s_MAT)^2 - (regen$p_MAT)^2
-regen$d_MWMT_2 <- (regen$s_MWMT)^2 - (regen$p_MWMT)^2
-regen$d_MCMT_2 <- (regen$s_MCMT)^2 - (regen$p_MCMT)^2
-regen$d_MAP_2 <- (regen$s_MAP)^2 - (regen$p_MAP)^2
-#regen$d_MSP_2 <- (regen$s_MSP)^2 - (regen$p_MSP)^2
-#regen$d_AHM_2 <- (regen$s_AHM)^2 - (regen$p_AHM)^2
-#regen$d_SHM_2 <- (regen$s_SHM)^2 - (regen$p_SHM)^2
-regen$d_NFFD_2 <- (regen$s_NFFD)^2 - (regen$p_NFFD)^2
-regen$d_FFP_2 <- (regen$s_FFP)^2 - (regen$p_FFP)^2
-regen$d_PAS_2 <- (regen$s_PAS)^2 - (regen$p_PAS)^2
-regen$d_EMT_2 <- (regen$s_EMT)^2 - (regen$p_EMT)^2
-regen$d_EXT_2 <- (regen$s_EXT)^2 - (regen$p_EXT)^2
-regen$d_Eref_2 <- (regen$s_Eref)^2 - (regen$p_Eref)^2
-regen$d_CMD_2 <- (regen$s_CMD)^2 - (regen$p_CMD)^2
-#regen$d_RH_2 <- (regen$s_RH)^2 - (regen$p_RH)^2
 
 # Prepping Data
 
@@ -83,10 +54,10 @@ str(regen_height)
 
 
 ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", 
-                                                      "2024-02-27_ln_height_group_harvest_models_sqrd_NoFutures.rds"))
+                                                      "2024-03-06_ln_height_group_harvest_models_sqrd_NoFutures.rds"))
 
-ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", 
-                                                "2024-02-27_ln_height_group_harvest_models_NoFutures.rds"))
+ln_height_cover_models <- readRDS(file = here("Data/04_Temp", 
+                                                "2024-03-06_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds"))
 
 
 names(ln_height_harvest_models)
@@ -110,19 +81,27 @@ colnames(ln_height_cover_models) <- c("model_0", "model_c", "model_a", "model_ac
                                               "ClimaticVarList")
 
 
-harvest_2a_models <- ln_height_harvest_models[c(2, 4:6, 8, 10:11, 15), c("ClimaticVarList", "model_2a")]
+harvest_2a_models <- ln_height_harvest_models[c(2, 4:6, 8:11, 14:15), c("ClimaticVarList", "model_2a")]
 
-cover_2a_models <- ln_height_cover_models[c(5:6, 10), c("ClimaticVarList", "model_2a")]
+cover_2a_models <- ln_height_cover_models[c(5, 10, 14), c("ClimaticVarList", "model_2a")]
 
-cover_3a_models <- ln_height_cover_models[c(1:4, 7:9, 11:13, 15), c("ClimaticVarList", "model_3a")]
+cover_3a_models <- ln_height_cover_models[c(4, 8:9, 11, 15), c("ClimaticVarList", "model_3a")]
 
+cover_3a_models_weak <- ln_height_cover_models[c(1:3, 6:7, 12:13), c("ClimaticVarList", "model_3a")]
+
+# Cleaning up ---------------------------------------------------------------
+
+rm(ln_height_cover_models, ln_height_harvest_models, regen_prepped)
 
 # Graphing -----------------------------------
 graphHeighBeta(cover_3a_models)
 
+cover_3a_models
 
 # Testing graph design ----------------
-sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
+
+# Beta coefficents 
+sjPlot::plot_model(cover_3a_models[["model_3a"]][[1]],
                    type = "std", show.p = TRUE, show.values = TRUE,
                    axis.labels=c("Age", "60Ret", "30Ret", "SeedTree", "MWMT")) +
   
@@ -136,7 +115,15 @@ sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
         panel.grid.major = element_line(color = "gray40", linewidth = .05),
         panel.grid.minor = element_blank()) 
 
-graphHeighBeta(cover_3a_models)
+
+df <- regen_height
+# Predictions 
+sjPlot::plot_model(cover_3a_models[["model_3a"]][[1]],
+                   type = "emm", terms = c("d_MAP", "tree_cover [0, 5, 10]")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray40", linewidth = .05),
+        panel.grid.minor = element_blank()) 
 
 
 

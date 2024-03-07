@@ -17,8 +17,8 @@ universalDataPrepFunction <- function (df) {
   df$provenanceF <- as.factor(df$provenanceNo)
   
   # normalizing climate variables
-  df <- df %>%
-    mutate(across(starts_with("d_"), scale))
+  #df <- df %>%
+   # mutate(across(starts_with("d_"), scale))
   
   # Removing provenance and site climatic variables 
   df <- df %>% select(-starts_with(c("p_", "s_")))

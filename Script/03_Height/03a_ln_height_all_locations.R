@@ -17,21 +17,6 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
-ClimaticVarList[[1]] <- "d_MAT_2"
-ClimaticVarList[[2]] <- "d_MWMT_2"
-ClimaticVarList[[3]] <- "d_MCMT_2"
-ClimaticVarList[[4]] <- "d_MAP_2"
-ClimaticVarList[[8]] <- "d_NFFD_2"
-ClimaticVarList[[9]] <- "d_FFP_2"
-ClimaticVarList[[10]] <- "d_PAS_2"
-ClimaticVarList[[11]] <- "d_EMT_2"
-ClimaticVarList[[12]] <- "d_EXT_2"
-ClimaticVarList[[13]] <- "d_Eref_2"
-ClimaticVarList[[14]] <- "d_CMD_2"
-
-
-
-
 # 2. Importing Functions ----------------------------------------------------------
 
 source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function_sqrt.R")
@@ -41,22 +26,6 @@ source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 # 3. Correcting Variable types ----------------------------------------------------
 
-# Adding Squared Climatic Term
-regen$d_MAT_2 <- (regen$s_MAT)^2 - (regen$p_MAT)^2
-regen$d_MWMT_2 <- (regen$s_MWMT)^2 - (regen$p_MWMT)^2
-regen$d_MCMT_2 <- (regen$s_MCMT)^2 - (regen$p_MCMT)^2
-regen$d_MAP_2 <- (regen$s_MAP)^2 - (regen$p_MAP)^2
-#regen$d_MSP_2 <- (regen$s_MSP)^2 - (regen$p_MSP)^2
-#regen$d_AHM_2 <- (regen$s_AHM)^2 - (regen$p_AHM)^2
-#regen$d_SHM_2 <- (regen$s_SHM)^2 - (regen$p_SHM)^2
-regen$d_NFFD_2 <- (regen$s_NFFD)^2 - (regen$p_NFFD)^2
-regen$d_FFP_2 <- (regen$s_FFP)^2 - (regen$p_FFP)^2
-regen$d_PAS_2 <- (regen$s_PAS)^2 - (regen$p_PAS)^2
-regen$d_EMT_2 <- (regen$s_EMT)^2 - (regen$p_EMT)^2
-regen$d_EXT_2 <- (regen$s_EXT)^2 - (regen$p_EXT)^2
-regen$d_Eref_2 <- (regen$s_Eref)^2 - (regen$p_Eref)^2
-regen$d_CMD_2 <- (regen$s_CMD)^2 - (regen$p_CMD)^2
-#regen$d_RH_2 <- (regen$s_RH)^2 - (regen$p_RH)^2
 
 # Prepping Data
 
@@ -114,11 +83,6 @@ ln_h_group_model_cover_2a <- ln_groupHeightCover_2a(regen_height)
 ln_h_group_model_cover_3a <- ln_groupHeightCover_3a(regen_height)
 
 
-###### 4.5 squared models ----
-
-ln_h_group_model_1_sqrd <- ln_groupHeight_1_sqrd(regen_height)
-
-ln_h_group_model_1_sqrd
 
 # 5. Grouping Models -----------------------------------------------------------
 ln_height_group_harvest_models <- tibble(ln_h_group_model_null, ln_h_group_model_harvest,
@@ -164,14 +128,14 @@ saveRDS(ln_height_group_cover_models, file = here("Data/04_Temp",
 # 7. Calling RDS File  ------------------------------------------------------------
 
 ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", 
-                                                      "2024-02-27_ln_height_group_harvest_models_sqrd_NoFutures.rds" ))
+                                                      "2024-03-06_ln_height_group_harvest_models_sqrd_NoFutures.rds" ))
 
 ln_height_group_harvest_models
 
 ln_height_group_cover_models <- readRDS(file = here("Data/04_Temp", 
-                                                    "2024-02-27_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds" ))
+                                                    "2024-03-06_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds" ))
 
-ln_height_group_cover_models
+ln_height_group_cover_models$ln_h_group_model_cover_3a
 
 
 # 8. Testing Model Assumptions -----------------------------------------------------------

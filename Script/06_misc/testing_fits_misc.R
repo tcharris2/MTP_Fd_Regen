@@ -66,3 +66,74 @@ model_d
 
 
 regen_height
+
+
+MAT_1 <- (regen$s_MAP) - (regen$p_MAP)
+
+MAT_1 <- MAT_1^2
+
+MAT_1 <- scale(MAT_1)
+
+MAT_2 <- (regen$s_MAP) - (regen$p_MAP)
+
+MAT_2 <- scale(MAT_2)
+
+MAT_3 <- (regen$s_MAP) - (regen$p_MAP)
+
+MAT_3 <- scale(MAT_3^2)
+
+
+MAT_1 == MAT_2
+
+
+model_MAP <- lmer(log(height) ~ scale(d_MAP^2) * sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), 
+                data = regen_height, REML = FALSE, 
+                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_MAP <- lmer(log(height) ~ scale(d_MAP^2) + (1|locationF/blockF/plotF/splitplotF), 
+                  data = regen_height, REML = FALSE, 
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_MAP_1 <- lmer(log(height) ~ scale(d_MAP) + (1|locationF/blockF/plotF/splitplotF), 
+                    data = regen_height, REML = FALSE, 
+                    control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_MAP_2 <- lmer(log(height) ~ scale(d_MAP) + scale(d_MAP^2) + (1|locationF/blockF/plotF/splitplotF), 
+                  data = regen_height, REML = FALSE, 
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_NULL <- lmer(log(height) ~ 1+ (1|locationF/blockF/plotF/splitplotF), 
+                  data = regen_height, REML = FALSE, 
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+
+lrtest(model_MAP_1, model_MAP_2)
+
+plot_model(model_MAP, type = "emm", terms = c("d_MAP", "tree_cover [0, 25, 50]"))
+
+
+plot_model(model_MAP, type = "int", terms = c("tree_cover"), se = 0.8)
+
+
+unique(regen_height$d_MAP)
+
+library(ggeffects)
+pr <- ggpredict(
+  model_MAP,
+  terms=c('d_MAP')
+)
+
+pr
+
+plot(pr)
+
+blank <-regen_height$d_MAP
+test <- scale(regen_height$d_MAP)
+
+test_1 <- scale(regen_height$d_MAP^2)
+
+summary(test_1)
+
+plot(test, regen_height$height)
+plot(test_1, regen_height$height)
+plot(blank, regen_height$height)
