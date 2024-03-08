@@ -70,6 +70,14 @@ s_group_model_cover_3 <- groupSurvivalCover_3(regen_survival)
 s_group_model_cover_3a <- groupSurvivalCover_3a(regen_survival)
 
 
+
+harvest_1 <- groupSurvivalHarvest_1(regen_survival)
+harvest_1_sqrd <- groupSurvivalHarvest_1_sqrd(regen_survival)
+
+sqrd_1_df <- tibble(harvest_1, harvest_1_sqrd, ClimaticVarList)
+
+
+
 # 5. Grouping Models ------------------------------------------------------------
 survival_group_harvest_models <- tibble(s_group_model_null_harvest,
                                         s_group_model_harvest, s_group_model_age_har,
@@ -291,4 +299,40 @@ write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Su
 
 write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_sig_p_vals_NoFutures_sqrt.csv")),
           row.names = FALSE)
+
+
+# 10. Testing Squared Models ----------------------------------------------
+
+
+# rename columns
+colnames(sqrd_1_df) <- c("model_1", "model_1s", "ClimaticVarList")
+sqrd_1_df
+
+###### 10.1 Test models ----
+# Null vs 1 variable
+sqrd_1_df$lr_test_1_1s <- unlist(modelsTest(df = sqrd_1_df,
+                                            model_x = sqrd_1_df$model_1,
+                                            model_y = sqrd_1_df$model_1s), 
+                                            recursive = FALSE)
+
+
+###### 10.2 Extracting p-values ----
+sqrd_1_pval <- extractPVals(sqrd_1_df)
+
+sqrd_1_pval
+
+sqrd_1_pval <- subset(sqrd_1_pval, 
+                          select = c("ClimaticVarList", "p_val_1_1s"))
+sqrd_1_pval
+
+# Isolating Significant P-Values 
+sqrd_1_pval <- removeNonSigPVals(sqrd_1_pval)
+
+sqrd_1_pval
+
+###### 10.3 Saving p-values ----
+write.csv(sqrd_1_pval, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_group_squared_terms.csv")),
+          row.names = FALSE)
+
+
 

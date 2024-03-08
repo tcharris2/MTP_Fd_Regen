@@ -19,7 +19,7 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # 2. Importing Functions ----------------------------------------------------------
 
-source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function_sqrt.R")
+source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
@@ -118,24 +118,24 @@ ln_height_group_cover_models$ClimaticVarList <- ClimaticVarList
 # Harvest models
 saveRDS(ln_height_group_harvest_models, file = here("Data/04_Temp",
                                                     paste0(Sys.Date(), 
-                                                    "_ln_height_group_harvest_models_sqrd_NoFutures.rds" )))
+                                                    "_ln_height_group_harvest_models.rds" )))
 
 # cover models
 saveRDS(ln_height_group_cover_models, file = here("Data/04_Temp", 
                                                   paste0(Sys.Date(), 
-                                                  "_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds" )))
+                                                  "_ln_height_group_cover_models.rds" )))
 
 # 7. Calling RDS File  ------------------------------------------------------------
 
 ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", 
-                                                      "2024-03-06_ln_height_group_harvest_models_sqrd_NoFutures.rds" ))
+                                                      "2024-03-07_ln_height_group_harvest_models.rds" ))
 
 ln_height_group_harvest_models
 
 ln_height_group_cover_models <- readRDS(file = here("Data/04_Temp", 
-                                                    "2024-03-06_ln_height_group_cover_models_sqrd_sqrt_NoFutures.rds" ))
+                                                    "2024-03-07_ln_height_group_cover_models.rds" ))
 
-ln_height_group_cover_models$ln_h_group_model_cover_3a
+ln_height_group_cover_models
 
 
 # 8. Testing Model Assumptions -----------------------------------------------------------
@@ -348,11 +348,11 @@ HH_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
 write.csv(HH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
-                                                        "_ln_Height_Harvest_group_p_vals_sqrd_NoFutures.csv")),
+                                                        "_ln_Height_Harvest_group_p_vals.csv")),
           row.names = FALSE)
 
 write.csv(HH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
-                                                            "_ln_Height_Harvest_group_sig_p_vals_sqrd_NoFutures.csv")), 
+                                                            "_ln_Height_Harvest_group_sig_p_vals.csv")), 
                                            row.names = FALSE)
 
 
@@ -472,9 +472,9 @@ HC_group_sig_p_vals
 ###### 10.3 Saving p-values ----
 
 write.csv(HC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
-                                                      "_ln_Height_Cover_group_p_vals_NoFutures_sqrt_sqrd.csv")),
+                                                      "_ln_Height_Cover_group_p_vals.csv")),
           row.names = FALSE)
 
 write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(),
-                                                          "_ln_Height_Cover_group_sig_p_vals_NoFutures_sqrt_sqrd.csv")), 
+                                                          "_ln_Height_Cover_group_sig_p_vals.csv")), 
                                            row.names = FALSE)

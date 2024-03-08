@@ -86,25 +86,49 @@ MAT_3 <- scale(MAT_3^2)
 MAT_1 == MAT_2
 
 
-model_MAP <- lmer(log(height) ~ scale(d_MAP^2) * sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), 
+model_MAP <- lmer(log(height) ~ scale(d_MAP) * sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), 
                 data = regen_height, REML = FALSE, 
                 control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-
-model_MAP <- lmer(log(height) ~ scale(d_MAP^2) + (1|locationF/blockF/plotF/splitplotF), 
-                  data = regen_height, REML = FALSE, 
-                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 
 model_MAP_1 <- lmer(log(height) ~ scale(d_MAP) + (1|locationF/blockF/plotF/splitplotF), 
                     data = regen_height, REML = FALSE, 
                     control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 
-model_MAP_2 <- lmer(log(height) ~ scale(d_MAP) + scale(d_MAP^2) + (1|locationF/blockF/plotF/splitplotF), 
+model_MAP_2 <- lmer(log(height) ~ scale(d_MAP^2) + (1|locationF/blockF/plotF/splitplotF), 
+                    data = regen_height, REML = FALSE, 
+                    control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_MAP_3 <- lmer(log(height) ~ scale(d_MAP) + scale(d_MAP^2) + (1|locationF/blockF/plotF/splitplotF), 
                   data = regen_height, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 
 model_NULL <- lmer(log(height) ~ 1+ (1|locationF/blockF/plotF/splitplotF), 
                   data = regen_height, REML = FALSE, 
                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+
+AIC(model_NULL, model_MAP_1, model_MAP_2, model_MAP_3)
+
+
+
+model_PAS_1 <- lmer(log(height) ~ scale(d_PAS) + (1|locationF/blockF/plotF/splitplotF), 
+                    data = regen_height, REML = FALSE, 
+                    control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_PAS_2 <- lmer(log(height) ~ scale(d_PAS^2) + (1|locationF/blockF/plotF/splitplotF), 
+                    data = regen_height, REML = FALSE, 
+                    control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_PAS_3 <- lmer(log(height) ~ scale(d_PAS) + scale(d_PAS^2) + (1|locationF/blockF/plotF/splitplotF), 
+                    data = regen_height, REML = FALSE, 
+                    control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_NULL <- lmer(log(height) ~ 1+ (1|locationF/blockF/plotF/splitplotF), 
+                   data = regen_height, REML = FALSE, 
+                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+
+AIC(model_NULL, model_PAS_1, model_PAS_2, model_PAS_3)
 
 
 lrtest(model_MAP_1, model_MAP_2)
@@ -137,3 +161,78 @@ summary(test_1)
 plot(test, regen_height$height)
 plot(test_1, regen_height$height)
 plot(blank, regen_height$height)
+
+
+scale_tree_cov <- scale(regen_height$tree_cover)
+summary(scale_tree_cov)
+
+sqrt_tree_cov <- sqrt(regen_height$tree_cover)
+
+plot(scale_tree_cov, regen_height$height)
+plot(sqrt_tree_cov, regen_height$height)
+
+
+
+model_NULL <- lmer(log(height) ~ 1 + (1|locationF/blockF/plotF/splitplotF), 
+                   data = regen_height, REML = FALSE, 
+                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_sqrt_tree <- lmer(log(height) ~ sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), 
+                   data = regen_height, REML = FALSE, 
+                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_scale_tree <- lmer(log(height) ~ log(scale(tree_cover)) + (1|locationF/blockF/plotF/splitplotF), 
+                   data = regen_height, REML = FALSE, 
+                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+AIC(model_NULL, model_sqrt_tree, model_scale_tree)
+
+model_sqrt_tree
+model_scale_tree
+
+plot(model_scale_tree)
+
+sum(scale_tree_cov >= 5)
+
+
+model_NULL <- lmer(log(height) ~ 1 + (1|locationF/blockF/plotF/splitplotF), 
+                   data = regen_height, REML = FALSE, 
+                   control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_age <- lmer(log(height) ~ age + (1|locationF/blockF/plotF/splitplotF), 
+                         data = regen_height, REML = FALSE, 
+                         control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_scale_age <- lmer(log(height) ~ scale(age) + (1|locationF/blockF/plotF/splitplotF), 
+                  data = regen_height, REML = FALSE, 
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+AIC(model_NULL, model_age, model_scale_age)
+
+# Survival -------------------------------------------------------------------
+
+
+model_NULL <- glmer(survival ~ 1 + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                    family = binomial,
+                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_cov <- glmer(survival ~ tree_cover + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                    family = binomial,
+                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_sqrt_cov <- glmer(survival ~ sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                    family = binomial,
+                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_sqrt_cov_2 <- glmer(survival ~ sqrt(tree_cover) + tree_cover + (1|locationF/blockF/plotF/splitplotF), data = regen_survival,
+                        family = binomial,
+                        control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+
+AIC(model_NULL, model_cov, model_sqrt_cov, model_sqrt_cov_2)
+
+lrtest(model_cov, model_sqrt_cov_2)
+
+model_cov
+
+model_sqrt_cov
