@@ -83,6 +83,27 @@ ln_groupHeightHarvest_1 <- function(df) {
   
 }  
 
+
+
+ln_groupHeightHarvest_1_sqrd <- function(df) {
+  
+  # Create an empty list to fill 
+  results <- list() 
+  
+  # Loop over the variables
+  for (var in ClimaticVarList) {
+    # Perform the regression
+    model <- lmer(paste("log(height) ~", paste0("scale(", var, ")"), paste0("+ scale(", var, "^2)"), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
+                  data = df, REML = FALSE, 
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+    # Store the results in the list
+    results[[var]] <- model
+  }
+  # Create an output
+  results
+  
+}  
+
 # Model_1a: Model Containing only the climatic variables and AGE
 # Stored as a large list inside the dataframe 
 

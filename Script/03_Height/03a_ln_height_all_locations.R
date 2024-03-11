@@ -24,27 +24,30 @@ source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 
-# 3. Correcting Variable types ----------------------------------------------------
+# 3. Preparing Data ----------------------------------------------------
 
 
-# Prepping Data
-
-# Universal prep
+###### 3.1 Universal prep ----
 regen_prepped <- universalDataPrepFunction(regen)
 
 
-# Height specific prep
-regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
+###### 3.2 Height specific prep ----
 
-regen_prepped$ln_height <- log(regen_prepped$height)
+# Remove outliers
+regen_height <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
 
-regen_height <-  subset(regen_prepped, !(is.na(height)))
-
-regen_height <- subset(regen_height, !(is.na(tree_cover)))
+# Add transformed variables 
+regen_height$ln_height <- log(regen_height$height)
 
 regen_height$sqrt_tree_cover <- sqrt(regen_height$tree_cover)
 
-# Removing Futures
+# Remove NAs
+regen_height <-  subset(regen_height, !(is.na(height)))
+
+regen_height <- subset(regen_height, !(is.na(tree_cover)))
+
+
+##### 3.3 Removing Futures ----
 regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
                                                                      "Peterhope future Fd", "Alex Fraser future Fd", 
                                                                      "Twobit B class Fd"))
@@ -54,7 +57,7 @@ regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray fu
 
 str(regen_height)
 
-## 4. Building out models ----------------------------------------------------------
+# 4. Building out models ----------------------------------------------------------
 
 ###### 4.1 Null Model ----
 ln_h_group_model_null <- list(ln_groupHeightModelNull(regen_height))
@@ -89,7 +92,8 @@ ln_height_group_harvest_models <- tibble(ln_h_group_model_null, ln_h_group_model
                                          ln_h_group_model_age, ln_h_group_model_age_har,
                                          ln_h_group_model_harvest_1, ln_h_group_model_harvest_1a, 
                                          ln_h_group_model_harvest_2, ln_h_group_model_harvest_2a, 
-                                         ln_h_group_model_harvest_3, ln_h_group_model_harvest_3a)
+                                         ln_h_group_model_harvest_3, ln_h_group_model_harvest_3a,
+                                         ClimaticVarList)
 
 ln_height_group_harvest_models
 
@@ -99,18 +103,10 @@ ln_height_group_cover_models <- tibble(ln_h_group_model_null, ln_h_group_model_c
                                         ln_h_group_model_age, ln_h_group_model_age_can, 
                                         ln_h_group_model_cover_1, ln_h_group_model_cover_1a, 
                                         ln_h_group_model_cover_2, ln_h_group_model_cover_2a,
-                                        ln_h_group_model_cover_3, ln_h_group_model_cover_3a)
+                                        ln_h_group_model_cover_3, ln_h_group_model_cover_3a,
+                                        ClimaticVarList)
 
 ln_height_group_cover_models
-
-
-ln_height_group_sqrd_models <- tibble(ln_h_group_model_harvest_1, ln_h_group_model_1_sqrd, ClimaticVarList)
-ln_height_group_sqrd_models
-
-# Adding Climatic Variables
-ln_height_group_harvest_models$ClimaticVarList <- ClimaticVarList
-
-ln_height_group_cover_models$ClimaticVarList <- ClimaticVarList
 
 
 # 6. Saving models as a RDS file --------------------------------------------------
@@ -128,12 +124,12 @@ saveRDS(ln_height_group_cover_models, file = here("Data/04_Temp",
 # 7. Calling RDS File  ------------------------------------------------------------
 
 ln_height_group_harvest_models <- readRDS(file = here("Data/04_Temp", 
-                                                      "2024-03-07_ln_height_group_harvest_models.rds" ))
+                                                      "2024-03-11_ln_height_group_harvest_models.rds" ))
 
 ln_height_group_harvest_models
 
 ln_height_group_cover_models <- readRDS(file = here("Data/04_Temp", 
-                                                    "2024-03-07_ln_height_group_cover_models.rds" ))
+                                                    "2024-03-11_ln_height_group_cover_models.rds" ))
 
 ln_height_group_cover_models
 
@@ -216,30 +212,6 @@ groupGraphingResidFitsFunction(ln_height_group_cover_fits_data)
 groupQQGraphingFunction(ln_height_group_cover_fits_data)
 
 
-# Testing for squared terms --------------------------------------------------
-
-colnames(ln_height_group_sqrd_models) <- c("model_1", "model_1_sqrd", 
-                                              "ClimaticVarList")
-ln_height_group_sqrd_models
-
-ln_height_group_sqrd_models$lr_test_1_1s <- unlist(modelsTest(df = ln_height_group_sqrd_models,
-                                                                model_x = ln_height_group_sqrd_models$model_1,
-                                                                model_y = ln_height_group_sqrd_models$model_1_sqrd), 
-                                                     recursive = FALSE)
-
-sqrd_group_p_vals <- extractPVals(ln_height_group_sqrd_models)
-sqrd_group_p_vals
-
-sqrd_group_p_vals <- subset(sqrd_group_p_vals, 
-                          select = c("ClimaticVarList", "p_val_1_1s"))
-sqrd_group_p_vals
-
-sqrd_group_p_vals <- removeNonSigPVals(sqrd_group_p_vals)
-sqrd_group_p_vals
-
-write.csv(sqrd_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
-                                                                "_ln_Height_Squared_group_p_vals_NoFutures.csv")),
-          row.names = FALSE)
 
 # 9. Testing Harvest Models ----------------------------------------------------
 names(ln_height_group_harvest_models)
@@ -247,9 +219,9 @@ names(ln_height_group_harvest_models)
 
 # rename columns
 colnames(ln_height_group_harvest_models) <- c("model_0", "model_h", "model_a", "model_ah",
-                                           "model_1", "model_1a", "model_2", "model_2a", 
-                                           "model_3", "model_3a", 
-                                           "ClimaticVarList")
+                                              "model_1", "model_1a", "model_2", "model_2a", 
+                                              "model_3", "model_3a", 
+                                              "ClimaticVarList")
 ln_height_group_harvest_models
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
@@ -478,3 +450,46 @@ write.csv(HC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(),
 write.csv(HC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(),
                                                           "_ln_Height_Cover_group_sig_p_vals.csv")), 
                                            row.names = FALSE)
+
+
+# 11. Testing Squared Terms ------------------------------------------
+
+names(sqrd_models_df)
+
+
+# rename columns
+colnames(sqrd_models_df) <- c("model_1", "model_1s",
+                                            "ClimaticVarList")
+sqrd_models_df
+
+source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
+
+###### 10.1 Test models ----
+
+# Null vs 1 variable
+sqrd_models_df$lr_test_1_1s <- unlist(modelsTest(df = sqrd_models_df,
+                                                     model_x = sqrd_models_df$model_1,
+                                                    model_y = sqrd_models_df$model_1s), 
+                                                   recursive = FALSE)
+
+###### 10.2 Extracting p-values ----
+sqrd_P_vals_df <- extractPVals(sqrd_models_df)
+
+sqrd_P_vals_df
+
+sqrd_P_vals_df <- subset(sqrd_P_vals_df, 
+                          select = c("ClimaticVarList", "p_val_1_1s"))
+sqrd_P_vals_df
+
+# Isolating Significant P-Values 
+sqrd_P_vals_df <- removeNonSigPVals(sqrd_P_vals_df)
+
+sqrd_P_vals_df
+
+###### 10.3 Saving p-values ----
+
+write.csv(sqrd_P_vals_df, file = here("Data/05_Output", 
+                                       paste0(Sys.Date(), 
+                                      "_ln_Height_squared_terms_p_vals.csv")),
+          row.names = FALSE)
+

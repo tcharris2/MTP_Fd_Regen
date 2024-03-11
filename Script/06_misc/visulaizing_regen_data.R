@@ -1,10 +1,7 @@
-#####################################
-###### Visulaizing Regen Data #######
-#####################################
+# VISUALIZING REGEN DATA -----------------------------------------------------
 
-##### Cleaning Up #####
 
-##### Loading Data #####
+# 1. Loading Data -----------------------------------------------------
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE) 
 
 ClimaticVarList <- names(regen %>% select(starts_with("d_")))
@@ -40,7 +37,7 @@ str(regen)
 library(dplyr)
 library(ggplot2)
 
-# Checking Linear relationship ------------------------------------------------
+# 2. Checking Linear relationship ------------------------------------------------
 
 climaticRelationFunc <- function(df) {
   
@@ -48,7 +45,7 @@ climaticRelationFunc <- function(df) {
     
     VAR <- ClimaticVarList[[i]]
     
-    print(ggplot(data = df, mapping = aes(x = .data[[VAR]], y = ln_height)) +
+    print(ggplot(data = df, mapping = aes(x = scale(.data[[VAR]]), y = log(height))) +
             geom_point(position = "jitter") +
             geom_smooth(formula = y ~ x, se = FALSE) +
             geom_smooth(formula = y ~ poly(x, 2), se = FALSE, colour = "red"))
@@ -65,25 +62,25 @@ climaticRelationFunc <- function(df) {
 climaticRelationFunc(regen_height)
 
 # d_MAT
-ggplot(data = regen_height, mapping = aes(x = d_MAT, y = ln_height)) +
+ggplot(data = regen_height, mapping = aes(x = scale(d_MAT), y = log(height))) +
   geom_point() +
   geom_smooth(formula = y ~ x, se = TRUE) +
   geom_smooth(formula = y ~ poly(x, 2), se = TRUE, colour = "red")
 
 # d_MWMT
-ggplot(data = regen_height, mapping = aes(x = d_MWMT, y = ln_height)) +
+ggplot(data = regen_height, mapping = aes(x = scale(d_MWMT), y = log(height))) +
   geom_point() +
   geom_smooth(formula = y ~ x, se = TRUE) +
   geom_smooth(formula = y ~ poly(x, 2), se = TRUE, colour = "red")
 
 # d_MCMT
-ggplot(data = regen_height, mapping = aes(x = d_MCMT, y = ln_height)) +
+ggplot(data = regen_height, mapping = aes(x = scale(d_MCMT), y = log(height))) +
   geom_point() +
   geom_smooth(formula = y ~ x, se = TRUE) +
   geom_smooth(formula = y ~ poly(x, 2), se = TRUE, colour = "red")
 
 # d_MAP
-ggplot(data = regen_height, mapping = aes(x = d_MAP, y = ln_height)) +
+ggplot(data = regen_height, mapping = aes(x = scale(d_MAP), y = height)) +
   geom_point() +
   geom_smooth(formula = y ~ x, se = TRUE) +
   geom_smooth(formula = y ~ poly(x, 2), se = TRUE, colour = "red")
@@ -154,247 +151,70 @@ ggplot(data = regen_height, mapping = aes(x = d_RH, y = ln_height)) +
   geom_smooth(formula = y ~ x, se = TRUE) +
   geom_smooth(formula = y ~ poly(x, 2), se = TRUE, colour = "red")
 
-# Other ---------------------------------------------------------------------
-ggplot(data = regen_harvest_height, mapping = aes(x = d_CMD, y = height)) +
+
+# 3. Survival Linearity --------------------------------------------------------
+
+climate_group <- regen_survival %>% 
+  group_by(d_MAT) %>% 
+  nest()
+
+climate_group$avg_survival <- NA
+
+for (i in 1:nrow(climate_group)) {
+  
+  avg_survival <- mean(climate_group$data[[i]][["alive"]])
+  
+  climate_group$avg_survival[[i]] <- avg_survival
+  
+}
+
+
+graphing_df <- subset(climate_group, select = c(d_MAT, avg_survival))
+
+
+print(ggplot(data = graphing_df, aes(x = scale(VAR), y = avg_survival)) +
   geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_CMI, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_DD_0, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_DD_18, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_DD18, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_DD5, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_EMT, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_Eref, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_EXT, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_FFP, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_MAP, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_MAT, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_MCMT, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_MSP, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_MWMT, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_NFFD, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_PAS, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_RH, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_SHM, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
-
-ggplot(data = regen_harvest_height, mapping = aes(x = d_TD, y = height)) +
-  geom_point() +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ location, nrow = 2)
+  geom_smooth(formula = y ~ x, se = TRUE, method = "lm") +
+  geom_smooth(formula = y ~ poly(x, 2), se = TRUE, colour = "red", method = "lm"))
 
 
+survivalSqrdRelation <- function (df) {
+  
+  for (VAR in ClimaticVarList) {
+    
+    climate_group <- df %>% 
+      group_by(.data[[VAR]]) %>% 
+      nest()
+    
+    climate_group$avg_survival <- NA
+    
+    for (i in 1:nrow(climate_group)) {
+      
+      avg_survival <- mean(climate_group$data[[i]][["alive"]])
+      
+      climate_group$avg_survival[[i]] <- avg_survival
+      
+    }
+    
+    
+    print(ggplot(data = climate_group, aes(x = scale(.data[[VAR]]), y = avg_survival)) +
+            geom_point() +
+            geom_smooth(formula = y ~ x, se = TRUE, method = "lm") +
+            geom_smooth(formula = y ~ poly(x, 2), se = TRUE, colour = "red", method = "lm"))
+    
+    ggsave(here("Output/Plots", paste(Sys.Date(), VAR,
+                                      "Survival_Linear_Squared_Relationship.pdf", sep = "_")))
+    
+  }
+  
+  
+}
 
-ggplot(data = regen_harvest_height, mapping = aes(x = d_AHM, y = mean(height))) +
-  geom_point() +
-  facet_wrap(. ~ location, nrow = 2)
+
+survivalSqrdRelation(regen_survival)
 
 
-#### plots #####
-
-# height bar graph
-ggplot(data = regen) + 
-  geom_bar(mapping = aes(x = height), width = 3)
-
-ggplot(data = regen) + 
-  geom_bar(mapping = aes(x = log(height)), width = 0.2)
-
-ggplot(data = regen) + 
-  geom_bar(mapping = aes(x = d_MAP), width = 10)
-
-# height by crown diameter
-ggplot(data = regen) +
-  geom_point(mapping = aes(x = avg_crown_dia, y = height, colour = species))
-
-# height by basal diameter
-ggplot(data = regen) +
-  geom_point(mapping = aes(x = basal_dia, y = height, colour = species))
-
-# height by location
-ggplot(data = regen) +
-  geom_point(mapping = aes(x = locationF, y = height, colour = species), position = "jitter") 
-
-ggplot(data = regen) +
-  geom_point(mapping = aes(x = locationF, y = height), position = "jitter") +
-  facet_wrap(. ~ species, nrow = 2)
-
-ggplot(data = regen) +
-  geom_point(mapping = aes(x = locationF, y = height, colour = species), position = "jitter") +
-  facet_wrap(. ~ harvest, nrow = 2)
-
-# height by tree cover 
-ggplot(data = regen, mapping = aes(x = log(tree_cover + 1), y = height)) +
-  geom_point(position = "jitter") +
-  geom_smooth() +
-  facet_wrap(. ~ species, nrow = 2)
-
-## climate variables   
-ggplot(data = regen, mapping = aes(x = d_MAT, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_MWMT, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_MCMT, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()  
-
-ggplot(data = regen, mapping = aes(x = d_TD, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_MAP, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_MSP, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_AHM, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_SHM, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_DD_0, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_DD5, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_DD_18, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_DD18, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_NFFD, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_FFP, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_PAS, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_EMT, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_EXT, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_Eref, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_CMD, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_RH, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_CMI, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth()
-
-ggplot(data = regen, mapping = aes(x = d_DD1040, y = height)) +
-  geom_point(mapping = aes(colour = species), position = "jitter") +
-  geom_smooth(data = filter(regen, species == "Fd"), colour = "black", se = FALSE, method = "loess")
-
-ggplot(data = regen, mapping = aes(x = d_DD1040, y = height)) +
-  geom_point(position = "jitter") +
-  geom_smooth(mapping = aes(colour = species), se = FALSE, method = "loess") +
-  facet_wrap(. ~ harvestF, nrow = 2)
-
-### PCA #### 
+# 4. PCA  -----------------------------------------------------
 
 regen_data <- regen[,!names(regen) %in% c("height")]
 
@@ -412,18 +232,3 @@ screeplot(regen_PCA, type = "lines")
 
 loadings(regen_PCA)
 
-## survival ###
-
-sum(regen$alive)
-
-a <- regen %>% count(alive)
-
-d <- a[a$alive == 0, ]
-
-d$n/sum(a$n)
-
-ggplot(data = regen) +
-  geom_point(mapping = aes(x = harvest, y = alive, colour = location), position = "jitter")
-  
-
-  

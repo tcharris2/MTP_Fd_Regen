@@ -236,3 +236,63 @@ lrtest(model_cov, model_sqrt_cov_2)
 model_cov
 
 model_sqrt_cov
+
+# Squard GLMER models --------------------------------------------------------
+
+harvest_1_AIC <- NA
+
+for (i in 1:length(harvest_1)) {
+  
+  AIC_val <- AIC(harvest_1[[i]])
+
+  harvest_1_AIC[[i]] <- AIC_val  
+}
+
+harvest_1_sqrd_AIC <- NA
+
+for (i in 1:length(harvest_1_sqrd)) {
+  
+  AIC_val <- AIC(harvest_1_sqrd[[i]])
+  
+  harvest_1_sqrd_AIC[[i]] <- AIC_val  
+}
+
+
+df <- data.frame(harvest_1_AIC, harvest_1_sqrd_AIC, ClimaticVarList)
+
+df
+
+p_vals <- read.csv(here("Data/05_Output", "2024-03-07_Survival_group_squared_terms.csv"), 
+                   header = TRUE)
+
+new_df <- cbind(p_vals, df)
+
+new_df
+
+var <- "d_MAT"
+
+var %in% ClimaticVarList
+
+SqrdVarList <- c("d_MAT", "d_MCMT", "d_MAP", "d_AHM", "d_NFFD", 
+                 "d_FFP", "d_EMT", "d_CMD", "d_RH")
+
+if (var %in% SqrdVarList) {
+  
+  paste("^2)")
+  
+} else {
+  
+  paste(")")
+  
+}
+
+
+paste0("scale(", var, if (var %in% SqrdVarList) {
+  
+  paste("^2)")
+  
+} else {
+  
+  paste(")")
+  
+})

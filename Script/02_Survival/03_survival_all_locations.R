@@ -18,14 +18,12 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # 2. Importing Functions ----------------------------------------------------------
 
-source("Script/01a_Survival_Functions/survival_all_locs_model_function.R")
+source("Script/02a_Survival_Functions/03_survival_all_locs_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 
-# 3. Correcting Variable types ----------------------------------------------------
-
-
+# 3. Correcting Variable types ---------------------------------------------------
 
 regen_prepped <- universalDataPrepFunction(regen)
 
@@ -44,12 +42,11 @@ str(regen_survival)
 # 4. Building out models ----------------------------------------------------------
 
 ###### 4.1 Null Model ----
-s_group_model_null_harvest <- list(groupSurvivalModelNull(regen_survival))
-s_group_model_null_cover <- list(groupSurvivalModelNull(regen_survival))
+s_group_model_null <- list(groupSurvivalModelNull(regen_survival))
 
 ###### 4.2 Treatment Models ----
 s_group_model_harvest <- list(groupSurvivalModelHarvest(regen_survival))
-s_group_model_cover <- list(groupSurvivalModelcover(regen_survival))
+s_group_model_cover <- list(groupSurvivalModelCover(regen_survival))
 s_group_model_age_har <- list(groupSurvivalModelAge(regen_survival))
 s_group_model_age_can <- list(groupSurvivalModelAge(regen_survival))
 
@@ -71,52 +68,42 @@ s_group_model_cover_3a <- groupSurvivalCover_3a(regen_survival)
 
 
 
-harvest_1 <- groupSurvivalHarvest_1(regen_survival)
-harvest_1_sqrd <- groupSurvivalHarvest_1_sqrd(regen_survival)
-
-sqrd_1_df <- tibble(harvest_1, harvest_1_sqrd, ClimaticVarList)
-
-
-
 # 5. Grouping Models ------------------------------------------------------------
-survival_group_harvest_models <- tibble(s_group_model_null_harvest,
+survival_group_harvest_models <- tibble(s_group_model_null,
                                         s_group_model_harvest, s_group_model_age_har,
                                         s_group_model_harvest_1, s_group_model_harvest_1a,
                                         s_group_model_harvest_2, s_group_model_harvest_2a,
-                                        s_group_model_harvest_3, s_group_model_harvest_3a)
+                                        s_group_model_harvest_3, s_group_model_harvest_3a,
+                                        ClimaticVarList)
 
 survival_group_harvest_models
 
 
-survival_group_cover_models <- tibble(s_group_model_null_cover,
+survival_group_cover_models <- tibble(s_group_model_null,
                                        s_group_model_cover,s_group_model_age_can,
                                        s_group_model_cover_1, s_group_model_cover_1a,
                                        s_group_model_cover_2, s_group_model_cover_2a,
-                                       s_group_model_cover_3, s_group_model_cover_3a)
+                                       s_group_model_cover_3, s_group_model_cover_3a,
+                                       ClimaticVarList)
 
 survival_group_cover_models
-
-# Adding Climatic Variables
-survival_group_harvest_models$climatic_var <- ClimaticVarList
-
-survival_group_cover_models$climatic_var <- ClimaticVarList
 
 
 # 6. Saving models as a RDS file --------------------------------------------------
 
 # Harvest models
-# saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models_Bv1.rds")))
+saveRDS(survival_group_harvest_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_harvest_models.rds")))
 
-# cover models
-# saveRDS(survival_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_cover_models_Bv1.rds")))
+# Cover models
+saveRDS(survival_group_cover_models, file = here("Data/04_Temp", paste0(Sys.Date(), "_survival_group_cover_models.rds")))
 
 # 7.Calling RDS File  ------------------------------------------------------------
 
-survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-02-20_survival_group_harvest_models_NoFutures_sqrt.rds"))
+survival_group_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-03-11_survival_group_harvest_models.rds"))
 
 survival_group_harvest_mods
 
-survival_group_cover_mods <- readRDS(file = here("Data/04_Temp", "2024-02-20_survival_group_cover_models_NoFutures_sqrt.rds"))
+survival_group_cover_mods <- readRDS(file = here("Data/04_Temp", "2024-03-11_survival_group_cover_models.rds"))
 
 survival_group_cover_mods
 
@@ -125,9 +112,9 @@ survival_group_cover_mods
 # 8. Testing Harvest Models  ------------------------------------------------------
 
 # rename columns
-colnames(survival_group_harvest_mods) <- c("ClimaticVarList", "model_0", "model_h", "model_a", 
-                                                "model_1", "model_1a", "model_2", "model_2a", 
-                                                "model_3", "model_3a")
+colnames(survival_group_harvest_mods) <- c("model_0", "model_h", "model_a", 
+                                           "model_1", "model_1a", "model_2", "model_2a", 
+                                           "model_3", "model_3a", "ClimaticVarList")
 survival_group_harvest_mods
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
@@ -208,19 +195,19 @@ SH_group_sig_p_vals <- removeNonSigPVals(SH_group_p_vals)
 SH_group_sig_p_vals
 
 ###### 8.3 Saving p-values ----
-write.csv(SH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_p_vals_NoFutures_sqrt.csv")),
+write.csv(SH_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_p_vals.csv")),
           row.names = FALSE)
 
-write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_sig_p_vals_NoFutures_sqrt.csv")),
+write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Harvest_group_sig_p_vals.csv")),
           row.names = FALSE)
 
 
 # 9. Testing cover Models  -------------------------------------------------------
 
 # rename columns
-colnames(survival_group_cover_mods) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
-                                           "model_1", "model_1a", "model_2", "model_2a", 
-                                           "model_3", "model_3a")
+colnames(survival_group_cover_mods) <- c("model_0", "model_c", "model_a", 
+                                         "model_1", "model_1a", "model_2", "model_2a", 
+                                         "model_3", "model_3a", "ClimaticVarList")
 survival_group_cover_mods
 
 ###### 9.1 Test models ----
@@ -294,10 +281,10 @@ SC_group_sig_p_vals <- removeNonSigPVals(SC_group_p_vals)
 SC_group_sig_p_vals
 
 ###### 9.3 Saving p-values ----
-write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_p_vals_NoFutures_sqrt.csv")),
+write.csv(SC_group_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_p_vals.csv")),
           row.names = FALSE)
 
-write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_sig_p_vals_NoFutures_sqrt.csv")),
+write.csv(SC_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_group_sig_p_vals.csv")),
           row.names = FALSE)
 
 

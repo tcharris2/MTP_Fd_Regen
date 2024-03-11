@@ -56,7 +56,15 @@ groupSurvivalHarvest_1 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -66,6 +74,27 @@ groupSurvivalHarvest_1 <- function(df) {
   results
   
 }  
+
+# Squared 
+groupSurvivalHarvest_1_sqrd <- function(df) {
+  
+  # Create an empty list to fill 
+  results <- list() 
+  
+  # Loop over the variables
+  for (var in ClimaticVarList) {
+    # Perform the regression
+    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste0("+ scale(", var, "^2)"), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
+                   data = df, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+    # Store the results in the list
+    results[[var]] <- model
+  }
+  # Create an output
+  results
+  
+}  
+
 
 # Model_1a: Model Containing only the climatic variables and AGE
 # Stored as a large list inside the dataframe 
@@ -78,7 +107,15 @@ groupSurvivalHarvest_1a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -101,7 +138,15 @@ groupSurvivalHarvest_2 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste(" + harvestF + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste(" + harvestF + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -123,7 +168,15 @@ groupSurvivalHarvest_2a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste(" + harvestF + age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste(" + harvestF + age + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -147,7 +200,15 @@ groupSurvivalHarvest_3 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"),  paste(" * harvestF + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }),  paste(" * harvestF + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -169,7 +230,15 @@ groupSurvivalHarvest_3a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste(" * harvestF + age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste(" * harvestF + age + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -192,7 +261,15 @@ groupSurvivalCover_1 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -214,7 +291,15 @@ groupSurvivalCover_1a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -238,7 +323,15 @@ groupSurvivalCover_2 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste(" + sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste(" + sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -261,7 +354,15 @@ groupSurvivalCover_2a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste(" + sqrt(tree_cover) + age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste(" + sqrt(tree_cover) + age + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -284,7 +385,15 @@ groupSurvivalCover_3 <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste(" * sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste(" * sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
@@ -307,7 +416,15 @@ groupSurvivalCover_3a <- function(df) {
   # Loop over the variables
   for (var in ClimaticVarList) {
     # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste(" * sqrt(tree_cover) + age + (1|locationF/blockF/plotF/splitplotF)")), 
+    model <- glmer(paste("survival ~", paste0("scale(", var, if (var %in% SqrdVarList) {
+      
+      paste("^2)")
+      
+    } else {
+      
+      paste(")")
+      
+    }), paste(" * sqrt(tree_cover) + age + (1|locationF/blockF/plotF/splitplotF)")), 
                    data = df, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
     # Store the results in the list
