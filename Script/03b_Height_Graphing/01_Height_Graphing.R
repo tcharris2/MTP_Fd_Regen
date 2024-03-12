@@ -11,8 +11,6 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
-
-
 # 2. Importing Functions ----------------------------------------------------------
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")

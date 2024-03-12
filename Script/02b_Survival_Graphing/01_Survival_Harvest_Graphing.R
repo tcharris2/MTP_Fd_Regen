@@ -31,38 +31,41 @@ str(regen_survival)
 #### 1.3 Calling RDS file  ------
 
 survival_harvest_models <- readRDS(file = here("Data/04_Temp", 
-                                               "2024-02-05_survival_group_harvest_models_NoFutures.rds"))
+                                               "2024-03-11_survival_group_harvest_models.rds"))
 
 survival_harvest_models
 
 
 survival_cover_models <- readRDS(file = here("Data/04_Temp", 
-                                               "2024-02-20_survival_group_cover_models_NoFutures_sqrt.rds"))
+                                               "2024-03-11_survival_group_cover_models.rds"))
 
 survival_cover_models
 
 
 # 2. Selecting Best Models ---------------------------------------------------
 
+names(survival_harvest_models)
+names(survival_cover_models)
+
 # See 2024-02-06_MODEL_SLECTION_survival_Harvest_group_sig_p_vals_NoFutures.csv for list of selected models
 
-colnames(survival_harvest_models) <- c("ClimaticVarList", "model_0", "model_h", "model_a", 
-                                         "model_1", "model_1a", "model_2", "model_2a", 
-                                         "model_3", "model_3a")
-
-colnames(survival_cover_models) <- c("ClimaticVarList", "model_0", "model_c", "model_a", 
+colnames(survival_harvest_models) <- c("model_0", "model_h", "model_a", 
                                        "model_1", "model_1a", "model_2", "model_2a", 
-                                       "model_3", "model_3a")
+                                       "model_3", "model_3a", "ClimaticVarList")
+
+colnames(survival_cover_models) <- c("model_0", "model_c", "model_a", 
+                                     "model_1", "model_1a", "model_2", "model_2a", 
+                                     "model_3", "model_3a", "ClimaticVarList")
 
 
-climatic_models <- survival_harvest_models[c(1:6, 10, 12:13), c("ClimaticVarList", "model_1")]
+model_1 <- survival_harvest_models[c(1:6, 10, 12:13), c("ClimaticVarList", "model_1")]
 
-inter_harvest_models <- survival_harvest_models[c(8:9, 11, 15), c("ClimaticVarList", "model_3")]
+model_3_H <- survival_harvest_models[c(8:9, 11, 15), c("ClimaticVarList", "model_3")]
 
 
-climatic_cover_models <- survival_cover_models[c(5:6, 10), c("ClimaticVarList", "model_2")]
+model_2_C <- survival_cover_models[c(5:6, 10), c("ClimaticVarList", "model_2")]
 
-inter_cover_models <- survival_cover_models[c(1:4, 8:9, 11:13, 15), c("ClimaticVarList", "model_3")]
+model_3_C <- survival_cover_models[c(1:4, 8:9, 11:13, 15), c("ClimaticVarList", "model_3")]
 
 # 3. Clean up Global env. ------------------------------------------------------
 
@@ -75,31 +78,31 @@ source("Script/02b_Survival_Graphing/graphing_Functions.R")
 
 ##### 4.1 Adding data -----
 
-climatic_models$data <- list(regen_survival)
+model_1$data <- list(regen_survival)
 
-climatic_models
+model_1
 
-inter_harvest_models$data <- list(regen_survival)
+model_3_H$data <- list(regen_survival)
 
-inter_harvest_models
+model_3_H
 
 
-climatic_cover_models$data <- list(regen_survival)
+model_2_C$data <- list(regen_survival)
 
-climatic_cover_models
+model_2_C
 
-inter_cover_models$data <- list(regen_survival)
+model_3_C$data <- list(regen_survival)
 
-inter_cover_models
+model_3_C
 
-# Adding esitmated probability of survival 
-climatic_models <- survivalProbs(climatic_models, climatic_models$model_1)
+# Adding estimated probability of survival 
+model_1 <- survivalProbs(model_1, model_1$model_1)
 
-inter_harvest_models <- survivalProbs(inter_harvest_models, inter_harvest_models$model_3)
+model_3_H <- survivalProbs(model_3_H, model_3_H$model_3)
 
-climatic_cover_models <- survivalProbs(climatic_cover_models, climatic_cover_models$model_2)
+model_2_C <- survivalProbs(model_2_C, model_2_C$model_2)
 
-inter_cover_models <- survivalProbs(inter_cover_models, inter_cover_models$model_3)
+model_3_C <- survivalProbs(model_3_C, model_3_C$model_3)
 
 
 
@@ -180,17 +183,17 @@ plot(climatic_models[[3]][[1]][["d_MSP"]], ReMSP.prob, ylim = c(0,1),
 
   
 # NFFD plot
-NFFD_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[1]], type = "pred", 
+NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred", 
                    terms = c("d_NFFD [all]", "harvestF"),
                    legend.title = "") + 
   
   scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")) +
   
           
-  geom_point(data = inter_harvest_models$data[[1]], mapping = aes(x = d_NFFD, y = survival_probs), 
+  geom_point(data = model_3_H$data[[1]], mapping = aes(x = d_NFFD, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
-  labs(x = "Normalized NFFD Climatic Distance", 
+  labs(x = "NFFD Climatic Distance", 
        y = "Estimated Probability of Survival",
        title = NULL) + 
   
@@ -203,17 +206,17 @@ NFFD_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[1]], type = "
 
 
 # FFP Plot
-FFP_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[2]], type = "pred", 
+FFP_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[2]], type = "pred", 
                                 terms = c("d_FFP [all]", "harvestF"),
                                 legend.title = "") + 
   
   scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")) +
   
   
-  geom_point(data = inter_harvest_models$data[[2]], mapping = aes(x = d_FFP, y = survival_probs), 
+  geom_point(data = model_3_H$data[[2]], mapping = aes(x = d_FFP, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
-  labs(x = "Normalized FFP Climatic Distance", 
+  labs(x = "FFP Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -226,17 +229,17 @@ FFP_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[2]], type = "p
 
 
 # EMT Plot
-EMT_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[3]], type = "pred", 
+EMT_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred", 
                                 terms = c("d_EMT [all]", "harvestF"),
                                 legend.title = "") + 
   
   scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")) +
   
   
-  geom_point(data = inter_harvest_models$data[[3]], mapping = aes(x = d_EMT, y = survival_probs), 
+  geom_point(data = model_3_H$data[[3]], mapping = aes(x = d_EMT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
-  labs(x = "Normalized EMT Climatic Distance", 
+  labs(x = "EMT Climatic Distance", 
        y = "Estimated Probability of Survival",
        title = NULL) + 
   
@@ -249,17 +252,17 @@ EMT_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[3]], type = "p
 
 
 # RH Plot 
-RH_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[4]], type = "pred", 
+RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred", 
                                 terms = c("d_RH [all]", "harvestF"),
                                 legend.title = "") + 
   
   scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")) +
   
   
-  geom_point(data = inter_harvest_models$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
+  geom_point(data = model_3_H$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
-  labs(x = "Normalized RH Climatic Distance", 
+  labs(x = "RH Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -277,7 +280,9 @@ RH_plot <- sjPlot::plot_model(inter_harvest_models[["model_3"]][[4]], type = "pr
 library(ggpubr)
 
 
-ggarrange(NFFD_plot, FFP_plot, EMT_plot, RH_plot, labels = c("A", "B", "C", "D"), vjust = 0.5, 
+ggarrange(NFFD_plot, FFP_plot, EMT_plot, RH_plot, 
+          labels = c("A", "B", "C", "D"), 
+          vjust = 0.5, 
           common.legend = TRUE, legend = "top")
 
 class(regen_survival$plotF)
@@ -285,14 +290,16 @@ class(regen_survival$plotF)
 
 # 7. Climatic Models Composite ------------------------------------------------
 
-climatic_models
+model_1
 
 # MAT plot
-MAT_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[1]], type = "pred", 
-                              terms = c("d_MAT [all]"),
-                              legend.title = "") + 
+MAT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[1]], type = "pred", 
+                              terms = c("d_MAT [all]")) + 
   
-  labs(x = "Normalized MAT Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "MAT Climatic Distance", 
        y = "Esitmated Probability of Survival",
        title = NULL) + 
   
@@ -300,16 +307,17 @@ MAT_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[1]], type = "pred
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
 
 
 # MWMT plot
-MWMT_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[2]], type = "pred", 
-                                 terms = c("d_MWMT [all]"),
-                                 legend.title = "") + 
+MWMT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[2]], type = "pred", 
+                                 terms = c("d_MWMT [all]")) + 
   
-  labs(x = "Normalized MWMT Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "MWMT Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -317,15 +325,17 @@ MWMT_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[2]], type = "pre
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
+
 
 # MCMT plot
-MCMT_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[3]], type = "pred", 
-                                  terms = c("d_MCMT [all]"),
-                                  legend.title = "") + 
+MCMT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[3]], type = "pred", 
+                                  terms = c("d_MCMT [all]")) + 
   
-  labs(x = "Normalized MCMT Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "MCMT Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -333,16 +343,17 @@ MCMT_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[3]], type = "pre
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
 
 
 # MAP plot
-MAP_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[4]], type = "pred", 
-                                  terms = c("d_MAP [all]"),
-                                  legend.title = "") + 
+MAP_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[4]], type = "pred", 
+                                  terms = c("d_MAP [all]")) +
   
-  labs(x = "Normalized MAP Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "MAP Climatic Distance", 
        y = "Esitmated Probability of Survival",
        title = NULL) + 
   
@@ -350,16 +361,17 @@ MAP_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[4]], type = "pred
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
 
 
 # MSP plot
-MSP_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[5]], type = "pred", 
-                                  terms = c("d_MSP [all]"),
-                                  legend.title = "") + 
+MSP_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[5]], type = "pred", 
+                                  terms = c("d_MSP [all]")) +
   
-  labs(x = "Normalized MSP Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "MSP Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -367,15 +379,16 @@ MSP_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[5]], type = "pred
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
 
 # AHM plot
-AHM_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[6]], type = "pred", 
-                                  terms = c("d_AHM [all]"),
-                                  legend.title = "") + 
+AHM_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[6]], type = "pred", 
+                                  terms = c("d_AHM [all]")) + 
   
-  labs(x = "Normalized AHM Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "AHM Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -383,15 +396,16 @@ AHM_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[6]], type = "pred
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
 
 # PAS plot
-PAS_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[7]], type = "pred", 
-                                  terms = c("d_PAS [all]"),
-                                  legend.title = "") + 
+PAS_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[7]], type = "pred", 
+                                  terms = c("d_PAS [all]")) + 
   
-  labs(x = "Normalized PAS Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "PAS Climatic Distance", 
        y = "Esitmated Probability of Survival",
        title = NULL) + 
   
@@ -399,16 +413,17 @@ PAS_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[7]], type = "pred
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
 
 
 # EXT plot
-EXT_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[8]], type = "pred", 
-                                  terms = c("d_EXT [all]"),
-                                  legend.title = "") + 
+EXT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[8]], type = "pred", 
+                                  terms = c("d_EXT [all]")) + 
   
-  labs(x = "Normalized EXT Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "EXT Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -416,15 +431,16 @@ EXT_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[8]], type = "pred
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
 
 # Eref plot
-Eref_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[9]], type = "pred", 
-                                  terms = c("d_Eref [all]"),
-                                  legend.title = "") + 
+Eref_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[9]], type = "pred", 
+                                  terms = c("d_Eref [all]")) + 
   
-  labs(x = "Normalized Eref Climatic Distance", 
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "Eref Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -432,8 +448,7 @@ Eref_1_plot <- sjPlot::plot_model(climatic_models[["model_1"]][[9]], type = "pre
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
 
 
 
@@ -448,20 +463,18 @@ ggarrange(MAT_1_plot, MWMT_1_plot, MCMT_1_plot,
 
 
 # 8. Inter Cover Models Composite --------------------------------------------------
-inter_cover_models
+model_3_C
 
 # MAT plot
-MAT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[1]], type = "pred", 
-                                terms = c("d_MAT [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred", 
+                                terms = c("d_MAT [all]", "tree_cover [0, 25, 50]"),
                                 legend.title = "Percent Tree Cover (%)") + 
   
-  scale_colour_discrete(labels = c("0", "25", "50")) +
   
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_MAT, y = survival_probs), 
+  geom_point(data = model_3_C$data[[1]], mapping = aes(x = d_MAT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, position = "jitter", colour = "gray20") +
   
-  labs(x = "Normalized MAT Climatic Distance", 
+  labs(x = "MAT Climatic Distance", 
        y = "Estimated Probability of Survival",
        title = NULL) + 
   
@@ -474,17 +487,15 @@ MAT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[1]], type = 
 
 
 # MWMT plot
-MWMT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[2]], type = "pred", 
-                                   terms = c("d_MWMT [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+MWMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[2]], type = "pred", 
+                                   terms = c("d_MWMT [all]", "tree_cover [0, 25, 50]"),
                                    legend.title = "Percent Tree Cover (%)") + 
   
-  scale_colour_discrete(labels = c("0", "25", "50")) +
   
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_MWMT, y = survival_probs), 
+  geom_point(data = model_3_C$data[[2]], mapping = aes(x = d_MWMT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized MWMT Climatic Distance", 
+  labs(x = "MWMT Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -496,17 +507,14 @@ MWMT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[2]], type =
         legend.position = "top")
 
 # MCMT plot
-MCMT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[3]], type = "pred", 
-                                    terms = c("d_MCMT [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+MCMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[3]], type = "pred", 
+                                    terms = c("d_MCMT [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
   
-  scale_colour_discrete(labels = c("0", "25", "50")) +
-  
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_MCMT, y = survival_probs), 
+  geom_point(data = model_3_C$data[[3]], mapping = aes(x = d_MCMT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized MCMT Climatic Distance", 
+  labs(x = "MCMT Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -518,17 +526,14 @@ MCMT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[3]], type =
         legend.position = "top")
 
 # MAP plot
-MAP_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[4]], type = "pred", 
-                                    terms = c("d_MAP [all]", "sqrt_tree_cover [0, 5, 7.07]"),
-                                    legend.title = "Percent Tree Cover (%)") + 
+MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred", 
+                                    terms = c("d_MAP [all]", "tree_cover [0, 25, 50]"),
+                                    legend.title = "Percent Tree Cover (%)") +
   
-  scale_colour_discrete(labels = c("0", "25", "50")) +
-  
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_MAP, y = survival_probs), 
+  geom_point(data = model_3_C$data[[4]], mapping = aes(x = d_MAP, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized MAP Climatic Distance", 
+  labs(x = "MAP Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -541,17 +546,14 @@ MAP_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[4]], type = 
 
 
 # NFFD plot
-NFFD_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[5]], type = "pred", 
-                                    terms = c("d_NFFD [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred", 
+                                    terms = c("d_NFFD [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
   
-  scale_colour_discrete(labels = c("0", "25", "50")) +
-  
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_NFFD, y = survival_probs), 
+  geom_point(data = model_3_C$data[[5]], mapping = aes(x = d_NFFD, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized NFFD Climatic Distance", 
+  labs(x = "NFFD Climatic Distance", 
        y = "Estimated Probability of Survival",
        title = NULL) + 
   
@@ -564,17 +566,14 @@ NFFD_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[5]], type =
 
 
 # FFP plot
-FFP_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[6]], type = "pred", 
-                                    terms = c("d_FFP [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+FFP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[6]], type = "pred", 
+                                    terms = c("d_FFP [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
   
-  scale_colour_discrete(labels = c("0", "25", "50")) +
-  
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_FFP, y = survival_probs), 
+  geom_point(data = model_3_C$data[[6]], mapping = aes(x = d_FFP, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized FFP Climatic Distance", 
+  labs(x = "FFP Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -586,17 +585,14 @@ FFP_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[6]], type = 
         legend.position = "top")
 
 # EMT plot
-EMT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[7]], type = "pred", 
-                                    terms = c("d_EMT [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[7]], type = "pred", 
+                                    terms = c("d_EMT [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
   
-  scale_colour_discrete(labels = c("0", "25", "50")) +
-  
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_EMT, y = survival_probs), 
+  geom_point(data = model_3_C$data[[7]], mapping = aes(x = d_EMT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized EMT Climatic Distance", 
+  labs(x = "EMT Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -609,17 +605,14 @@ EMT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[7]], type = 
 
 
 # EXT plot
-EXT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[8]], type = "pred", 
-                                    terms = c("d_EXT [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[8]], type = "pred", 
+                                    terms = c("d_EXT [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
   
-  scale_colour_discrete(labels = c("0", "25", "50")) +
-  
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_EXT, y = survival_probs), 
+  geom_point(data = model_3_C$data[[8]], mapping = aes(x = d_EXT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized EXT Climatic Distance", 
+  labs(x = "EXT Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -632,17 +625,14 @@ EXT_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[8]], type = 
 
 
 # Eref plot
-Eref_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[9]], type = "pred", 
-                                    terms = c("d_Eref [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+Eref_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[9]], type = "pred", 
+                                    terms = c("d_Eref [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
-  
-  scale_colour_discrete(labels = c("0", "25", "50")) +
-  
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_Eref, y = survival_probs), 
+
+  geom_point(data = model_3_C$data[[9]], mapping = aes(x = d_Eref, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized Eref Climatic Distance", 
+  labs(x = "Eref Climatic Distance", 
        y = "Estimated Probability of Survival",
        title = NULL) + 
   
@@ -654,17 +644,14 @@ Eref_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[9]], type =
         legend.position = "top")
 
 # RH plot
-RH_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[10]], type = "pred", 
-                                    terms = c("d_RH [all]", "sqrt_tree_cover [0, 5, 7.07]"),
+RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[10]], type = "pred", 
+                                    terms = c("d_RH [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
-  
-  scale_colour_discrete(labels = c("0", "25", "50")) +
-  
-  
-  geom_point(data = inter_cover_models$data[[1]], mapping = aes(x = d_RH, y = survival_probs), 
+
+  geom_point(data = model_3_C$data[[10]], mapping = aes(x = d_RH, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "Normalized RH Climatic Distance", 
+  labs(x = "RH Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -677,8 +664,78 @@ RH_cov_plot <- sjPlot::plot_model(inter_cover_models[["model_3"]][[10]], type = 
 
 
 ggarrange(MAT_cov_plot, MWMT_cov_plot, MCMT_cov_plot,
-          MAP_cov_plot, EXT_cov_plot, RH_cov_plot,
+          MAP_cov_plot, NFFD_cov_plot, FFP_cov_plot,
+          EMT_cov_plot, EXT_cov_plot, Eref_cov_plot,
+          RH_cov_plot,
           labels = c("A", "B", "C",
-                     "D", "E", "F"),
+                     "D", "E", "F",
+                     "G", "H", "I", "J"),
+          hjust = -1, 
+          common.legend = TRUE, legend = "top")
+
+# 9. Climatic Cover Models -------------------------------------------------
+model_2_C
+
+# MSP Plot
+MSP_cov2_plot <- sjPlot::plot_model(model_2_C[["model_2"]][[1]], type = "pred", 
+                                  terms = c("d_MSP [all]", "tree_cover [0, 25, 50]"),
+                                  legend.title = "Percent Tree Cover (%)") + 
+  
+  geom_point(data = model_2_C$data[[1]], mapping = aes(x = d_MSP, y = survival_probs), 
+             inherit.aes = FALSE, size = 0.2, colour = "gray20") +
+  
+  labs(x = "MSP Climatic Distance", 
+       y = "Estimated Probability of Survival",
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top")
+
+# AHM plot
+AHM_cov2_plot <- sjPlot::plot_model(model_2_C[["model_2"]][[2]], type = "pred", 
+                                    terms = c("d_AHM [all]", "tree_cover [0, 25, 50]"),
+                                    legend.title = "Percent Tree Cover (%)") + 
+  
+  geom_point(data = model_2_C$data[[2]], mapping = aes(x = d_AHM, y = survival_probs), 
+             inherit.aes = FALSE, size = 0.2, colour = "gray20") +
+  
+  labs(x = "AHM Climatic Distance", 
+       y = NULL,
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top")
+
+# PAS Plot
+PAS_cov2_plot <- sjPlot::plot_model(model_2_C[["model_2"]][[3]], type = "pred", 
+                                    terms = c("d_PAS [all]", "tree_cover [0, 25, 50]"),
+                                    legend.title = "Percent Tree Cover (%)") + 
+  
+  geom_point(data = model_2_C$data[[3]], mapping = aes(x = d_PAS, y = survival_probs), 
+             inherit.aes = FALSE, size = 0.2, colour = "gray20") +
+  
+  labs(x = "PAS Climatic Distance", 
+       y = NULL,
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top")
+
+
+# Composite Plot
+ggarrange(MSP_cov2_plot, AHM_cov2_plot, PAS_cov2_plot,
+          labels = c("A", "B", "C"),
           hjust = -1, 
           common.legend = TRUE, legend = "top")
