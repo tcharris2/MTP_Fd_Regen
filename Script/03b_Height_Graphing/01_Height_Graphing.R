@@ -280,6 +280,12 @@ ggarrange(MWMT_3C_plot, MAP_3C_plot, NFFD_3C_plot,
           hjust = -1, 
           common.legend = TRUE, legend = "top")
 
+
+ggarrange(MAP_3C_plot,EMT_3C_plot, RH_3C_plot,
+          labels = c("A", "B", "C"),
+          hjust = -1, 
+          common.legend = TRUE, legend = "top")
+
 ### 4.2 Cover 3a Weak ------
 
 # Predictions 
@@ -452,3 +458,22 @@ ggarrange(MAT_3C_plot, MCMT_3C_plot, SHM_3C_plot,
           common.legend = TRUE, legend = "top")
 
 
+
+# 5. emmeans ---------------------------------------------------------------------
+
+library(emmeans)
+
+mod <- harvest_2a_models$model_2a[[1]]
+
+mod_2 <- ln_height_harvest_models$model_h[[1]]
+
+mod
+
+
+plots.emm.RH <- emmeans(mod, ~ harvestF, 
+                     lmerTest.limit = 5809, pbkrtest.limit = 5809)
+pairs(plots.emm.RH, adjust="bonferroni", side="two-sided")
+
+
+plots.emm <- emmeans(mod_2, ~ harvestF)
+pairs(plots.emm, adjust="bonferroni", side="two-sided")

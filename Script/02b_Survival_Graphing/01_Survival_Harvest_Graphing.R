@@ -58,6 +58,8 @@ colnames(survival_cover_models) <- c("model_0", "model_c", "model_a",
                                      "model_3", "model_3a", "ClimaticVarList")
 
 
+model_1 <- survival_harvest_models[c(1:6, 8:13, 15), c("ClimaticVarList", "model_1")]
+
 model_1 <- survival_harvest_models[c(1:6, 10, 12:13), c("ClimaticVarList", "model_1")]
 
 model_3_H <- survival_harvest_models[c(8:9, 11, 15), c("ClimaticVarList", "model_3")]
@@ -285,7 +287,10 @@ ggarrange(NFFD_plot, FFP_plot, EMT_plot, RH_plot,
           vjust = 0.5, 
           common.legend = TRUE, legend = "top")
 
-class(regen_survival$plotF)
+ggarrange(EMT_plot, RH_plot, 
+          labels = c("A", "B"), 
+          vjust = 0.5, 
+          common.legend = TRUE, legend = "top")
 
 
 # 7. Climatic Models Composite ------------------------------------------------
@@ -398,8 +403,44 @@ AHM_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[6]], type = "pred",
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"))
 
+# NFFD plot
+NFFD_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[7]], type = "pred", 
+                                 terms = c("d_NFFD [all]")) + 
+  
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "NFFD Climatic Distance", 
+       y = NULL,
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"))
+
+
+# FFP plot
+FFP_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[8]], type = "pred", 
+                                 terms = c("d_FFP [all]")) + 
+  
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "FFP Climatic Distance", 
+       y = NULL,
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"))
+
+
 # PAS plot
-PAS_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[7]], type = "pred", 
+PAS_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[9]], type = "pred", 
                                   terms = c("d_PAS [all]")) + 
   
   scale_y_continuous(limits = c(0.2, 1), 
@@ -415,9 +456,26 @@ PAS_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[7]], type = "pred",
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"))
 
+# EMT plot
+EMT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[10]], type = "pred", 
+                                 terms = c("d_EMT [all]")) + 
+  
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "EMT Climatic Distance", 
+       y = NULL,
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"))
+
 
 # EXT plot
-EXT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[8]], type = "pred", 
+EXT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[11]], type = "pred", 
                                   terms = c("d_EXT [all]")) + 
   
   scale_y_continuous(limits = c(0.2, 1), 
@@ -434,13 +492,31 @@ EXT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[8]], type = "pred",
         axis.title = element_text(size = 12, face = "bold"))
 
 # Eref plot
-Eref_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[9]], type = "pred", 
+Eref_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[12]], type = "pred", 
                                   terms = c("d_Eref [all]")) + 
   
   scale_y_continuous(limits = c(0.2, 1), 
                      labels = c("20%", "40%", "60%", "80%", "100%")) +
   
   labs(x = "Eref Climatic Distance", 
+       y = NULL,
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"))
+
+
+# RH plot
+RH_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[13]], type = "pred", 
+                                 terms = c("d_RH [all]")) + 
+  
+  scale_y_continuous(limits = c(0.2, 1), 
+                     labels = c("20%", "40%", "60%", "80%", "100%")) +
+  
+  labs(x = "RH Climatic Distance", 
        y = NULL,
        title = NULL) + 
   
@@ -472,7 +548,7 @@ MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred",
   
   
   geom_point(data = model_3_C$data[[1]], mapping = aes(x = d_MAT, y = survival_probs), 
-             inherit.aes = FALSE, size = 0.2, position = "jitter", colour = "gray20") +
+             inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
   labs(x = "MAT Climatic Distance", 
        y = "Estimated Probability of Survival",
@@ -593,7 +669,7 @@ EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[7]], type = "pred",
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
   labs(x = "EMT Climatic Distance", 
-       y = NULL,
+       y = "Estimated Probability of Survival",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
@@ -673,6 +749,14 @@ ggarrange(MAT_cov_plot, MWMT_cov_plot, MCMT_cov_plot,
           hjust = -1, 
           common.legend = TRUE, legend = "top")
 
+
+ggarrange(MAT_cov_plot,MAP_cov_plot,
+          EMT_cov_plot, RH_cov_plot,
+          labels = c("A", "B", "C",
+                     "D"),
+          hjust = -1, 
+          common.legend = TRUE, legend = "top")
+
 # 9. Climatic Cover Models -------------------------------------------------
 model_2_C
 
@@ -739,3 +823,99 @@ ggarrange(MSP_cov2_plot, AHM_cov2_plot, PAS_cov2_plot,
           labels = c("A", "B", "C"),
           hjust = -1, 
           common.legend = TRUE, legend = "top")
+
+
+# 10. emmeans --------------------------------------------------------------
+
+library(emmeans)
+
+df <- regen_survival
+
+model_3_H
+
+mod <- model_3_H$model_3[[4]]
+mod
+
+
+# Useful 
+joint_tests(mod, by = "d_RH")
+joint_tests(mod, by = "harvestF")
+joint_tests(mod)
+
+emtrends(mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")
+
+emmip(mod, harvestF ~ d_RH, cov.reduce = range)
+
+
+# Less Useful
+
+plots.emm.RH <- emmeans(mod, ~ d_RH * harvestF,  
+                        glmerTest.limit = 8040, pbkrtest.limit = 8040)
+pairs(plots.emm.RH, adjust="bonferroni", side="two-sided")
+
+
+contrast(plots.emm.RH, "consec", simple = "each", combine = TRUE, adjust = "mvt")
+plots.emm.RH
+
+
+
+
+# For cover 
+
+model_3_C
+mod.c <- model_3_C$model_3[[1]]
+mod.c
+
+emtrend.cb <- emtrends(mod, pairwise ~ tree_cover, var = "d_MAT", adjust = "bonferroni")
+joint_tests(mod.c, by = "d_MAT")
+
+emmeans(mod.c, pairwise ~ tree_cover)
+
+
+# Testing 
+
+sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred", 
+                              terms = c("d_RH [all]", "harvestF"),
+                              legend.title = "", show.intercept = TRUE) + 
+  
+  scale_colour_discrete(labels = c("Clearcut *", "Seed Tree", "30% Retention", "60% Retention *")) +
+  
+  
+  geom_point(data = model_3_H$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
+             inherit.aes = FALSE, size = 0.5) +
+  
+  labs(x = "RH Climatic Distance", 
+       y = NULL,
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top")
+
+
+
+sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred", 
+                   terms = c("d_RH [all]", "harvestF"),
+                   legend.title = "", show.zeroinf = TRUE)
+
+
+# 11. Beta coeffs ------------------------
+
+install.packages("mpae")
+library(mpae)
+
+survival_harvest_models
+
+s_mod <- survival_harvest_models$s_group_model_harvest_1[[4]]
+
+h_mod <- ln_height_cover_models$ln_h_group_model_cover_1[[4]]
+
+scaled.coef(h_mod)
+scaled.coef
+UseMethod
+
+tab_model(s_mod)
+tab_model(h_mod)
