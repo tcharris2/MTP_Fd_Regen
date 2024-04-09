@@ -120,6 +120,9 @@ graphESTSurvivalProb_3(climatic_cover_models)
 
 inter_harvest_models
 
+s_mod_1
+
+sjPlot::plot_model(s_mod_1, type = "pred", terms = c("d_MAT [all]", "harvestF"), se = FALSE)
 
 sjPlot::plot_model(inter_harvest_models[["model_3"]][[4]],
                    type = "pred", 

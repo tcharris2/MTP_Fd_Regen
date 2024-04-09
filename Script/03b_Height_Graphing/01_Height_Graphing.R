@@ -463,17 +463,47 @@ ggarrange(MAT_3C_plot, MCMT_3C_plot, SHM_3C_plot,
 
 library(emmeans)
 
-mod <- harvest_2a_models$model_2a[[1]]
 
-mod_2 <- ln_height_harvest_models$model_h[[1]]
-
-mod
+df <- regen_height
 
 
-plots.emm.RH <- emmeans(mod, ~ harvestF, 
-                     lmerTest.limit = 5809, pbkrtest.limit = 5809)
-pairs(plots.emm.RH, adjust="bonferroni", side="two-sided")
+mod <- ln_height_harvest_models$model_ah[[1]]
 
 
-plots.emm <- emmeans(mod_2, ~ harvestF)
-pairs(plots.emm, adjust="bonferroni", side="two-sided")
+
+# Regrid emmeans
+
+logemm.src <- regrid(emmeans(mod, "harvestF",
+                             lmerTest.limit = 5809, pbkrtest.limit = 5809), 
+                     transform = "log")
+confint(logemm.src, type = "response")
+pairs(logemm.src,  adjust="bonferroni", side="two-sided", type = "response")
+
+
+harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
+sig_labels <- c("AA", "AA", "", "")
+sig_labels_2 <- c("", "", "AB", "")
+sig_labels_3 <- c("", "", "", "BB")
+
+
+plot(regrid(logemm.src), transform = "log") +
+  
+  coord_flip() +
+  
+  scale_y_discrete(labels = harvest_labels) +
+  
+  geom_text(aes(label = sig_labels), vjust = -9.4) +
+  geom_text(aes(label = sig_labels_2), vjust = -8.2) +
+  geom_text(aes(label = sig_labels_3), vjust = -7.5) +
+  geom_text(aes(label = round(exp(logemm.src@bhat), 1)), hjust = -0.5) +
+  
+  labs(x = "Height (cm)", 
+       y = "Harvest Type",
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top")
