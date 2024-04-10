@@ -77,6 +77,8 @@ colnames(ln_height_cover_models) <- c("model_0", "model_c", "model_a", "model_ac
 
 harvest_2a_models <- ln_height_harvest_models[c(2, 4:6, 8:11, 14:15), c("ClimaticVarList", "model_2a")]
 
+harvest_2a_models <- harvest_2a_models[c(2:5, 7:8, 10), ]
+
 cover_2a_models <- ln_height_cover_models[c(5:6, 10, 14), c("ClimaticVarList", "model_2a")]
 
 cover_3a_models <- ln_height_cover_models[c(2, 4, 8, 11, 15), c("ClimaticVarList", "model_3a")]
@@ -457,9 +459,58 @@ ggarrange(MAT_3C_plot, MCMT_3C_plot, SHM_3C_plot,
           hjust = -1, 
           common.legend = TRUE, legend = "top")
 
+# 5. Harvest Models ------------------------------------------------------------
+
+# MAP Plot
+MAP_2H_plot <- sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
+                                   type = "pred", 
+                                   terms = c("d_MAP [all]", "harvestF"),
+                                   legend.title = "Harvest",
+                                   ci.lvl = NA,
+                                  line.size = 5) +
+  
+  geom_jitter(data = harvest_2a_models$data[[1]],
+              mapping = aes(x = d_MAP, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 1,
+              size = 0.1, colour = "gray60") +
+  
+  labs(x = "MAP Climatic Distance", 
+       y = NULL,
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top")
+
+MAP_2H_plot
 
 
-# 5. emmeans ---------------------------------------------------------------------
+library(ggeffects)
+df_1 <- ggpredict(harvest_2a_models[["model_2a"]][[1]], terms = c("d_MAP [all]", "harvestF"))
+
+df_1
+ggplot(df_1, aes(x, predicted)) +
+  geom_jitter(data = harvest_2a_models$data[[1]],
+              mapping = aes(x = d_MAP, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 1,
+              size = 0.1, colour = "gray60") +
+  geom_line(aes(linetype = group, color = group, linewidth = 5))
+
+sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
+                   type = "pred", 
+                   terms = c("d_MAP [all]", "harvestF"),
+                   legend.title = "Harvest",
+                   ci.lvl = NA)
+
+
+# 6. emmeans ---------------------------------------------------------------------
 
 library(emmeans)
 
@@ -505,5 +556,109 @@ plot(regrid(logemm.src), transform = "log") +
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.title = element_text(size = 12, face = "bold"))
+
+# 7. Beta Coefficients ---------------------------------------------------------
+
+model_0 <- lmer(log(height) ~ scale(d_RH) + harvestF + (1|locationF/blockF/plotF/splitplotF), 
+                data = regen_height, REML = FALSE, 
+                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_1 <- lmer(log(height) ~ d_RH + harvestF + (1|locationF/blockF/plotF/splitplotF), 
+                data = regen_height, REML = FALSE, 
+                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+model_0
+model_1
+
+sjPlot::plot_model(model_0, terms = c("d_RH [all]", "harvestF"), type = "pred")
+sjPlot::plot_model(model_1, terms = c("d_RH [all]", "harvestF"), type = "pred")
+
+
+# 8. Three way interaction ------------------------------------------------------
+# Variation too high due to not a large enough breadth of climatic distances 
+
+library(ggeffects)
+library(emmeans)
+
+model_0 <- lmer(log(height) ~ scale(d_RH) * harvestF + (1|locationF/blockF/plotF/splitplotF), 
+                data = regen_height, REML = FALSE, 
+                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+
+
+model_1 <- lmer(log(height) ~ scale(d_RH) * harvestF + locationF + (1|blockF/plotF/splitplotF), 
+              data = regen_height, REML = FALSE, 
+              control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+
+
+model_2 <- lmer(log(height) ~ scale(d_RH) * harvestF * locationF + (1|blockF/plotF/splitplotF), 
+              data = regen_height, REML = FALSE, 
+              control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+
+model_3 <- lmer(log(height) ~ scale(d_RH) * locationF + (1|blockF/plotF/splitplotF), 
+                data = regen_height, REML = FALSE, 
+                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+
+model_0
+model_1
+model_2
+model_3
+
+lrtest(model_0, model_1)
+lrtest(model_1, model_2)
+lrtest(model_2, model_3)
+
+df <- ggpredict(model_0, terms = c("d_RH [all]", "harvestF"), terms_to_colnames = TRUE)
+df
+
+
+ggplot(df, aes(x, predicted)) +
+  geom_line(aes(color = group)) 
+
+
+df_0 <- ggpredict(model_0, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
+df_0
+
+
+ggplot(df_0, aes(x, predicted)) +
+  geom_line(aes(color = group)) +
+  facet_wrap(~ facet)
+
+
+df_1 <- ggpredict(model_1, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
+df_1
+
+
+ggplot(df_1, aes(x, predicted)) +
+  geom_line(aes(color = group)) +
+  facet_wrap(~ facet)
+
+
+df_2 <- ggpredict(model_2, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
+df_2
+
+plot(df_2, show_ci = FALSE)
+plot(df_2)
+
+
+ggplot(df_2, aes(x, predicted)) +
+  geom_line(aes(color = group)) +
+  facet_wrap(~ facet)
+
+
+
+df_3 <- ggpredict(model_3, terms = c("d_RH [all]", "locationF"), terms_to_colnames = TRUE, type = "random")
+
+plot(df_3, show_ci = FALSE) +
+  geom_point(data = regen_height, 
+             aes(x = d_RH, y = height, colour = locationF), inherit.aes = FALSE)
+plot(df_3)
+
+emmip(model_2, harvestF ~ d_RH | locationF, mult.name = "variety", cov.reduce = FALSE,
+      glmerTest.limit = 5809, pbkrtest.limit = 5809)
+
+emtrends(model_3, pairwise ~ locationF, var = "d_RH", mult.name = "variety")

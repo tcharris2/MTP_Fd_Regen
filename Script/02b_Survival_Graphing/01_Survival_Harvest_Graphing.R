@@ -839,15 +839,40 @@ model_3_H
 mod <- model_3_H$model_3[[4]]
 mod
 
-
+  
+  
 # Useful 
 joint_tests(mod, by = "d_RH")
 joint_tests(mod, by = "harvestF")
 joint_tests(mod)
 
 emtrends(mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")
+plot(emtrends(mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni"))+
+  coord_flip()
 
 emmip(mod, harvestF ~ d_RH, cov.reduce = range)
+
+
+df_1 <- ggpredict(mod, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
+df_1
+
+
+ggplot(df_1, aes(x, predicted)) +
+  geom_line(aes(color = group)) +
+  facet_wrap(~ facet)
+
+
+mod_2 <- ln_height_cover_models$model_3[[15]]
+mod_2
+
+
+df_2 <- ggpredict(mod_2, terms = c("d_RH [all]", "tree_cover [0, 10, 25, 50]", "locationF"), terms_to_colnames = TRUE, type = "random")
+df_2
+
+
+ggplot(df_2, aes(x, predicted)) +
+  geom_line(aes(color = group)) +
+  facet_wrap(~ facet)
 
 
 # Less Useful
