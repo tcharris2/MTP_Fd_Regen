@@ -466,8 +466,7 @@ MAP_2H_plot <- sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
                                    type = "pred", 
                                    terms = c("d_MAP [all]", "harvestF"),
                                    legend.title = "Harvest",
-                                   ci.lvl = NA,
-                                  line.size = 5) +
+                                   line.size = 1) +
   
   geom_jitter(data = harvest_2a_models$data[[1]],
               mapping = aes(x = d_MAP, y = exp(predict_val)),
@@ -491,23 +490,274 @@ MAP_2H_plot
 
 
 library(ggeffects)
-df_1 <- ggpredict(harvest_2a_models[["model_2a"]][[1]], terms = c("d_MAP [all]", "harvestF"))
 
-df_1
-ggplot(df_1, aes(x, predicted)) +
+# ggeffects ploting
+# d_MAP
+df_MAP <- ggpredict(harvest_2a_models[["model_2a"]][[1]], terms = c("d_MAP [all]", "harvestF"))
+
+ggplot(df_MAP, aes(x, predicted)) +
+  
   geom_jitter(data = harvest_2a_models$data[[1]],
               mapping = aes(x = d_MAP, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 1,
-              size = 0.1, colour = "gray60") +
-  geom_line(aes(linetype = group, color = group, linewidth = 5))
+              width = 2,
+              size = 0.1, colour = "gray50") +
+  
+  geom_point(aes(colour = group), size = 2, shape = "triangle") +
+  
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
+                  alpha = 0.1) +
+  
+  geom_line(aes(color = group), linewidth = 1) +
+  
+  labs(x = "MAP Climatic Distance", 
+       y = "Predicted Height",
+       title = NULL,
+       fill = "Harvest",
+       colour = "Harvest") +
+  
+  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                     values = c("red", "blue", "green4", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
+                    values = c("red", "blue", "green4", "black")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top",
+        legend.title = element_blank())
 
-sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
-                   type = "pred", 
-                   terms = c("d_MAP [all]", "harvestF"),
-                   legend.title = "Harvest",
-                   ci.lvl = NA)
+# d_MSP
+df_MSP <- ggpredict(harvest_2a_models[["model_2a"]][[2]], terms = c("d_MSP [all]", "harvestF"))
+
+ggplot(df_MSP, aes(x, predicted)) +
+  
+  geom_jitter(data = harvest_2a_models$data[[2]],
+              MSPping = aes(x = d_MSP, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 2,
+              size = 0.1, colour = "gray50") +
+  
+  geom_point(aes(colour = group), size = 2, shape = "triangle") +
+  
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
+              alpha = 0.1) +
+  
+  geom_line(aes(color = group), linewidth = 1) +
+  
+  labs(x = "MSP Climatic Distance", 
+       y = "Predicted Height",
+       title = NULL,
+       fill = "Harvest",
+       colour = "Harvest") +
+  
+  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                     values = c("red", "blue", "green4", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
+                    values = c("red", "blue", "green4", "black")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top",
+        legend.title = element_blank())
+
+# d_AHM
+df_AHM <- ggpredict(harvest_2a_models[["model_2a"]][[3]], terms = c("d_AHM [all]", "harvestF"))
+
+ggplot(df_AHM, aes(x, predicted)) +
+  
+  geom_jitter(data = harvest_2a_models$data[[3]],
+              AHMping = aes(x = d_AHM, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 2,
+              size = 0.1, colour = "gray50") +
+  
+  geom_point(aes(colour = group), size = 2, shape = "triangle") +
+  
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
+              alpha = 0.1) +
+  
+  geom_line(aes(color = group), linewidth = 1) +
+  
+  labs(x = "AHM Climatic Distance", 
+       y = "Predicted Height",
+       title = NULL,
+       fill = "Harvest",
+       colour = "Harvest") +
+  
+  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                     values = c("red", "blue", "green4", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
+                    values = c("red", "blue", "green4", "black")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top",
+        legend.title = element_blank())
+
+# d_NFFD
+df_NFFD <- ggpredict(harvest_2a_models[["model_2a"]][[4]], terms = c("d_NFFD [all]", "harvestF"))
+
+ggplot(df_NFFD, aes(x, predicted)) +
+  
+  geom_jitter(data = harvest_2a_models$data[[4]],
+              NFFDping = aes(x = d_NFFD, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 2,
+              size = 0.1, colour = "gray50") +
+  
+  geom_point(aes(colour = group), size = 2, shape = "triangle") +
+  
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
+              alpha = 0.1) +
+  
+  geom_line(aes(color = group), linewidth = 1) +
+  
+  labs(x = "NFFD Climatic Distance", 
+       y = "Predicted Height",
+       title = NULL,
+       fill = "Harvest",
+       colour = "Harvest") +
+  
+  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                     values = c("red", "blue", "green4", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
+                    values = c("red", "blue", "green4", "black")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top",
+        legend.title = element_blank())
+
+# d_PAS
+df_PAS <- ggpredict(harvest_2a_models[["model_2a"]][[5]], terms = c("d_PAS [all]", "harvestF"))
+
+PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
+  
+  geom_jitter(data = harvest_2a_models$data[[5]],
+              mapping = aes(x = d_PAS, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 0.8,
+              size = 0.1, colour = "gray50") +
+  
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
+              alpha = 0.1) +
+  
+  geom_line(aes(color = group), linewidth = 1) +
+  
+  labs(x = "Precipitation as Snow Distance (mm)", 
+       y = "Predicted Height (cm)",
+       title = NULL,
+       fill = "Harvest",
+       colour = "Harvest") +
+  
+  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                     values = c("red", "blue", "green4", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
+                    values = c("red", "blue", "green4", "black")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top",
+        legend.title = element_blank())
+
+# d_EMT
+df_EMT <- ggpredict(harvest_2a_models[["model_2a"]][[6]], terms = c("d_EMT [all]", "harvestF"))
+
+ggplot(df_EMT, aes(x, predicted)) +
+  
+  geom_jitter(data = harvest_2a_models$data[[6]],
+              EMTping = aes(x = d_EMT, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 2,
+              size = 0.1, colour = "gray50") +
+  
+  geom_point(aes(colour = group), size = 2, shape = "triangle") +
+  
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
+              alpha = 0.1) +
+  
+  geom_line(aes(color = group), linewidth = 1) +
+  
+  labs(x = "EMT Climatic Distance", 
+       y = "Predicted Height",
+       title = NULL,
+       fill = "Harvest",
+       colour = "Harvest") +
+  
+  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                     values = c("red", "blue", "green4", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
+                    values = c("red", "blue", "green4", "black")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top",
+        legend.title = element_blank())
+
+# d_RH
+df_RH <- ggpredict(harvest_2a_models[["model_2a"]][[7]], terms = c("d_RH [all]", "harvestF"))
+
+ggplot(df_RH, aes(x, predicted)) +
+  
+  geom_jitter(data = harvest_2a_models$data[[7]],
+              mapping = aes(x = d_RH, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 2,
+              size = 0.1, colour = "gray50") +
+  
+  geom_point(aes(colour = group), size = 2, shape = "triangle") +
+  
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
+              alpha = 0.1) +
+  
+  geom_line(aes(color = group), linewidth = 1) +
+  
+  labs(x = "RH Climatic Distance", 
+       y = "Predicted Height",
+       title = NULL,
+       fill = "Harvest",
+       colour = "Harvest") +
+  
+  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                     values = c("red", "blue", "green4", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
+                    values = c("red", "blue", "green4", "black")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top",
+        legend.title = element_blank())
+
+
+
 
 
 # 6. emmeans ---------------------------------------------------------------------
@@ -520,7 +770,7 @@ df <- regen_height
 
 mod <- ln_height_harvest_models$model_ah[[1]]
 
-
+mod <- harvest_2a_models$model_2a[[5]]
 
 # Regrid emmeans
 
@@ -532,20 +782,15 @@ pairs(logemm.src,  adjust="bonferroni", side="two-sided", type = "response")
 
 
 harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
-sig_labels <- c("AA", "AA", "", "")
-sig_labels_2 <- c("", "", "AB", "")
-sig_labels_3 <- c("", "", "", "BB")
+sig_labels <- c("AA", "AA", "AB", "BB")
 
-
-plot(regrid(logemm.src), transform = "log") +
+PAS_means <- plot(regrid(logemm.src), transform = "log") +
   
   coord_flip() +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = sig_labels), vjust = -9.4) +
-  geom_text(aes(label = sig_labels_2), vjust = -8.2) +
-  geom_text(aes(label = sig_labels_3), vjust = -7.5) +
+  geom_text(aes(label = sig_labels), hjust = 1.5, vjust = -4, size = 3) +
   geom_text(aes(label = round(exp(logemm.src@bhat), 1)), hjust = -0.5) +
   
   labs(x = "Height (cm)", 
@@ -557,6 +802,10 @@ plot(regrid(logemm.src), transform = "log") +
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"))
+
+
+ggarrange(PAS_graph, PAS_means, nrow = 2, heights = c(2.5, 1))
+
 
 # 7. Beta Coefficients ---------------------------------------------------------
 

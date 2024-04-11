@@ -199,7 +199,7 @@ NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred",
              inherit.aes = FALSE, size = 0.5) +
   
   labs(x = "NFFD Climatic Distance", 
-       y = "Estimated Probability of Survival",
+       y = "Predicted Probability of Survival",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
@@ -836,21 +836,116 @@ df <- regen_survival
 
 model_3_H
 
-mod <- model_3_H$model_3[[4]]
-mod
+NFFD_mod <- model_3_H$model_3[[1]]
+RH_mod <- model_3_H$model_3[[4]]
 
-  
+NFFD_mod
+RH_mod
+
   
 # Useful 
 joint_tests(mod, by = "d_RH")
 joint_tests(mod, by = "harvestF")
 joint_tests(mod)
 
-emtrends(mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")
-plot(emtrends(mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni"))+
-  coord_flip()
+RH_emtrends <- emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")
+RH_emtrends
+# Plotting
 
-emmip(mod, harvestF ~ d_RH, cov.reduce = range)
+harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
+sig_labels <- c("AA", "AB", "AB", "BB")
+sig_labels_1 <- c("AA", "", "", "")
+RH_trend_vals <- c(0.2281, 0.1515, 0.1379, 0.0718)
+
+
+RH_trend <- plot(emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")) +
+  
+  coord_flip() +
+  
+  scale_y_discrete(labels = harvest_labels) +
+  
+  geom_text(aes(label = sig_labels), hjust = 1.5, 
+                                     vjust = -3,
+                                     size = 3) +
+  geom_text(aes(label = round(RH_trend_vals, 2), hjust = -0.3)) +
+  
+  
+  labs(x = "d_RH Trend", 
+       y = "",
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"))
+
+
+RH_trend
+
+NFFD_emtrends <- emtrends(NFFD_mod, pairwise ~ harvestF, var = "d_NFFD", adjust = "bonferroni")
+NFFD_emtrends
+
+NFFD_trend_vals <- c(0.0350, 0.0256, 0.0217, 0.0108)
+
+
+NFFD_trend <- plot(emtrends(NFFD_mod, pairwise ~ harvestF, var = "d_NFFD", adjust = "bonferroni")) +
+  
+  coord_flip() +
+  
+  scale_y_discrete(labels = harvest_labels) +
+  
+  geom_text(aes(label = sig_labels), hjust = 1.5, 
+                                     vjust = -3,
+                                     size = 3) +
+  geom_text(aes(label = round(NFFD_trend_vals, 3), hjust = -0.3)) +
+  
+  
+  labs(x = "d_NFFD Trend", 
+       y = "",
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"))
+
+
+NFFD_trend
+
+NFFD_mod
+RH_mod
+
+# Grouping -----------------
+
+inter_plot <- ggarrange(NFFD_plot, RH_plot,
+          labels = c("A", "B"), 
+          vjust = 0.5, 
+          ncol = 2,
+          heights = c(10, 1),
+          common.legend = TRUE, legend = "top")
+
+trend_plot <- ggarrange(NFFD_trend, RH_trend, 
+                        labels = c("C", "D"))
+
+ggarrange(inter_plot, trend_plot, nrow = 2, heights = c(2, 1))
+
+
+ggarrange(NFFD_plot, RH_plot,
+          ggarrange(NFFD_trend, RH_trend, nrow = 1, labels = c("C", "D"), align = "hv"),
+          labels = c("A", "B"), widths = c(1, 10), align = "v", common.legend = TRUE)
+
+
+trend_plots <- ggarrange(NFFD_trend, RH_trend, nrow = 1, labels = c("C", "D"), align = "hv")
+# Testing 
+fiber.lm <- lm(strength ~ diameter*machine, data = fiber)
+
+fiber.lm
+emtrends(fiber.lm, pairwise ~ machine, var = "diameter")
+
+
+emmip(RH_mod, harvestF ~ d_RH, cov.reduce = range)
 
 
 df_1 <- ggpredict(mod, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
