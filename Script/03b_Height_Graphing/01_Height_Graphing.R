@@ -180,10 +180,10 @@ MAP_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[2]],
               inherit.aes = FALSE,
               height = 0.5,
               width = 3,
-              size = 0.1, colour = "gray20") +
+              size = 0.1, colour = "gray30", alpha = 0.5) +
   
   labs(x = "MAP Climatic Distance", 
-       y = "",
+       y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
@@ -205,11 +205,11 @@ NFFD_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[3]],
               mapping = aes(x = d_NFFD, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 0.7,
-              size = 0.1, colour = "gray20") +
+              width = 0.3,
+              size = 0.1, colour = "gray30", alpha = 0.5) +
   
   labs(x = "NFFD Climatic Distance", 
-       y = "",
+       y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
@@ -257,11 +257,11 @@ RH_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[5]],
               mapping = aes(x = d_RH, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 0.1,
-              size = 0.1, colour = "gray20") +
+              width = 0.05,
+              size = 0.1, colour = "gray30", alpha = 0.5) +
   
   labs(x = "RH Climatic Distance", 
-       y = "",
+       y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
@@ -283,9 +283,10 @@ ggarrange(MWMT_3C_plot, MAP_3C_plot, NFFD_3C_plot,
           common.legend = TRUE, legend = "top")
 
 
-ggarrange(MAP_3C_plot,EMT_3C_plot, RH_3C_plot,
+ggarrange(MAP_3C_plot, NFFD_3C_plot, RH_3C_plot,
           labels = c("A", "B", "C"),
           hjust = -1, 
+          ncol = 1,
           common.legend = TRUE, legend = "top")
 
 ### 4.2 Cover 3a Weak ------
