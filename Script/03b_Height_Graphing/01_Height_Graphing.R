@@ -147,14 +147,21 @@ cover_3a_models
 MWMT_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[1]],
                                    type = "pred", 
                                    terms = c("d_MWMT [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)") +
+                                   legend.title = "   Percent \nTree Cover (%)",
+                                   alpha = 0.05) +
+  
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = cover_3a_models$data[[1]],
               mapping = aes(x = d_MWMT, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
               width = 0.03,
-              size = 0.1, colour = "gray20") +
+              size = 0.1, colour = "gray40",
+              alpha = 0.5) +
   
   labs(x = "MWMT Climatic Distance", 
        y = "Predicted Height (cm)",
@@ -173,7 +180,13 @@ MWMT_3C_plot
 MAP_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[2]],
                                    type = "pred", 
                                    terms = c("d_MAP [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)") +
+                                   legend.title = "   Percent \nTree Cover (%)", 
+                                  alpha = 0.05) +
+  
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = cover_3a_models$data[[2]],
               mapping = aes(x = d_MAP, y = exp(predict_val)),
@@ -199,7 +212,13 @@ MAP_3C_plot
 NFFD_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[3]],
                                    type = "pred", 
                                    terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)") +
+                                   legend.title = "   Percent \nTree Cover (%)",
+                                   alpha = 0.05) +
+  
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = cover_3a_models$data[[3]],
               mapping = aes(x = d_NFFD, y = exp(predict_val)),
@@ -251,7 +270,13 @@ EMT_3C_plot
 RH_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[5]],
                                    type = "pred", 
                                    terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)") +
+                                   legend.title = "   Percent \nTree Cover (%)",
+                                 alpha = 0.05) +
+  
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = cover_3a_models$data[[5]],
               mapping = aes(x = d_RH, y = exp(predict_val)),
@@ -570,12 +595,12 @@ ggplot(df_MSP, aes(x, predicted)) +
         legend.title = element_blank())
 
 # d_AHM
-df_AHM <- ggpredict(harvest_2a_models[["model_2a"]][[3]], terms = c("d_AHM [all]", "harvestF"))
+df_AHM <- ggpredict(harvest_2a_models[["model_2a"]][[4]], terms = c("d_AHM [all]", "harvestF"))
 
 ggplot(df_AHM, aes(x, predicted)) +
   
-  geom_jitter(data = harvest_2a_models$data[[3]],
-              AHMping = aes(x = d_AHM, y = exp(predict_val)),
+  geom_jitter(data = harvest_2a_models$data[[4]],
+              mapping = aes(x = d_AHM, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
               width = 2,
@@ -646,11 +671,11 @@ ggplot(df_NFFD, aes(x, predicted)) +
         legend.title = element_blank())
 
 # d_PAS
-df_PAS <- ggpredict(harvest_2a_models[["model_2a"]][[5]], terms = c("d_PAS [all]", "harvestF"))
+df_PAS <- ggpredict(harvest_2a_models[["model_2a"]][[7]], terms = c("d_PAS [all]", "harvestF"))
 
 PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
   
-  geom_jitter(data = harvest_2a_models$data[[5]],
+  geom_jitter(data = harvest_2a_models$data[[7]],
               mapping = aes(x = d_PAS, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
@@ -658,7 +683,7 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
               size = 0.1, colour = "gray50") +
   
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
-              alpha = 0.1) +
+              alpha = 0.05) +
   
   geom_line(aes(color = group), linewidth = 1) +
   
@@ -669,9 +694,9 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
        colour = "Harvest") +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
-                     values = c("red", "blue", "green4", "black")) +
+                     values = c("red", "green4", "blue", "black")) +
   scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
-                    values = c("red", "blue", "green4", "black")) +
+                    values = c("red", "green4", "blue", "black")) +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -680,6 +705,8 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top",
         legend.title = element_blank())
+
+PAS_graph
 
 # d_EMT
 df_EMT <- ggpredict(harvest_2a_models[["model_2a"]][[6]], terms = c("d_EMT [all]", "harvestF"))
@@ -771,8 +798,8 @@ df <- regen_height
 
 mod <- ln_height_harvest_models$model_ah[[1]]
 
-mod <- harvest_2a_models$model_2a[[5]]
-
+mod <- harvest_2a_models$model_2a[[7]]
+mod
 # Regrid emmeans
 
 logemm.src <- regrid(emmeans(mod, "harvestF",
@@ -791,7 +818,7 @@ PAS_means <- plot(regrid(logemm.src), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = sig_labels), hjust = 1.5, vjust = -4, size = 3) +
+  geom_text(aes(label = sig_labels), hjust = 1.5, vjust = -5, size = 3) +
   geom_text(aes(label = round(exp(logemm.src@bhat), 1)), hjust = -0.5) +
   
   labs(x = "Height (cm)", 
@@ -804,7 +831,9 @@ PAS_means <- plot(regrid(logemm.src), transform = "log") +
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"))
 
+PAS_means
 
+# grouping
 ggarrange(PAS_graph, PAS_means, nrow = 2, heights = c(2.5, 1))
 
 

@@ -190,9 +190,13 @@ plot(climatic_models[[3]][[1]][["d_MSP"]], ReMSP.prob, ylim = c(0,1),
 # NFFD plot
 NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred", 
                    terms = c("d_NFFD [all]", "harvestF"),
-                   legend.title = "") + 
+                   legend.title = "",
+                   alpha = 0.05) + 
   
-  scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")) +
+  scale_colour_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                      values = c("red", "green4", "blue", "black")) +
   
           
   geom_point(data = model_3_H$data[[1]], mapping = aes(x = d_NFFD, y = survival_probs), 
@@ -209,6 +213,7 @@ NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred",
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top")
 
+NFFD_plot
 
 # FFP Plot
 FFP_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[2]], type = "pred", 
@@ -259,9 +264,13 @@ EMT_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred",
 # RH Plot 
 RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred", 
                                 terms = c("d_RH [all]", "harvestF"),
-                                legend.title = "") + 
+                                legend.title = "",
+                              alpha = 0.05) + 
   
-  scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")) +
+  scale_colour_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                    values = c("red", "green4", "blue", "black")) +
   
   
   geom_point(data = model_3_H$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
@@ -290,7 +299,7 @@ ggarrange(NFFD_plot, FFP_plot, EMT_plot, RH_plot,
           vjust = 0.5, 
           common.legend = TRUE, legend = "top")
 
-ggarrange(EMT_plot, RH_plot, 
+ggarrange(NFFD_plot, RH_plot, 
           labels = c("A", "B"), 
           vjust = 0.5, 
           common.legend = TRUE, legend = "top")
@@ -547,8 +556,13 @@ model_3_C
 # MAT plot
 MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred", 
                                 terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"),
-                                legend.title = "Percent Tree Cover (%)") + 
+                                legend.title = "Percent Tree Cover (%)",
+                                alpha = 0.05) + 
   
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = model_3_C$data[[1]], mapping = aes(x = d_MAT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 0.02, alpha = 0.5) +
@@ -562,7 +576,8 @@ MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred",
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"))
 
 MAT_cov_plot
 
@@ -609,7 +624,13 @@ MCMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[3]], type = "pred",
 # MAP plot
 MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred", 
                                     terms = c("d_MAP [all]", "tree_cover [0, 10, 30, 60]"),
-                                    legend.title = "Percent Tree Cover (%)") +
+                                    legend.title = "Percent Tree Cover (%)",
+                                   alpha = 0.05) +
+  
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = model_3_C$data[[4]], mapping = aes(x = d_MAP, y = survival_probs), 
               inherit.aes = FALSE, size = 0.2, colour = "gray40", width = 2.5, alpha = 0.5) +
@@ -623,14 +644,21 @@ MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred",
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"))
 
 MAP_cov_plot
 
 # NFFD plot
 NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred", 
                                     terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"),
-                                    legend.title = "Percent Tree Cover (%)") + 
+                                    legend.title = "Percent Tree Cover (%)",
+                                    alpha = 0.05) + 
+  
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = model_3_C$data[[5]], mapping = aes(x = d_NFFD, y = survival_probs), 
               inherit.aes = FALSE, size = 0.2, colour = "gray40", width = 0.4, alpha = 0.5) +
@@ -644,7 +672,8 @@ NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred",
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"))
 
 NFFD_cov_plot
 
@@ -730,8 +759,14 @@ Eref_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[9]], type = "pred",
 # RH plot
 RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[10]], type = "pred", 
                                     terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"),
-                                    legend.title = "Percent Tree Cover (%)") + 
-
+                                    legend.title = "Percent Tree Cover (%)",
+                                  alpha = 0.05) + 
+  
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
+  
   geom_jitter(data = model_3_C$data[[10]], mapping = aes(x = d_RH, y = survival_probs), 
               inherit.aes = FALSE, size = 0.2, colour = "gray40", width = 0.07, alpha = 0.5) +
   
@@ -744,7 +779,8 @@ RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[10]], type = "pred",
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"))
 
 RH_cov_plot
 
@@ -765,7 +801,8 @@ ggarrange(MAT_cov_plot,MAP_cov_plot,
           NFFD_cov_plot, RH_cov_plot,
           labels = c("A", "B", "C",
                      "D"),
-          hjust = -2.5, 
+          vjust = 0.2, 
+          hjust = -2,
           common.legend = TRUE, legend = "top")
 
 # 9. Climatic Cover Models -------------------------------------------------

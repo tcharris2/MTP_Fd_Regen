@@ -2,9 +2,9 @@ library(ggpubr)
 
 ln_height_cover_models
 
-height_1_models <- ln_height_cover_models[c(1, 4:6, 8, 10:12, 15), c("ClimaticVarList", "model_1")]
+height_1_models <- ln_height_harvest_models[c(1, 4:6, 8, 10:12, 15), c("ClimaticVarList", "model_1")]
 
-survival_1_models <- survival_cover_models[c(1, 4:6, 8, 10:12, 15), c("ClimaticVarList", "model_1")]
+survival_1_models <- survival_harvest_models[c(1, 4:6, 8, 10:12, 15), c("ClimaticVarList", "model_1")]
 
 
 height_1_models
@@ -25,7 +25,7 @@ height_est <-sjPlot::plot_models(height_1_models$model_1[[2]], height_1_models$m
   
   ylim(-0.1, 0.2) +
   
-  labs(y = "Model Beta Estimates") +
+  labs(y = "Variable Beta Estimates") +
   
   geom_hline(yintercept = 0, colour = "black", linewidth = 0.4) + 
   
@@ -40,7 +40,7 @@ height_est <-sjPlot::plot_models(height_1_models$model_1[[2]], height_1_models$m
         legend.title = element_blank(),
         title = element_text(face = "bold"))
   
-
+height_est
 
 # Survival 
 
@@ -51,13 +51,14 @@ survival_est<- sjPlot::plot_models(survival_1_models$model_1[[2]], survival_1_mo
                     axis.labels=c("RH", "AHM", "NFFD", "EMT", "EXT", "MAT", "PAS", "MSP", "MAP"),
                     show.p = TRUE,
                     show.values = TRUE,
-                    title = "Survival") +
+                    title = "Survival",
+                    transform = "plogis") +
   
-  ylim(0, 3) +
+  ylim(0, 1) +
   
-  labs(y = "Model Odds Ratio") +
+  labs(y = "Variable Probabilities") +
   
-  geom_hline(yintercept = 1, colour = "black", linewidth = 0.4) + 
+  geom_hline(yintercept = 0.5, colour = "black", linewidth = 0.4) + 
   
   scale_colour_manual(values = c("black", "black", "red", "red", "red", "red", "blue", "blue", "blue")) +
   
@@ -70,7 +71,8 @@ survival_est<- sjPlot::plot_models(survival_1_models$model_1[[2]], survival_1_mo
         legend.title = element_blank(),
         title = element_text(face = "bold"))
 
-
+survival_est
 # Grouping 
 
 ggarrange(survival_est, height_est)
+
