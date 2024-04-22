@@ -114,7 +114,6 @@ loc_group_summary$location[loc_group_summary$location == "Jaffray"] <- "Cranbroo
 #  3.  Graphing  ---------------------------------------------------------------
 
 ###### 3.1 Survival ----
-library("forcats")
 
 survival_2 <- ggplot(data = loc_group_summary, 
                      aes(x = fct_reorder(location, avg_survival), y = avg_survival, fill = location)) +
@@ -141,7 +140,8 @@ survival_2 <- ggplot(data = loc_group_summary,
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.text.x = element_text(angle = 20, hjust = 1),
-        axis.title = element_text(size = 18, face = "bold"))
+        axis.title = element_text(size = 18, face = "bold"),
+        text = element_text(family = "Times"))
 
 
 
@@ -174,7 +174,8 @@ height_2 <- ggplot(data = loc_group_summary,
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.text.x = element_text(angle = 20, hjust = 1),
-        axis.title = element_text(size = 18, face = "bold"))
+        axis.title = element_text(size = 18, face = "bold"),
+        text = element_text(family = "Times"))
 
 
 height_2
@@ -191,13 +192,13 @@ site_summary <- ggplot(data = site_c_vars_df,
   
   labs(title = NULL,
        x = NULL,
-       y = "Normalized Site Climatic Variables",
+       y = bquote("Normalized Location Climatic Variables"^1),
        size = 16) +
 
   
-  scale_x_discrete(labels = c("MAT", "MWMT", "MCMT", "MAP", "MSP",
-                               "AHM", "SHM", "NFFD", "FFP", "PAS", 
-                               "EMT", "EXT", "Eref", "CMD", "RH")) +
+  scale_x_discrete(labels = c(bquote(MAP[L]), bquote(MSP[L]), bquote(PAS[L]), 
+                              bquote(MAT[L]), bquote(EXT[L]), bquote(EMT[L]), 
+                              bquote(NFFD[L]), bquote(AHM[L]), bquote(RH[L]))) +
   
   geom_text(aes(y = value + 0.5 * sign(value), label = round(value, 1)), 
             position = position_dodge(width = 0.8), 
@@ -215,14 +216,13 @@ site_summary <- ggplot(data = site_c_vars_df,
         strip.text = element_text(size = 15, face = "bold"),
         axis.title = element_text(size = 18, face = "bold"),
         axis.text = element_text(size = 13, face = "bold"),
-        axis.text.y = element_text(size = 12))
+        axis.text.y = element_text(size = 12),
+        text = element_text(family = "Times"))
 
 site_summary
 # 4. Grouping Graphs ------------------------------------------------------
 
 library(ggpubr)
-
-ggarrange(survival_2, height_2, site_summary, nrow = 1)
 
 
 ggarrange(site_summary,

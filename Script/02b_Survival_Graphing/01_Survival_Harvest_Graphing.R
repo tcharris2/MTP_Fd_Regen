@@ -13,6 +13,10 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
+library(extrafont)
+font_import()
+loadfonts(device = "win")
+
 
 #### 1.2 Correcting Variable types -------
 
@@ -188,6 +192,11 @@ plot(climatic_models[[3]][[1]][["d_MSP"]], ReMSP.prob, ylim = c(0,1),
 
   
 # NFFD plot
+NFFD_mod <- model_3_H$model_3[[1]]
+RH_mod <- model_3_H$model_3[[4]]
+
+tab_model(NFFD_mod, RH_mod, transform = NULL)
+
 NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred", 
                    terms = c("d_NFFD [all]", "harvestF"),
                    legend.title = "",
@@ -202,7 +211,7 @@ NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred",
   geom_point(data = model_3_H$data[[1]], mapping = aes(x = d_NFFD, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
-  labs(x = "NFFD Climatic Distance", 
+  labs(x = "Number of Frost Free Days Transfer Distance (days)", 
        y = "Predicted Probability of Survival",
        title = NULL) + 
   
@@ -276,7 +285,7 @@ RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred",
   geom_point(data = model_3_H$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
-  labs(x = "RH Climatic Distance", 
+  labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
        y = NULL,
        title = NULL) + 
   
@@ -567,7 +576,7 @@ MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred",
   geom_jitter(data = model_3_C$data[[1]], mapping = aes(x = d_MAT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 0.02, alpha = 0.5) +
   
-  labs(x = "MAT Climatic Distance", 
+  labs(x = bquote("Mean Annual Temperature Transfer Distance (" ^0, ")"), 
        y = "Predicted Probability of Survival",
        title = NULL) + 
   
@@ -1087,3 +1096,13 @@ UseMethod
 
 tab_model(s_mod)
 tab_model(h_mod)
+
+
+# 12. P-Values --------------------------
+
+NFFD_mod_2 <- survival_harvest_models$model_2[[8]]
+
+RH_mod_2 <- survival_harvest_models$model_2[[15]]
+
+lrtest(NFFD_mod_2, NFFD_mod)
+lrtest(RH_mod_2, RH_mod)

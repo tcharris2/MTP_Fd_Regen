@@ -630,7 +630,8 @@ ggplot(df_AHM, aes(x, predicted)) +
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top",
-        legend.title = element_blank())
+        legend.title = element_blank(),
+        text = element_text(family = "Times"))
 
 # d_NFFD
 df_NFFD <- ggpredict(harvest_2a_models[["model_2a"]][[4]], terms = c("d_NFFD [all]", "harvestF"))
@@ -671,11 +672,31 @@ ggplot(df_NFFD, aes(x, predicted)) +
         legend.title = element_blank())
 
 # d_PAS
-df_PAS <- ggpredict(harvest_2a_models[["model_2a"]][[7]], terms = c("d_PAS [all]", "harvestF"))
+PAS_mod <- harvest_2a_models$model_2a[[5]]
+
+
+PAS_mod_2 <- lmer(log(height) ~ scale(d_PAS) + harvestF + age + (1|blockF/plotF/splitplotF), 
+                  data = regen_height, REML = FALSE,
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+PAS_mod
+PAS_mod_2
+
+install.packages("performace")
+library(performance)
+
+r2_nakagawa(PAS_mod_2)
+r2_nakagawa(PAS_mod, tolerance = 1e-1000)
+
+
+tab_model(PAS_mod_2)
+library(ggeffects)
+
+df_PAS <- ggpredict(harvest_2a_models[["model_2a"]][[5]], terms = c("d_PAS [all]", "harvestF"))
 
 PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
   
-  geom_jitter(data = harvest_2a_models$data[[7]],
+  geom_jitter(data = harvest_2a_models$data[[5]],
               mapping = aes(x = d_PAS, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
@@ -687,7 +708,7 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
   
   geom_line(aes(color = group), linewidth = 1) +
   
-  labs(x = "Precipitation as Snow Distance (mm)", 
+  labs(x = "Precipitation as Snow Transfer Distance (mm)", 
        y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
@@ -704,7 +725,8 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top",
-        legend.title = element_blank())
+        legend.title = element_blank(),
+        text = element_text(family = "Times"))
 
 PAS_graph
 
@@ -802,7 +824,7 @@ mod <- harvest_2a_models$model_2a[[7]]
 mod
 # Regrid emmeans
 
-logemm.src <- regrid(emmeans(mod, "harvestF",
+logemm.src <- regrid(emmeans(PAS_mod, "harvestF",
                              lmerTest.limit = 5809, pbkrtest.limit = 5809), 
                      transform = "log")
 confint(logemm.src, type = "response")

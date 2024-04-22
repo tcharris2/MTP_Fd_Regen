@@ -18,7 +18,9 @@ height_est <-sjPlot::plot_models(height_1_models$model_1[[2]], height_1_models$m
                     height_1_models$model_1[[1]], height_1_models$model_1[[8]], height_1_models$model_1[[7]],
                     height_1_models$model_1[[5]], height_1_models$model_1[[4]], height_1_models$model_1[[9]],
                     show.legend = FALSE,
-                    axis.labels=c("RH", "AHM", "NFFD", "EMT", "EXT", "MAT", "PAS", "MSP", "MAP"),
+                    axis.labels=c(bquote(RH[tds]), bquote(AHM[tds]), bquote(NFFD[tds]), 
+                                  bquote(EMT[tds]), bquote(EXT[tds]), bquote(MAT[tds]), 
+                                  bquote(PAS[tds]), bquote(MSP[tds]), bquote(MAP[tds])),
                     show.p = TRUE,
                     show.values = TRUE,
                     title = "Height") +
@@ -38,7 +40,8 @@ height_est <-sjPlot::plot_models(height_1_models$model_1[[2]], height_1_models$m
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
-        title = element_text(face = "bold"))
+        title = element_text(face = "bold"),
+        text = element_text(family = "Times"))
   
 height_est
 
@@ -48,7 +51,9 @@ survival_est<- sjPlot::plot_models(survival_1_models$model_1[[2]], survival_1_mo
                     survival_1_models$model_1[[1]], survival_1_models$model_1[[8]], survival_1_models$model_1[[7]],
                     survival_1_models$model_1[[5]], survival_1_models$model_1[[4]], survival_1_models$model_1[[9]],
                     show.legend = FALSE,
-                    axis.labels=c("RH", "AHM", "NFFD", "EMT", "EXT", "MAT", "PAS", "MSP", "MAP"),
+                    axis.labels=c(bquote(RH[tds]), bquote(AHM[tds]), bquote(NFFD[tds]), 
+                                  bquote(EMT[tds]), bquote(EXT[tds]), bquote(MAT[tds]), 
+                                  bquote(PAS[tds]), bquote(MSP[tds]), bquote(MAP[tds])),
                     show.p = TRUE,
                     show.values = TRUE,
                     title = "Survival",
@@ -69,7 +74,8 @@ survival_est<- sjPlot::plot_models(survival_1_models$model_1[[2]], survival_1_mo
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
-        title = element_text(face = "bold"))
+        title = element_text(face = "bold"),
+        text = element_text(family = "Times"))
 
 survival_est
 # Grouping 
