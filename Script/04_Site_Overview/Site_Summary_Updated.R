@@ -66,6 +66,10 @@ loc_group_summary
 
 SiteClimaticVarList <- names(regen %>% select(starts_with("s_")))
 
+SiteClimaticVarList <- SiteClimaticVarList[c(4, 5, 10, 1, 12, 11, 8, 6, 15)]
+SiteClimaticVarList
+
+
 regen_normalized <- regen %>%
   mutate(across(starts_with(c("s_")), scale))
 
@@ -105,7 +109,7 @@ site_c_vars_df
 
 
 
-
+loc_group_summary$location[loc_group_summary$location == "Jaffray"] <- "Cranbrook"
 
 #  3.  Graphing  ---------------------------------------------------------------
 
@@ -121,7 +125,7 @@ survival_2 <- ggplot(data = loc_group_summary,
   
   scale_fill_viridis_d() +
   
-  geom_text(aes(label = round(avg_survival, 1)), vjust = -0.3) +
+  geom_text(aes(label = round(avg_survival, 1)), vjust = -0.3, size = 4) +
   
   guides(fill = "none") +
   
@@ -132,11 +136,12 @@ survival_2 <- ggplot(data = loc_group_summary,
        fill = "Survival (%)") +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major.y = element_line(color = "gray80", linewidth = .05),
+        panel.grid.major.y = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"))
+        axis.text = element_text(size = 15),
+        axis.text.x = element_text(angle = 20, hjust = 1),
+        axis.title = element_text(size = 18, face = "bold"))
 
 
 
@@ -153,7 +158,7 @@ height_2 <- ggplot(data = loc_group_summary,
   
   scale_fill_viridis_d() +
   
-  geom_text(aes(label = round(avg_height, 1)), vjust = -0.3) +
+  geom_text(aes(label = round(avg_height, 1)), vjust = -0.3, size = 4) +
   
   guides(fill = "none") +
   
@@ -164,15 +169,17 @@ height_2 <- ggplot(data = loc_group_summary,
        fill = "Height (cm)") +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major.y = element_line(color = "gray80", linewidth = .05),
+        panel.grid.major.y = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"))
+        axis.text = element_text(size = 15),
+        axis.text.x = element_text(angle = 20, hjust = 1),
+        axis.title = element_text(size = 18, face = "bold"))
 
 
-
+height_2
 ###### 3.3 Avg Site Climate ------------
+site_c_vars_df$location[site_c_vars_df$location == "Jaffray"] <- "Cranbrook"
 
 
 site_summary <- ggplot(data = site_c_vars_df, 
@@ -194,21 +201,23 @@ site_summary <- ggplot(data = site_c_vars_df,
   
   geom_text(aes(y = value + 0.5 * sign(value), label = round(value, 1)), 
             position = position_dodge(width = 0.8), 
-            size = 3) +
+            size = 4) +
   
   facet_wrap( ~ location, ncol = 1) +
   
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0.5),
         legend.position = "none",
         panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major.y = element_line(color = "gray90", linewidth = .05),
+        panel.grid.major.y = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
-        strip.text = element_text(face = "bold"),
-        axis.title = element_text(size = 12, face = "bold"))
+        strip.text = element_text(size = 15, face = "bold"),
+        axis.title = element_text(size = 18, face = "bold"),
+        axis.text = element_text(size = 13, face = "bold"),
+        axis.text.y = element_text(size = 12))
 
-
+site_summary
 # 4. Grouping Graphs ------------------------------------------------------
 
 library(ggpubr)
@@ -217,5 +226,5 @@ ggarrange(survival_2, height_2, site_summary, nrow = 1)
 
 
 ggarrange(site_summary,
-          ggarrange(survival_2, height_2, nrow = 2, labels = c("B", "C"), align = "hv"),
-          ncol = 2, labels = "A", widths = c(1, 1), align = "v")
+          ggarrange(survival_2, height_2, nrow = 2, labels = c("B.", "C."), align = "hv"),
+          ncol = 2, labels = "A.", widths = c(1, 1), align = "v")
