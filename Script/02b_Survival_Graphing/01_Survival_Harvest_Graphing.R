@@ -13,11 +13,6 @@ regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.cs
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
-library(extrafont)
-font_import()
-loadfonts(device = "win")
-
-
 #### 1.2 Correcting Variable types -------
 
 regen_prepped <- universalDataPrepFunction(regen)
@@ -220,7 +215,8 @@ NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred",
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        legend.position = "top",
+        text = element_text(family = "Times"))
 
 NFFD_plot
 
@@ -294,9 +290,10 @@ RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred",
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        legend.position = "top",
+        text = element_text(family = "Times"))
 
-  
+RH_plot 
 
 # Composite plots 
 
@@ -565,7 +562,7 @@ model_3_C
 # MAT plot
 MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred", 
                                 terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"),
-                                legend.title = "Percent Tree Cover (%)",
+                                legend.title = "Percent Crown Closure (%)",
                                 alpha = 0.05) + 
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -576,7 +573,7 @@ MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred",
   geom_jitter(data = model_3_C$data[[1]], mapping = aes(x = d_MAT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 0.02, alpha = 0.5) +
   
-  labs(x = bquote("Mean Annual Temperature Transfer Distance (" ^0, ")"), 
+  labs(x = bquote(bold("Mean Annual Temperature Transfer Distance (" ^"o" * "C)")), 
        y = "Predicted Probability of Survival",
        title = NULL) + 
   
@@ -586,7 +583,8 @@ MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred",
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top",
-        legend.spacing.y = unit(1, "cm"))
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times"))
 
 MAT_cov_plot
 
@@ -924,15 +922,16 @@ RH_trend <- plot(emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "b
   geom_text(aes(label = round(RH_trend_vals, 2), hjust = -0.3)) +
   
   
-  labs(x = "d_RH Trend", 
+  labs(x = "Relative Humidity - Harvest \n Interaction Slope", 
        y = "",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"))
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12, face = "bold"),
+        text = element_text(family = "Times"))
 
 
 RH_trend
@@ -955,15 +954,16 @@ NFFD_trend <- plot(emtrends(NFFD_mod, pairwise ~ harvestF, var = "d_NFFD", adjus
   geom_text(aes(label = round(NFFD_trend_vals, 3), hjust = -0.3)) +
   
   
-  labs(x = "d_NFFD Trend", 
+  labs(x = "Number of Frost Free Days - Harvest \n Interaction Slope", 
        y = "",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"))
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 12, face = "bold"),
+        text = element_text(family = "Times"))
 
 
 NFFD_trend
@@ -974,14 +974,12 @@ RH_mod
 # Grouping -----------------
 
 inter_plot <- ggarrange(NFFD_plot, RH_plot,
-          labels = c("A", "B"), 
           vjust = 0.5, 
           ncol = 2,
           heights = c(10, 1),
           common.legend = TRUE, legend = "top")
 
-trend_plot <- ggarrange(NFFD_trend, RH_trend, 
-                        labels = c("C", "D"))
+trend_plot <- ggarrange(NFFD_trend, RH_trend)
 
 ggarrange(inter_plot, trend_plot, nrow = 2, heights = c(2, 1))
 
@@ -989,6 +987,29 @@ ggarrange(inter_plot, trend_plot, nrow = 2, heights = c(2, 1))
 ggarrange(NFFD_plot, RH_plot,
           ggarrange(NFFD_trend, RH_trend, nrow = 1, labels = c("C", "D"), align = "hv"),
           labels = c("A", "B"), widths = c(1, 10), align = "v", common.legend = TRUE)
+
+# Crown Closure means ---------------------------------------
+library(ggeffects)
+
+MAT_mod <- model_3_C[["model_3"]][[1]]
+
+
+
+df_2 <- ggpredict(MAT_mod, terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"), terms_to_colnames = TRUE, type = "random")
+df_2
+
+emtrends(MAT_mod, pairwise ~ tree_cover, var = "d_MAT", adjust = "bonferroni", 
+         at=list(d_MAT = c(-2.5, 0, 2.5, 5), tree_cover =c(0, 0.000002, 30, 60)))
+
+emtrends(mod, pairwise ~ temp, var="nitro", at=list(variety="A", temp=c(20,40)))
+
+joint_tests(MAT_mod, by = "d_MAT")
+
+emmip(MAT_mod, tree_cover ~ d_MAT, mult.name = "variety", cov.reduce = FALSE)
+
+emtrends(MAT_mod, pairwise ~ d_MAT, var = "tree_cover", mult.name = "d_MAT")
+
+
 
 
 trend_plots <- ggarrange(NFFD_trend, RH_trend, nrow = 1, labels = c("C", "D"), align = "hv")

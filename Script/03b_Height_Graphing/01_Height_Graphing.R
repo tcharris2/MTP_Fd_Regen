@@ -16,6 +16,7 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 library(ggpubr)
+library(emmeans)
 
 ### 1.2. Correcting Variable types -----
 
@@ -595,7 +596,7 @@ ggplot(df_MSP, aes(x, predicted)) +
         legend.title = element_blank())
 
 # d_AHM
-df_AHM <- ggpredict(harvest_2a_models[["model_2a"]][[4]], terms = c("d_AHM [all]", "harvestF"))
+df_AHM <- ggpredict(harvest_2a_models[["model_2a"]][[3]], terms = c("d_AHM [all]", "harvestF"))
 
 ggplot(df_AHM, aes(x, predicted)) +
   
@@ -603,7 +604,7 @@ ggplot(df_AHM, aes(x, predicted)) +
               mapping = aes(x = d_AHM, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 2,
+              width = 0.2,
               size = 0.1, colour = "gray50") +
   
   geom_point(aes(colour = group), size = 2, shape = "triangle") +
@@ -701,7 +702,7 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
               inherit.aes = FALSE,
               height = 0.5,
               width = 0.8,
-              size = 0.1, colour = "gray50") +
+              size = 0.1, colour = "gray30") +
   
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
               alpha = 0.05) +
@@ -851,7 +852,8 @@ PAS_means <- plot(regrid(logemm.src), transform = "log") +
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"))
+        axis.title = element_text(size = 12, face = "bold"),
+        text = element_text(family = "Times"))
 
 PAS_means
 

@@ -24,6 +24,9 @@ loc_group_summary <- regen %>%
 
 loc_group_summary
 
+loc_group_summary$location[loc_group_summary$location == "Jaffray"] <- "Cranbrook"
+
+loc_group_summary
 # 2. Organizing Data ------------------------------------------------------
 
 
@@ -144,7 +147,7 @@ survival_2 <- ggplot(data = loc_group_summary,
         text = element_text(family = "Times"))
 
 
-
+survival_2
 
 ####### 3.2 Height -------
 
@@ -192,7 +195,7 @@ site_summary <- ggplot(data = site_c_vars_df,
   
   labs(title = NULL,
        x = NULL,
-       y = bquote("Normalized Location Climatic Variables"^1),
+       y = bquote(bold("Normalized Location Climatic Variables"^"a")),
        size = 16) +
 
   
