@@ -2,7 +2,9 @@ library(ggpubr)
 
 ln_height_cover_models
 
-height_1_models <- ln_height_harvest_models[c(1, 4:6, 8, 10:12, 15), c("ClimaticVarList", "model_1")]
+height_1_models_c <- ln_height_cover_models[c(1, 4:6, 8, 10:12, 15), c("ClimaticVarList", "model_3a")]
+
+height_1_models_h <- ln_height_harvest_models[c(1, 4:6, 8, 10:12, 15), c("ClimaticVarList", "model_2a")]
 
 survival_1_models <- survival_harvest_models[c(1, 4:6, 8, 10:12, 15), c("ClimaticVarList", "model_1")]
 
@@ -94,3 +96,59 @@ survival_est
 # Grouping 
 
 ggarrange(survival_est, height_est, align = "hv")
+
+
+
+# Height
+
+plot_model(height_1_models$model_1[[2]])
+
+age_mod <- ln_height_cover_models$model_a[[1]]
+cover_mod <- ln_height_cover_models$model_c[[1]]
+
+plot_model(age_mod)
+plot_model(cover_mod)
+plot_model(age_mod, type = "pred", terms = "age")
+plot_model(cover_mod, type = "pred", terms = "tree_cover")
+
+
+sjPlot::plot_models(height_1_models_c$model_3a[[2]], height_1_models_c$model_3a[[3]], height_1_models_c$model_3a[[6]],
+                    height_1_models_c$model_3a[[1]], height_1_models_c$model_3a[[8]], height_1_models_c$model_3a[[7]],
+                    height_1_models_c$model_3a[[5]], height_1_models_c$model_3a[[4]], height_1_models_c$model_3a[[9]], 
+                    rm.terms = c("age", "sqrt(tree_cover)"),
+                    show.p = TRUE,
+                    show.values = TRUE) + ylim(-0.1, 0.15)
+
+
+sjPlot::plot_models(height_1_models_h$model_2a[[2]], height_1_models_h$model_2a[[3]], height_1_models_h$model_2a[[6]],
+                    height_1_models_h$model_2a[[1]], height_1_models_h$model_2a[[8]], height_1_models_h$model_2a[[7]],
+                    height_1_models_h$model_2a[[5]], height_1_models_h$model_2a[[4]], height_1_models_h$model_2a[[9]], 
+                    rm.terms = c("age", "harvestF [1, 2, 3, 4]"),
+                    show.p = TRUE,
+                    show.values = TRUE) + ylim(-0.1, 0.15)
+
+
+
+mod_test <- lmer(log(height) ~ scale(d_MAT) + tree_cover + harvestF + age + tree_cover*scale(d_MAT) + tree_cover*age + (1|blockF/plotF/splitplotF), 
+                  data = regen_height, REML = FALSE,
+                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+mod <- lmer(log(height) ~ scale(d_MAT) + tree_cover + harvestF + age + (1|blockF/plotF/splitplotF), 
+                 data = regen_height, REML = FALSE,
+                 control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+
+lrtest(mod, mod_test)
+
+tab_model(mod_test)
+r2_nakagawa(mod_test, tolerance = 1e-1000)
+
+mod_test
+mod
+
+mod_mega <- lmer(log(height) ~ scale(d_MAT) + tree_cover + harvestF + age + 
+                              scale(d_MAT)*tree_cover + 
+                 + tree_cover*age + (1|blockF/plotF/splitplotF), 
+                 data = regen_height, REML = FALSE,
+                 control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+mod_mega
+tab_model(mod_mega)

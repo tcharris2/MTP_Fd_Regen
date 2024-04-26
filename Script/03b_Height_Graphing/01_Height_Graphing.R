@@ -811,7 +811,8 @@ ggplot(df_RH, aes(x, predicted)) +
 
 
 
-# 6. emmeans ---------------------------------------------------------------------
+# 6. emmeans --------------------------------------------------------------------
+
 
 library(emmeans)
 
@@ -877,6 +878,20 @@ model_1
 sjPlot::plot_model(model_0, terms = c("d_RH [all]", "harvestF"), type = "pred")
 sjPlot::plot_model(model_1, terms = c("d_RH [all]", "harvestF"), type = "pred")
 
+
+
+cover_3a_models
+
+MAP_mod <- cover_3a_models$model_3a[[2]]
+NFFD_mod <- cover_3a_models$model_3a[[3]]
+RH_mod <- cover_3a_models$model_3a[[5]]
+
+tab_model(MAP_mod, NFFD_mod, RH_mod, tolerance )
+
+
+library(performance)
+
+r2_nakagawa(RH_mod, tolerance = 1e-1000)
 
 # 8. Three way interaction ------------------------------------------------------
 # Variation too high due to not a large enough breadth of climatic distances 
@@ -965,3 +980,28 @@ emmip(model_2, harvestF ~ d_RH | locationF, mult.name = "variety", cov.reduce = 
       glmerTest.limit = 5809, pbkrtest.limit = 5809)
 
 emtrends(model_3, pairwise ~ locationF, var = "d_RH", mult.name = "variety")
+
+# 9. P-Values ------------------------------------------------------------------
+
+ln_height_cover_models$ClimaticVarList
+
+
+MAP_mod_3 <- ln_height_cover_models$model_3a[[4]]
+NFFD_mod_3 <- ln_height_cover_models$model_3a[[8]]
+RH_mod_3 <- ln_height_cover_models$model_3a[[15]]
+
+MAP_mod_2 <- ln_height_cover_models$model_2a[[4]]
+NFFD_mod_2 <- ln_height_cover_models$model_2a[[8]]
+RH_mod_2 <- ln_height_cover_models$model_2a[[15]]
+
+lrtest(MAP_mod_2, MAP_mod_3)
+lrtest(NFFD_mod_2, NFFD_mod_3)
+lrtest(RH_mod_2, RH_mod_3)
+
+tab_model(MAP_mod_3)
+tab_model(NFFD_mod_3)
+tab_model(RH_mod_3)
+tab_model(ln_height_cover_models$model_3a[[12]])
+
+library(performance)
+r2_nakagawa(ln_height_cover_models$model_3a[[1]], tolerance = 1e-1000)

@@ -993,7 +993,7 @@ library(ggeffects)
 
 MAT_mod <- model_3_C[["model_3"]][[1]]
 
-
+tab_model(MAT_mod)
 
 df_2 <- ggpredict(MAT_mod, terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"), terms_to_colnames = TRUE, type = "random")
 df_2
