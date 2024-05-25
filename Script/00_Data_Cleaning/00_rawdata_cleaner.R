@@ -31,30 +31,30 @@ regen <- subset(regenbase, select = -c(X, X.1, X.2, X.3,
 # X, X.1, X.2, X.3 are figments left over from using this as an excel file
 
 ### Renaming the remaining  variables ### 
-rename_vars <- function (){
+rename_vars <- function (df){
 
-names(regen)[names(regen) == "Tree.Number"] <- "tree_number"
-names(regen)[names(regen) == "Survey.date"] <- "survey_date"
-names(regen)[names(regen) == "Location"] <- "location"
-names(regen)[names(regen) == "Rep"] <- "rep"
-names(regen)[names(regen) == "Tree.cover...."] <- "tree_cover"
-names(regen)[names(regen) == "Treat"] <- "harvest"
-names(regen)[names(regen) ==  "Cover"] <- "cover"
-names(regen)[names(regen) == "Year.planted"] <- "year_planted"
-names(regen)[names(regen) == "Genotype"] <- "provenance"
-names(regen)[names(regen) == "Species"] <- "species"
-names(regen)[names(regen) == "Basal.diam..mm."] <- "basal_dia"
-names(regen)[names(regen) == "Height..cm."] <- "height"
-names(regen)[names(regen) == "Crown.diameter1..cm."] <- "crown_dia1"
-names(regen)[names(regen) == "Crown.diameter2..cm."] <- "crown_dia2"
-names(regen)[names(regen) == "Avg.crown.diam..cm."] <- "avg_crown_dia"
-names(regen)[names(regen) == "Condition"] <- "condition"
-names(regen)[names(regen) == "Damage...notes"] <- "damage_notes"
+names(df)[names(df) == "Tree.Number"] <- "tree_number"
+names(df)[names(df) == "Survey.date"] <- "survey_date"
+names(df)[names(df) == "Location"] <- "location"
+names(df)[names(df) == "Rep"] <- "rep"
+names(df)[names(df) == "Tree.cover...."] <- "tree_cover"
+names(df)[names(df) == "Treat"] <- "harvest"
+names(df)[names(df) ==  "Cover"] <- "cover"
+names(df)[names(df) == "Year.planted"] <- "year_planted"
+names(df)[names(df) == "Genotype"] <- "provenance"
+names(df)[names(df) == "Species"] <- "species"
+names(df)[names(df) == "Basal.diam..mm."] <- "basal_dia"
+names(df)[names(df) == "Height..cm."] <- "height"
+names(df)[names(df) == "Crown.diameter1..cm."] <- "crown_dia1"
+names(df)[names(df) == "Crown.diameter2..cm."] <- "crown_dia2"
+names(df)[names(df) == "Avg.crown.diam..cm."] <- "avg_crown_dia"
+names(df)[names(df) == "Condition"] <- "condition"
+names(df)[names(df) == "Damage...notes"] <- "damage_notes"
 
-regen
+df
 }
 
-regen <- rename_vars()
+regen <- rename_vars(regen)
 
 
 ##### 3. Cleaning the Dataset -------------------------------------------------
@@ -66,14 +66,15 @@ tail(regen)
 
 # Removing the tail (string of unwanted NAs)
 # Again a figment of working with an excel file
-regen <- subset(regen, tree_number >= 1)
+regen <- subset(regen, !is.na(tree_number))
 summary(regen)
 
-# Removing observations that dont have a provenance assigned to them
+# Removing observations that don't have a provenance assigned to them
+# If provenances don't matter for analysis check these data points.
+unique(regen$provenance)
 regen <- subset(regen, provenance != "")
 
 summary(regen) 
-# if not working with provenance check these data points, you may be able to leave them in
 
 ###### 3.1 condition -----
 unique(regen$condition)
@@ -115,8 +116,13 @@ unique(regen$condition)
 
 ###### 3.2 crown dia -------
 # crown_dia2 and avg_crown_dia are character class variables 
+summary(regen)
+class(regen$crown_dia1)
 class(regen$crown_dia2)
 class(regen$avg_crown_dia)
+unique(regen$crown_dia1)
+unique(regen$crown_dia2)
+unique(regen$avg_crown_dia)
 
 regen$crown_dia2 <- as.numeric(regen$crown_dia2)
 regen$avg_crown_dia <- as.numeric(regen$avg_crown_dia)
@@ -126,7 +132,7 @@ unique(regen$avg_crown_dia)
 
 ### Checking damage notes ###
 unique(regen$damage_notes)
-# this is a colossal mess....
+# this is not in an analyzable format will need lots of work.
 # will need much work before this can be analyzed 
 # 1. nested data
 # 2. no consistent labeling pattern
