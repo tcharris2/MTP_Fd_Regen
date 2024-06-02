@@ -47,20 +47,19 @@ s_group_model_null <- list(groupSurvivalModelNull(regen_survival))
 ###### 4.2 Treatment Models ----
 s_group_model_harvest <- list(groupSurvivalModelHarvest(regen_survival))
 s_group_model_cover <- list(groupSurvivalModelCover(regen_survival))
-s_group_model_age_har <- list(groupSurvivalModelAge(regen_survival))
-s_group_model_age_can <- list(groupSurvivalModelAge(regen_survival))
+s_group_model_age <- list(groupSurvivalModelAge(regen_survival))
 
-###### 4.3 Harvest Models ----
-s_group_model_harvest_1 <- groupSurvivalHarvest_1(regen_survival)
-s_group_model_harvest_1a <- groupSurvivalHarvest_1a(regen_survival)
+###### 4.3 Climate Models -----
+s_group_model_1 <- list(groupSurvivalClimate_1(regen_survival))
+s_group_model_1a <- list(groupSurvivalClimate_1(regen_survival))
+
+###### 4.4 Harvest Models ----
 s_group_model_harvest_2 <- groupSurvivalHarvest_2(regen_survival)
 s_group_model_harvest_2a <- groupSurvivalHarvest_2a(regen_survival)
 s_group_model_harvest_3 <- groupSurvivalHarvest_3(regen_survival)
 s_group_model_harvest_3a <- groupSurvivalHarvest_3a(regen_survival)
 
-###### 4.4 Cover Models ----
-s_group_model_cover_1 <- groupSurvivalCover_1(regen_survival)
-s_group_model_cover_1a <- groupSurvivalCover_1a(regen_survival)
+###### 4.5 Cover Models ----
 s_group_model_cover_2 <- groupSurvivalCover_2(regen_survival)
 s_group_model_cover_2a <- groupSurvivalCover_2a(regen_survival)
 s_group_model_cover_3 <- groupSurvivalCover_3(regen_survival)
@@ -69,21 +68,29 @@ s_group_model_cover_3a <- groupSurvivalCover_3a(regen_survival)
 
 
 # 5. Grouping Models ------------------------------------------------------------
-survival_group_harvest_models <- tibble(s_group_model_null,
-                                        s_group_model_harvest, s_group_model_age_har,
-                                        s_group_model_harvest_1, s_group_model_harvest_1a,
-                                        s_group_model_harvest_2, s_group_model_harvest_2a,
-                                        s_group_model_harvest_3, s_group_model_harvest_3a,
+survival_group_harvest_models <- tibble("model_0" = s_group_model_null,
+                                        "model_h" = s_group_model_harvest,
+                                        "model_a" = s_group_model_age,
+                                        "model_1" = s_group_model_1,
+                                        "model_1a" = s_group_model_1a,
+                                        "model_2" = s_group_model_harvest_2, 
+                                        "model_2a" = s_group_model_harvest_2a,
+                                        "model_3" = s_group_model_harvest_3, 
+                                        "model_3a" = s_group_model_harvest_3a,
                                         ClimaticVarList)
 
 survival_group_harvest_models
 
 
-survival_group_cover_models <- tibble(s_group_model_null,
-                                       s_group_model_cover,s_group_model_age_can,
-                                       s_group_model_cover_1, s_group_model_cover_1a,
-                                       s_group_model_cover_2, s_group_model_cover_2a,
-                                       s_group_model_cover_3, s_group_model_cover_3a,
+survival_group_cover_models <- tibble("model_0" = s_group_model_null,
+                                      "model_c" = s_group_model_cover, 
+                                      "model_a" = s_group_model_age,
+                                      "model_1" = s_group_model_1, 
+                                      "model_1a" = s_group_model_1a,
+                                      "model_2" = s_group_model_cover_2,
+                                      "model_2a" = s_group_model_cover_2a,
+                                      "model_3" = s_group_model_cover_3,
+                                      "model_3a" = s_group_model_cover_3a,
                                        ClimaticVarList)
 
 survival_group_cover_models
@@ -110,11 +117,6 @@ survival_group_cover_mods
 
 
 # 8. Testing Harvest Models  ------------------------------------------------------
-
-# rename columns
-colnames(survival_group_harvest_mods) <- c("model_0", "model_h", "model_a", 
-                                           "model_1", "model_1a", "model_2", "model_2a", 
-                                           "model_3", "model_3a", "ClimaticVarList")
 survival_group_harvest_mods
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
@@ -203,12 +205,9 @@ write.csv(SH_group_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(), 
 
 
 # 9. Testing cover Models  -------------------------------------------------------
-
-# rename columns
-colnames(survival_group_cover_mods) <- c("model_0", "model_c", "model_a", 
-                                         "model_1", "model_1a", "model_2", "model_2a", 
-                                         "model_3", "model_3a", "ClimaticVarList")
 survival_group_cover_mods
+
+source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 
 ###### 9.1 Test models ----
 # Null vs 1 variable

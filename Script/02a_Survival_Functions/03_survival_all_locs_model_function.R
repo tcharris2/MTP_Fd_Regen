@@ -48,7 +48,7 @@ groupSurvivalModelAge <- function(df) {
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-groupSurvivalHarvest_1 <- function(df) {
+groupSurvivalClimate_1 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -70,7 +70,7 @@ groupSurvivalHarvest_1 <- function(df) {
 # Model_1a: Model Containing only the climatic variables and AGE
 # Stored as a large list inside the dataframe 
 
-groupSurvivalHarvest_1a <- function(df) {
+groupSurvivalClimate_1a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -180,50 +180,6 @@ groupSurvivalHarvest_3a <- function(df) {
   
 }
 
-
-# Model_1: Model Containing only the climatic variables 
-# Stored as a large list inside the dataframe 
-
-groupSurvivalCover_1 <- function(df) {
-  
-  # Create an empty list to fill 
-  results <- list() 
-  
-  # Loop over the variables
-  for (var in ClimaticVarList) {
-    # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
-                   data = df, family = binomial, 
-                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-    # Store the results in the list
-    results[[var]] <- model
-  }
-  # Create an output
-  results
-  
-}  
-
-# Model_1a: Model Containing only the climatic variables and AGE
-# Stored as a large list inside the dataframe 
-
-groupSurvivalCover_1a <- function(df) {
-  
-  # Create an empty list to fill 
-  results <- list() 
-  
-  # Loop over the variables
-  for (var in ClimaticVarList) {
-    # Perform the regression
-    model <- glmer(paste("survival ~", paste0("scale(", var, ")"), paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
-                   data = df, family = binomial, 
-                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-    # Store the results in the list
-    results[[var]] <- model
-  }
-  # Create an output
-  results
-  
-}
 
 
 
