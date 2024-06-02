@@ -5,13 +5,13 @@
   
 # Climatic Variables Functions --------------------------------------------------------------
 
-climaticVarListFunction <- function(df) {
+# climaticVarListFunction <- function(df) {
   
-  ClimaticVarList <- names(df %>% select(starts_with("d_")))
+#  ClimaticVarList <- names(df %>% select(starts_with("d_")))
 
-  ClimaticVarList
+#  ClimaticVarList
   
-}
+# }
 
 # Model Functions --------------------------------------------------------------
 
