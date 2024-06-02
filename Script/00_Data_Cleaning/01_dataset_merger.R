@@ -25,8 +25,10 @@ prov_climatebase <- read.csv(here("Data/02_ClimateBC", "ClimateData_All_Provs_20
 # Keeping a small subset of the variables 
 
 ###### 2.1 creating a subset ------
-prov_climate <- subset(prov_climatebase, select = c(provenance, ID_tag, seedlot, MAT, MWMT, MCMT, MAP, MSP, AHM, SHM,
-                                                    NFFD, FFP, PAS, EMT, EXT, Eref, CMD, RH))
+prov_climate <- subset(prov_climatebase, select = c(provenance, ID_tag, seedlot, 
+                                                    MAT, MAP, MSP, AHM,
+                                                    NFFD, PAS, EMT,
+                                                    EXT, RH))
 
 # Needs to be specified that these are climatic variables associated with the different provenance as the process for adding climate variables 
 # for the locations will be exactly the same 
@@ -37,19 +39,13 @@ rename_prov_climate_vars <- function (df){
   
   # Rename Variables
   names(df)[names(df) == "MAT"] <- "p_MAT"
-  names(df)[names(df) == "MWMT"] <- "p_MWMT"
-  names(df)[names(df) == "MCMT"] <- "p_MCMT"
   names(df)[names(df) == "MAP"] <- "p_MAP"
   names(df)[names(df) == "MSP"] <- "p_MSP"
   names(df)[names(df) == "AHM"] <- "p_AHM"
-  names(df)[names(df) == "SHM"] <- "p_SHM"
   names(df)[names(df) == "NFFD"] <- "p_NFFD"
-  names(df)[names(df) == "FFP"] <- "p_FFP"
   names(df)[names(df) == "PAS"] <- "p_PAS"
   names(df)[names(df) == "EMT"] <- "p_EMT"
   names(df)[names(df) == "EXT"] <- "p_EXT"
-  names(df)[names(df) == "Eref"] <- "p_Eref"
-  names(df)[names(df) == "CMD"] <- "p_CMD"
   names(df)[names(df) == "RH"] <- "p_RH"
   
   # Function Output
@@ -71,26 +67,20 @@ unique(loc_climatebase$location)
 
 ###### 3.1 creating a subset -----
 # Select location plus the desired climate variables. Make sure they all get renamed
-loc_climate <- subset(loc_climatebase, select = c(location, MAT, MWMT, MCMT, MAP, MSP, AHM, SHM,
-                                                  NFFD, FFP, PAS, EMT, EXT, Eref, CMD, RH))
+loc_climate <- subset(loc_climatebase, select = c(location, MAT, MAP, MSP, AHM,
+                                                  NFFD, PAS, EMT, EXT, RH))
 
 rename_loc_climate_vars <- function (df){
   
   # rename variables
   names(df)[names(df) == "MAT"] <- "s_MAT"
-  names(df)[names(df) == "MWMT"] <- "s_MWMT"
-  names(df)[names(df) == "MCMT"] <- "s_MCMT"
   names(df)[names(df) == "MAP"] <- "s_MAP"
   names(df)[names(df) == "MSP"] <- "s_MSP"
   names(df)[names(df) == "AHM"] <- "s_AHM"
-  names(df)[names(df) == "SHM"] <- "s_SHM"
   names(df)[names(df) == "NFFD"] <- "s_NFFD"
-  names(df)[names(df) == "FFP"] <- "s_FFP"
   names(df)[names(df) == "PAS"] <- "s_PAS"
   names(df)[names(df) == "EMT"] <- "s_EMT"
   names(df)[names(df) == "EXT"] <- "s_EXT"
-  names(df)[names(df) == "Eref"] <- "s_Eref"
-  names(df)[names(df) == "CMD"] <- "s_CMD"
   names(df)[names(df) == "RH"] <- "s_RH"
 
   # Function output
@@ -107,19 +97,13 @@ summary(regen_cleaned_merged)
 
 # 4. Adding Climatic Distance ------------------------------------------------
 regen_cleaned_merged$d_MAT <- (regen_cleaned_merged$s_MAT - regen_cleaned_merged$p_MAT)
-regen_cleaned_merged$d_MWMT <- (regen_cleaned_merged$s_MWMT - regen_cleaned_merged$p_MWMT)
-regen_cleaned_merged$d_MCMT <- (regen_cleaned_merged$s_MCMT - regen_cleaned_merged$p_MCMT)
 regen_cleaned_merged$d_MAP <- (regen_cleaned_merged$s_MAP - regen_cleaned_merged$p_MAP)
 regen_cleaned_merged$d_MSP <- (regen_cleaned_merged$s_MSP - regen_cleaned_merged$p_MSP)
 regen_cleaned_merged$d_AHM <- (regen_cleaned_merged$s_AHM - regen_cleaned_merged$p_AHM)
-regen_cleaned_merged$d_SHM <- (regen_cleaned_merged$s_SHM - regen_cleaned_merged$p_SHM)
 regen_cleaned_merged$d_NFFD <- (regen_cleaned_merged$s_NFFD - regen_cleaned_merged$p_NFFD)
-regen_cleaned_merged$d_FFP <- (regen_cleaned_merged$s_FFP - regen_cleaned_merged$p_FFP)
 regen_cleaned_merged$d_PAS <- (regen_cleaned_merged$s_PAS - regen_cleaned_merged$p_PAS)
 regen_cleaned_merged$d_EMT <- (regen_cleaned_merged$s_EMT - regen_cleaned_merged$p_EMT)
 regen_cleaned_merged$d_EXT <- (regen_cleaned_merged$s_EXT - regen_cleaned_merged$p_EXT)
-regen_cleaned_merged$d_Eref <- (regen_cleaned_merged$s_Eref - regen_cleaned_merged$p_Eref)
-regen_cleaned_merged$d_CMD <- (regen_cleaned_merged$s_CMD - regen_cleaned_merged$p_CMD)
 regen_cleaned_merged$d_RH <- (regen_cleaned_merged$s_RH - regen_cleaned_merged$p_RH)
 
 
