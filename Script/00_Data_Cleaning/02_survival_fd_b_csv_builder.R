@@ -41,7 +41,9 @@ survival_fd_b_base <- survival_fd_b_base[survival_fd_b_base$species == "Fd", ]
 #' @DesignIssues_2
 
 # remove block 12
+survival_fd_b_df <- survival_fd_b_base[!survival_fd_b_base$block == 9, ]
 survival_fd_b_df <- survival_fd_b_base[!survival_fd_b_base$block == 12, ]
+survival_fd_b_df <- survival_fd_b_base[!survival_fd_b_base$block == 13, ]
 
 # remove A class   
 survival_fd_b_df <- survival_fd_b_df[ends_with("B", vars = survival_fd_b_df$ID_tag),]
