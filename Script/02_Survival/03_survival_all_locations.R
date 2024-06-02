@@ -27,17 +27,11 @@ source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
 regen_prepped <- universalDataPrepFunction(regen)
 
-regen_survival <- subset(regen_prepped, !(is.na(tree_cover)))
-
-regen_survival <- subset(regen_survival, !regen_survival$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
-                                                                           "Peterhope future Fd", "Alex Fraser future Fd", 
-                                                                           "Twobit B class Fd"))
+# This function converts survival, harvestF, provenanceF, and 
+# all the random effects into factors. 
+# It also normalizes all the climatic distance variables. 
 
 str(regen_survival)
-# This function converts survival, harvestF, provenanceF, and all the random 
-# effects into factors. 
-
-# It also normalizes all the climatic distance variables. 
 
 # 4. Building out models ----------------------------------------------------------
 

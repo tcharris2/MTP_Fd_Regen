@@ -111,6 +111,6 @@ regen_cleaned_merged$d_RH <- (regen_cleaned_merged$s_RH - regen_cleaned_merged$p
 # - Thomson (29/052023)
 
 # 5. Writing a New .CSV File ---------------------------------------------------
-write.csv(regen_cleaned_merged, file = here("Data/03_Processed" , "20240602_regen_merged.csv"), row.names = FALSE)
+write.csv(regen_cleaned_merged, file = here("Data/03_Processed" ,  paste0(Sys.Date(), "_regen_merged.csv"), row.names = FALSE))
 
 

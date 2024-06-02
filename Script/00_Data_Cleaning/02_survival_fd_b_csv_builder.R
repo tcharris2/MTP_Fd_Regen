@@ -117,7 +117,8 @@ names(survival_fd_b)
 
 # 9. Writing a new CSV File ----------------------------------------------------
 
-write.csv(survival_fd_b, file = here("Data/03_Processed" , "20231201_survival_fd_b_processed.csv"), row.names = FALSE)
+write.csv(survival_fd_b, file = here("Data/03_Processed" ,  paste0(Sys.Date(), "_survival_fd_b_processed.csv"), row.names = FALSE))
+          
 
 
 
