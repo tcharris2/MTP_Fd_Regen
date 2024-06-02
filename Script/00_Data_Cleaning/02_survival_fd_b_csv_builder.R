@@ -13,6 +13,9 @@ survival_fd_b_base <- survival_fd_b_base[survival_fd_b_base$species == "Fd", ]
 # 3. Identifying Design Issues ----------------------------------------------------
 #' @DesignIssues
 
+# DESIGN ISSUES WERE IDENTIFIED IN A R SCRIPT THAT NO LONGER EXISTS 
+# see /Data/experimental design issues.csv for list of blocks with issues 
+
 # - RED block 12 no CC 
 # - Venables B class fd "46129_Fd_B" missing in AF blocks 2, 3. 
 # - Venables future Fd "53751_Fd_B" missing in AF block 3.

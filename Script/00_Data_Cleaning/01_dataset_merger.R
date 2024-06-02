@@ -33,27 +33,30 @@ prov_climate <- subset(prov_climatebase, select = c(provenance, ID_tag, seedlot,
 
 #
 
-rename_prov_climate_vars <- function (){
+rename_prov_climate_vars <- function (df){
   
-  names(prov_climate)[names(prov_climate) == "MAT"] <- "p_MAT"
-  names(prov_climate)[names(prov_climate) == "MWMT"] <- "p_MWMT"
-  names(prov_climate)[names(prov_climate) == "MCMT"] <- "p_MCMT"
-  names(prov_climate)[names(prov_climate) == "MAP"] <- "p_MAP"
-  names(prov_climate)[names(prov_climate) == "MSP"] <- "p_MSP"
-  names(prov_climate)[names(prov_climate) == "AHM"] <- "p_AHM"
-  names(prov_climate)[names(prov_climate) == "SHM"] <- "p_SHM"
-  names(prov_climate)[names(prov_climate) == "NFFD"] <- "p_NFFD"
-  names(prov_climate)[names(prov_climate) == "FFP"] <- "p_FFP"
-  names(prov_climate)[names(prov_climate) == "PAS"] <- "p_PAS"
-  names(prov_climate)[names(prov_climate) == "EMT"] <- "p_EMT"
-  names(prov_climate)[names(prov_climate) == "EXT"] <- "p_EXT"
-  names(prov_climate)[names(prov_climate) == "Eref"] <- "p_Eref"
-  names(prov_climate)[names(prov_climate) == "CMD"] <- "p_CMD"
-  names(prov_climate)[names(prov_climate) == "RH"] <- "p_RH"
-  prov_climate
+  # Rename Variables
+  names(df)[names(df) == "MAT"] <- "p_MAT"
+  names(df)[names(df) == "MWMT"] <- "p_MWMT"
+  names(df)[names(df) == "MCMT"] <- "p_MCMT"
+  names(df)[names(df) == "MAP"] <- "p_MAP"
+  names(df)[names(df) == "MSP"] <- "p_MSP"
+  names(df)[names(df) == "AHM"] <- "p_AHM"
+  names(df)[names(df) == "SHM"] <- "p_SHM"
+  names(df)[names(df) == "NFFD"] <- "p_NFFD"
+  names(df)[names(df) == "FFP"] <- "p_FFP"
+  names(df)[names(df) == "PAS"] <- "p_PAS"
+  names(df)[names(df) == "EMT"] <- "p_EMT"
+  names(df)[names(df) == "EXT"] <- "p_EXT"
+  names(df)[names(df) == "Eref"] <- "p_Eref"
+  names(df)[names(df) == "CMD"] <- "p_CMD"
+  names(df)[names(df) == "RH"] <- "p_RH"
+  
+  # Function Output
+  return(df)
 }
 
-prov_climate <- rename_prov_climate_vars()
+prov_climate <- rename_prov_climate_vars(prov_climate)
 
 ###### 2.2 merging regen and prov climatic data ----
 joined_df <- merge(regen_cleaned_unmerged, prov_climate, by.x = "provenance", 
@@ -71,28 +74,30 @@ unique(loc_climatebase$location)
 loc_climate <- subset(loc_climatebase, select = c(location, MAT, MWMT, MCMT, MAP, MSP, AHM, SHM,
                                                   NFFD, FFP, PAS, EMT, EXT, Eref, CMD, RH))
 
-rename_loc_climate_vars <- function (){
+rename_loc_climate_vars <- function (df){
   
-  names(loc_climate)[names(loc_climate) == "MAT"] <- "s_MAT"
-  names(loc_climate)[names(loc_climate) == "MWMT"] <- "s_MWMT"
-  names(loc_climate)[names(loc_climate) == "MCMT"] <- "s_MCMT"
-  names(loc_climate)[names(loc_climate) == "MAP"] <- "s_MAP"
-  names(loc_climate)[names(loc_climate) == "MSP"] <- "s_MSP"
-  names(loc_climate)[names(loc_climate) == "AHM"] <- "s_AHM"
-  names(loc_climate)[names(loc_climate) == "SHM"] <- "s_SHM"
-  names(loc_climate)[names(loc_climate) == "NFFD"] <- "s_NFFD"
-  names(loc_climate)[names(loc_climate) == "FFP"] <- "s_FFP"
-  names(loc_climate)[names(loc_climate) == "PAS"] <- "s_PAS"
-  names(loc_climate)[names(loc_climate) == "EMT"] <- "s_EMT"
-  names(loc_climate)[names(loc_climate) == "EXT"] <- "s_EXT"
-  names(loc_climate)[names(loc_climate) == "Eref"] <- "s_Eref"
-  names(loc_climate)[names(loc_climate) == "CMD"] <- "s_CMD"
-  names(loc_climate)[names(loc_climate) == "RH"] <- "s_RH"
+  # rename variables
+  names(df)[names(df) == "MAT"] <- "s_MAT"
+  names(df)[names(df) == "MWMT"] <- "s_MWMT"
+  names(df)[names(df) == "MCMT"] <- "s_MCMT"
+  names(df)[names(df) == "MAP"] <- "s_MAP"
+  names(df)[names(df) == "MSP"] <- "s_MSP"
+  names(df)[names(df) == "AHM"] <- "s_AHM"
+  names(df)[names(df) == "SHM"] <- "s_SHM"
+  names(df)[names(df) == "NFFD"] <- "s_NFFD"
+  names(df)[names(df) == "FFP"] <- "s_FFP"
+  names(df)[names(df) == "PAS"] <- "s_PAS"
+  names(df)[names(df) == "EMT"] <- "s_EMT"
+  names(df)[names(df) == "EXT"] <- "s_EXT"
+  names(df)[names(df) == "Eref"] <- "s_Eref"
+  names(df)[names(df) == "CMD"] <- "s_CMD"
+  names(df)[names(df) == "RH"] <- "s_RH"
 
-  loc_climate
+  # Function output
+  return(df)
 }
 
-loc_climate <- rename_loc_climate_vars()
+loc_climate <- rename_loc_climate_vars(loc_climate)
 
 ######## 3.2 merging updated regen with site climate data -----
 regen_cleaned_merged <- merge(joined_df, loc_climate, by.x = "location", 
