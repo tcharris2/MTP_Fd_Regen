@@ -2,7 +2,7 @@
 
 # 1. Importing Data ---------------------------------------------------------------
 #' @ImportData
-survival_fd_b_base <- read.csv(here("Data/03_Processed", "20231201_regen_merged.csv"), header=TRUE)
+survival_fd_b_base <- read.csv(here("Data/03_Processed", "20240602_regen_merged.csv"), header=TRUE)
 
 
 # 2. Removing all species except for Fd for survival ------------------------------
@@ -27,41 +27,30 @@ survival_fd_b_base <- survival_fd_b_base[survival_fd_b_base$species == "Fd", ]
 
 ###### 3.1 solutions ----
 
-# Remove RED block 12
+# Remove RED block 12 and 13
+# Remove JP block 9
 # Remove Venables provs from data set
-# Remove AF future from RED
-# Remove PH future from RED
+# Remove ALL futures 
 # Remove all A class 
-
-# Dont think missing a prov from select blocks is an issue because no longer comparing 
-# the differences between provs, ie not testing between levels. 
-# Leaving in JP block 9 and RED block 13
 
 # 4. Removing Design Issues -------------------------------------------------------
 #' @DesignIssues_2
 
 # remove block 12
 survival_fd_b_df <- survival_fd_b_base[!survival_fd_b_base$block == 9, ]
-survival_fd_b_df <- survival_fd_b_base[!survival_fd_b_base$block == 12, ]
-survival_fd_b_df <- survival_fd_b_base[!survival_fd_b_base$block == 13, ]
+survival_fd_b_df <- survival_fd_b_df[!survival_fd_b_df$block == 12, ]
+survival_fd_b_df <- survival_fd_b_df[!survival_fd_b_df$block == 13, ]
 
-# remove A class   
-survival_fd_b_df <- survival_fd_b_df[ends_with("B", vars = survival_fd_b_df$ID_tag),]
-unique(survival_fd_b_df$ID_tag)
+# Keeping only B class Fd provenances that are across all locacations/blocks/plots
+# ID_tags "8491_Fd_B"  "53205_Fd_B" "53614_Fd_B" "19913_Fd_B" "44771_Fd_B"
+# Identified from experimental design checks. 
 
-# remove Venables provenances 
-survival_fd_b_df_1 <- survival_fd_b_df[contains("Venables", vars = survival_fd_b_df$provenance), ]
+ID_Tag_list <- c("8491_Fd_B",  "53205_Fd_B", "53614_Fd_B", "19913_Fd_B", "44771_Fd_B")
 
-survival_fd_b_df <- anti_join(survival_fd_b_df, survival_fd_b_df_1, by = join_by(provenance))
-# janky way to do this but couldnt figure out how to subset with just the first function
+survival_fd_b_df <- subset(survival_fd_b_df, survival_fd_b_df$ID_tag %in% ID_Tag_list)
 
-rm(survival_fd_b_df_1)
-# clean up the jankyness
-
-# removing AF future and PH future from RED
-survival_fd_b_df <- survival_fd_b_df[!(survival_fd_b_df$ID_tag == "39259_Fd_B" & survival_fd_b_df$location =="Redfish" ),]
-
-survival_fd_b_df <- survival_fd_b_df[!(survival_fd_b_df$ID_tag == "53751_Fd_B" & survival_fd_b_df$location =="Redfish" ),]
+# Remove NA's in tree cover
+survival_fd_b_df <- subset(survival_fd_b_df, !(is.na(tree_cover)))
 
 ###### 4.1 new dataframe with fixed desgin issues ------
 survival_fd_b <- survival_fd_b_df

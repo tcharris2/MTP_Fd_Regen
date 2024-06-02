@@ -8,9 +8,6 @@
 
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
 
-
-regen <- regen[regen$blockNo != 9 & regen$blockNo != 13, ]
-
 regen <- subset(regen, !(is.na(tree_cover)))
 
 regen <- subset(regen, !regen$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
