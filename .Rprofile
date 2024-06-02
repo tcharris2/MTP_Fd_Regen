@@ -9,6 +9,8 @@
   library(broom.mixed)
   library(reshape2)
   library(sjPlot)
+  library(ggpubr)
+  library(ggeffects)
 	
 
 }
