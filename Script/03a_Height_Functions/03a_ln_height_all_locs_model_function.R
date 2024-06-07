@@ -8,7 +8,7 @@
 # Model Functions --------------------------------------------------------------
 
 # NullModel 
-ln_groupHeightModelNull <- function(df) {
+ln_HeightModelNull <- function(df) {
   
   lmer(log(height) ~ 1 + (1|locationF/blockF/plotF/splitplotF), data = df,
         REML = FALSE, 
@@ -17,7 +17,7 @@ ln_groupHeightModelNull <- function(df) {
 
 
 # HarvestModel 
-ln_groupHeightModelHarvest <- function(df) {
+ln_HeightModelHarvest <- function(df) {
   
   lmer(log(height) ~ harvestF + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE, 
@@ -26,7 +26,7 @@ ln_groupHeightModelHarvest <- function(df) {
 
 
 # CoverModel 
-ln_groupHeightModelCover <- function(df) {
+ln_HeightModelCover <- function(df) {
   
   lmer(log(height) ~ sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE, 
@@ -35,7 +35,7 @@ ln_groupHeightModelCover <- function(df) {
 
 
 # AgeModel 
-ln_groupHeightModelAge <- function(df) {
+ln_HeightModelAge <- function(df) {
   
   lmer(log(height) ~ age + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE, 
@@ -44,7 +44,7 @@ ln_groupHeightModelAge <- function(df) {
 
 
 # AgeHarvestModel 
-ln_groupHeightModelAgeHarvest <- function(df) {
+ln_HeightModelAgeHarvest <- function(df) {
   
   lmer(log(height) ~ age + harvestF + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE, 
@@ -53,7 +53,7 @@ ln_groupHeightModelAgeHarvest <- function(df) {
 
 
 # AgeCovertModel 
-ln_groupHeightModelAgeCover <- function(df) {
+ln_HeightModelAgeCover <- function(df) {
   
   lmer(log(height) ~ age + sqrt(tree_cover) + (1|locationF/blockF/plotF/splitplotF), data = df,
        REML = FALSE, 
@@ -64,7 +64,7 @@ ln_groupHeightModelAgeCover <- function(df) {
 # Model_1: Model Containing only the climatic variables 
 # Stored as a large list inside the dataframe 
 
-ln_groupHeightHarvest_1 <- function(df) {
+ln_HeightClimate_1 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -85,7 +85,7 @@ ln_groupHeightHarvest_1 <- function(df) {
 
 
 
-ln_groupHeightHarvest_1_sqrd <- function(df) {
+ln_HeightClimate_1_sqrd <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -107,7 +107,7 @@ ln_groupHeightHarvest_1_sqrd <- function(df) {
 # Model_1a: Model Containing only the climatic variables and AGE
 # Stored as a large list inside the dataframe 
 
-ln_groupHeightHarvest_1a <- function(df) {
+ln_HeightCliamte_1a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -130,7 +130,7 @@ ln_groupHeightHarvest_1a <- function(df) {
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-ln_groupHeightHarvest_2 <- function(df) {
+ln_HeightHarvest_2 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -152,7 +152,7 @@ ln_groupHeightHarvest_2 <- function(df) {
 # Model_2a: Model Containing the climatic variables and harvestF term and AGE
 # Stored as a large list inside the dataframe 
 
-ln_groupHeightHarvest_2a <- function(df) {
+ln_HeightHarvest_2a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -176,7 +176,7 @@ ln_groupHeightHarvest_2a <- function(df) {
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-ln_groupHeightHarvest_3 <- function(df) {
+ln_HeightHarvest_3 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -199,7 +199,7 @@ ln_groupHeightHarvest_3 <- function(df) {
 # Model_3a: Model Containing the climatic variables, harvestF, and interaction term and AGE
 # Stored as a large list inside the dataframe
 
-ln_groupHeightHarvest_3a <- function(df) {
+ln_HeightHarvest_3a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -219,56 +219,12 @@ ln_groupHeightHarvest_3a <- function(df) {
 }
 
 
-# Model_1: Model Containing only the climatic variables 
-# Stored as a large list inside the dataframe 
-
-ln_groupHeightCover_1 <- function(df) {
-  
-  # Create an empty list to fill 
-  results <- list() 
-  
-  # Loop over the variables
-  for (var in ClimaticVarList) {
-    # Perform the regression
-    model <- lmer(paste("log(height) ~", paste0("scale(", var, ")"), paste("+ (1|locationF/blockF/plotF/splitplotF)")), 
-                   data = df, REML = FALSE, 
-                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-    # Store the results in the list
-    results[[var]] <- model
-  }
-  # Create an output
-  results
-  
-}  
-
-
-# Model_1a: Model Containing only the climatic variables and AGE
-# Stored as a large list inside the dataframe 
-
-ln_groupHeightCover_1a <- function(df) {
-  
-  # Create an empty list to fill 
-  results <- list() 
-  
-  # Loop over the variables
-  for (var in ClimaticVarList) {
-    # Perform the regression
-    model <- lmer(paste("log(height) ~", paste0("scale(", var, ")"), paste("+ age + (1|locationF/blockF/plotF/splitplotF)")), 
-                  data = df, REML = FALSE, 
-                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-    # Store the results in the list
-    results[[var]] <- model
-  }
-  # Create an output
-  results
-  
-} 
 
 
 # Model_2: Model Containing the climatic variables and harvestF term
 # Stored as a large list inside the dataframe 
 
-ln_groupHeightCover_2 <- function(df) {
+ln_HeightCover_2 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -290,7 +246,7 @@ ln_groupHeightCover_2 <- function(df) {
 # Model_2a: Model Containing the climatic variables and harvestF term and AGE
 # Stored as a large list inside the dataframe 
 
-ln_groupHeightCover_2a <- function(df) {
+ln_HeightCover_2a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -314,7 +270,7 @@ ln_groupHeightCover_2a <- function(df) {
 # Model_3: Model Containing the climatic variables, harvestF, and interaction term
 # Stored as a large list inside the dataframe
 
-ln_groupHeightCover_3 <- function(df) {
+ln_HeightCover_3 <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 
@@ -337,7 +293,7 @@ ln_groupHeightCover_3 <- function(df) {
 # Model_3a: Model Containing the climatic variables, harvestF, and interaction term and AGE
 # Stored as a large list inside the dataframe
 
-ln_groupHeightCover_3a <- function(df) {
+ln_HeightCover_3a <- function(df) {
   
   # Create an empty list to fill 
   results <- list() 

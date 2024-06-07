@@ -1,6 +1,6 @@
-# 1. Grouped Location Diagnostic Columns -----------------------------------
+# 1. Location Diagnostic Columns -----------------------------------
 
-groupDiagnosticColsFunction <- function (df) {
+diagnosticCols <- function (df) {
   
   # Outer for-loop allowing for operations across multiple rows 
   for(j in 1:nrow(df)) {
@@ -37,7 +37,7 @@ groupDiagnosticColsFunction <- function (df) {
 
 # 2. Individual Location Diagnostic Metric Extraction ------------------------
 
-groupExtractMetrics <- function(df) { 
+ extractMetrics <- function(df) { 
   
   # Create a list of model names
   model_list <- names(df %>% select(contains("model")))
@@ -77,15 +77,17 @@ groupExtractMetrics <- function(df) {
   # Function output
   return(df)
   
-}
+ }
 
 
 # 3. Melting Dataframes ---------------------------------------------------------
 
-groupMeltDF <-function(df) {
+meltDF <-function(df) {
   
+  # empty column to fill
   df$melt_data <- list(NA)
   
+  # for-loop to populate column
   for(i in 1:nrow(df)) {
     
     test_df <- df$data[[i]]
@@ -122,7 +124,7 @@ groupMeltDF <-function(df) {
 
 # 4. Resid vs Fitted Graphing -------------------------------------------------------------------
 
-groupGraphingResidFitsFunction <-  function(df) {
+graphingResidFits <-  function(df) {
   
   for (i in 1:nrow(df)) {
     
@@ -137,7 +139,7 @@ groupGraphingResidFitsFunction <-  function(df) {
     # Saving plots as PDFs
     # Long piece of code that just specifics the name of the file
     # Could be done manually if wanted 
-    ggsave(paste0(Sys.Date(), paste0("_resid_fitted_group_"), my_title,
+    ggsave(paste0(Sys.Date(), paste0("_resid_fitted_"), my_title,
                   
                   # check to see if it a natural log transformed dataset            
                   if (grepl("ln_", df[4][[1]][[1]])) {
@@ -170,7 +172,7 @@ groupGraphingResidFitsFunction <-  function(df) {
 
 # 4. QQ plots Graphing -------------------------------------------------------------------
 
-groupQQGraphingFunction <-  function(df) {
+QQGraphing <-  function(df) {
   
   for (i in 1:nrow(df)) {
     
@@ -185,7 +187,7 @@ groupQQGraphingFunction <-  function(df) {
     # Saving plots as PDFs
     # Long piece of code that just specifics the name of the file
     # Could be done manually if wanted 
-    ggsave(paste0(Sys.Date(), paste0("_QQplot_group_"), my_title,
+    ggsave(paste0(Sys.Date(), paste0("_QQplot_"), my_title,
                   
                   # check to see if it a natural log transformed dataset            
                   if (grepl("ln_", df[4][[1]][[1]])) {
