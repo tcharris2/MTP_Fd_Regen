@@ -26,5 +26,9 @@ Forestry, Silviculture, Ecology, Interior Douglas-fir, Climatic Distance, Assist
 Interior Douglas-fir - Pseudotsuga menziesii var. glauca (Mayr) Franco
 		      Taxonomic Serial No.: 183428
 
+ # Variable Information:
+
+ Climatic variables are retried from Climate NA v7.40. Using historical climate data: Normal_1981_2010.nrm.
+
  
 
