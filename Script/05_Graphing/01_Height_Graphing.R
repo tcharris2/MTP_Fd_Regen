@@ -15,38 +15,32 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
+### 1.2 Loading Packages ----
+library(ggeffects)
 library(ggpubr)
 library(emmeans)
+library(performance)
 
-### 1.2. Correcting Variable types -----
+### 1.4 Height specific prep ----
 
 # Universal prep
 regen_prepped <- universalDataPrepFunction(regen)
 
+# This function converts survival, harvestF, provenanceF, and 
+# all the random effects into factors. 
+# It also normalizes all the climatic distance variables. 
 
-# Height specific prep
-regen_prepped <- subset(regen_prepped, !regen_prepped$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
+# Remove outliers
+regen_height <- subset(regen_prepped, !regen_prepped$tree_number %in% 
+                         c(3904, 9861, 8248, 12846, 13432, 14752))
 
-regen_prepped$ln_height <- log(regen_prepped$height)
+# Remove NAs
+regen_height <-  subset(regen_height, !(is.na(height)))
 
-regen_height <-  subset(regen_prepped, !(is.na(height)))
-
-regen_height <- subset(regen_height, !(is.na(tree_cover)))
-
-regen_height$sqrt_tree_cover <- sqrt(regen_height$tree_cover)
-
-# Removing Futures
-regen_height <- subset(regen_height, !regen_height$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
-                                                                     "Peterhope future Fd", "Alex Fraser future Fd", 
-                                                                     "Twobit B class Fd"))
-
-# for the models to read
-df <- regen_height
 
 str(regen_height)
 
-
-### 1.3. Calling RDS files -----
+### 1.5 Calling RDS files -----
 
 ln_height_harvest_models <- readRDS(file = here("Data/04_Temp", 
                                                       "2024-03-11_ln_height_group_harvest_models.rds"))
@@ -57,23 +51,12 @@ ln_height_cover_models <- readRDS(file = here("Data/04_Temp",
 
 names(ln_height_harvest_models)
 
-
 names(ln_height_cover_models)
 
 
 # 2. Selecting Best Models ---------------------------------------------------
 
 # See 2024-02-06_MODEL_SLECTION_survival_Harvest_group_sig_p_vals_NoFutures.csv for list of selected models
-
-colnames(ln_height_harvest_models) <- c("model_0", "model_h", "model_a", "model_ah",
-                                        "model_1", "model_1a", "model_2", "model_2a", 
-                                        "model_3", "model_3a", 
-                                        "ClimaticVarList")
-
-colnames(ln_height_cover_models) <- c("model_0", "model_c", "model_a", "model_ac",
-                                      "model_1", "model_1a", "model_2", "model_2a", 
-                                      "model_3", "model_3a", 
-                                      "ClimaticVarList")
 
 
 harvest_2a_models <- ln_height_harvest_models[c(2, 4:6, 8:11, 14:15), c("ClimaticVarList", "model_2a")]
@@ -139,45 +122,12 @@ cover_3a_models_weak <- heightPredictions(cover_3a_models_weak, cover_3a_models_
 
 # 4. Cover Models -------------------------------------------------------
 
-### 4.1 Cover 3a -----
-
 # Predictions 
 cover_3a_models
 
-# MWMT Plot
-MWMT_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[1]],
-                                   type = "pred", 
-                                   terms = c("d_MWMT [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)",
-                                   alpha = 0.05) +
-  
-  scale_colour_manual(labels = c("0", "10", "30", "60"),
-                      values = c("red", "green4", "blue", "black")) +
-  scale_fill_manual(labels = c("0", "10", "30", "60"),
-                    values = c("red", "green4", "blue", "black")) +
-  
-  geom_jitter(data = cover_3a_models$data[[1]],
-              mapping = aes(x = d_MWMT, y = exp(predict_val)),
-              inherit.aes = FALSE,
-              height = 0.5,
-              width = 0.03,
-              size = 0.1, colour = "gray40",
-              alpha = 0.5) +
-  
-  labs(x = "MWMT Climatic Distance", 
-       y = "Predicted Height (cm)",
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
 
-MWMT_3C_plot
 
-# MAP Plot
+##### 4.1.2 MAP Plot ----
 MAP_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[2]],
                                    type = "pred", 
                                    terms = c("d_MAP [all]", "tree_cover [0, 10, 30, 60]"),
@@ -209,7 +159,7 @@ MAP_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[2]],
 
 MAP_3C_plot
 
-# NFFD Plot
+##### 4.1.3 NFFD Plot ----
 NFFD_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[3]],
                                    type = "pred", 
                                    terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"),
@@ -241,7 +191,7 @@ NFFD_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[3]],
 
 NFFD_3C_plot
 
-# EMT Plot
+##### 4.1.4 EMT Plot ----
 EMT_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[4]],
                                    type = "pred", 
                                    terms = c("d_EMT [all]", "tree_cover [0, 10, 30, 60]"),
@@ -267,7 +217,7 @@ EMT_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[4]],
 
 EMT_3C_plot
 
-# RH Plot
+##### 4.1.5 RH Plot ----
 RH_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[5]],
                                    type = "pred", 
                                    terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"),
@@ -300,7 +250,7 @@ RH_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[5]],
 RH_3C_plot
 
 
-##### 4.1.2 Composite ----
+##### 4.2 COMPOSITE ----
 ggarrange(MWMT_3C_plot, MAP_3C_plot, NFFD_3C_plot,
           EMT_3C_plot, RH_3C_plot,
           labels = c("A", "B", "C",
@@ -315,12 +265,12 @@ ggarrange(MAP_3C_plot, NFFD_3C_plot, RH_3C_plot,
           ncol = 1,
           common.legend = TRUE, legend = "top")
 
-### 4.2 Cover 3a Weak ------
+### 4.3 Cover 3a Weak ------
 
 # Predictions 
 cover_3a_models_weak
 
-# MAT Plot
+####### 4.3.1 MAT Plot ----
 MAT_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[1]],
                                    type = "pred", 
                                    terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"),
@@ -347,59 +297,8 @@ MAT_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[1]],
 MAT_3C_plot
 
 
-# MCMT Plot
-MCMT_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[2]],
-                                   type = "pred", 
-                                   terms = c("d_MCMT [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)") +
-  
-  geom_jitter(data = cover_3a_models_weak$data[[2]],
-              mapping = aes(x = d_MCMT, y = exp(predict_val)),
-              inherit.aes = FALSE,
-              height = 0.5,
-              width = 0.05,
-              size = 0.1, colour = "gray20") +
-  
-  labs(x = "MCMT Climatic Distance", 
-       y = NULL,
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
 
-MCMT_3C_plot
-
-# SHM Plot
-SHM_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[3]],
-                                   type = "pred", 
-                                   terms = c("d_SHM [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)") +
-  
-  geom_jitter(data = cover_3a_models_weak$data[[3]],
-              mapping = aes(x = d_SHM, y = exp(predict_val)),
-              inherit.aes = FALSE,
-              height = 0.5,
-              width = 0.17,
-              size = 0.1, colour = "gray20") +
-  
-  labs(x = "SHM Climatic Distance", 
-       y = NULL,
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
-
-SHM_3C_plot
-
-# FFP Plot
+####### 4.3.2 FFP Plot ----
 FFP_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[4]],
                                    type = "pred", 
                                    terms = c("d_FFP [all]", "tree_cover [0, 10, 30, 60]"),
@@ -425,7 +324,7 @@ FFP_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[4]],
 
 FFP_3C_plot
 
-# EXT Plot
+####### 4.3.3 EXT Plot ----
 EXT_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[5]],
                                    type = "pred", 
                                    terms = c("d_EXT [all]", "tree_cover [0, 10, 30, 60]"),
@@ -451,75 +350,19 @@ EXT_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[5]],
 
 EXT_3C_plot
 
-# Eref Plot
-Eref_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[6]],
-                                   type = "pred", 
-                                   terms = c("d_Eref [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)") +
-  
-  geom_jitter(data = cover_3a_models_weak$data[[6]],
-              mapping = aes(x = d_Eref, y = exp(predict_val)),
-              inherit.aes = FALSE,
-              height = 0.5,
-              width = 1,
-              size = 0.1, colour = "gray20") +
-  
-  labs(x = "Eref Climatic Distance", 
-       y = NULL,
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
 
-Eref_3C_plot
-
-
-##### 4.2.2 Composite ----
-ggarrange(MAT_3C_plot, MCMT_3C_plot, SHM_3C_plot,
-          FFP_3C_plot, EXT_3C_plot, Eref_3C_plot,
+##### 4.4 COMPOSITE ----
+ggarrange(MAT_3C_plot,
+          FFP_3C_plot, EXT_3C_plot,
           labels = c("A", "B", "C",
                      "D", "E", "F"),
           hjust = -1, 
           common.legend = TRUE, legend = "top")
 
 # 5. Harvest Models ------------------------------------------------------------
-
-# MAP Plot
-MAP_2H_plot <- sjPlot::plot_model(harvest_2a_models[["model_2a"]][[1]],
-                                   type = "pred", 
-                                   terms = c("d_MAP [all]", "harvestF"),
-                                   legend.title = "Harvest",
-                                   line.size = 1) +
-  
-  geom_jitter(data = harvest_2a_models$data[[1]],
-              mapping = aes(x = d_MAP, y = exp(predict_val)),
-              inherit.aes = FALSE,
-              height = 0.5,
-              width = 1,
-              size = 0.1, colour = "gray60") +
-  
-  labs(x = "MAP Climatic Distance", 
-       y = NULL,
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
-
-MAP_2H_plot
-
-
-library(ggeffects)
-
 # ggeffects ploting
-# d_MAP
+
+###### 5.1 d_MAP ----
 df_MAP <- ggpredict(harvest_2a_models[["model_2a"]][[1]], terms = c("d_MAP [all]", "harvestF"))
 
 ggplot(df_MAP, aes(x, predicted)) +
@@ -557,7 +400,7 @@ ggplot(df_MAP, aes(x, predicted)) +
         legend.position = "top",
         legend.title = element_blank())
 
-# d_MSP
+###### 5.2 d_MSP ----
 df_MSP <- ggpredict(harvest_2a_models[["model_2a"]][[2]], terms = c("d_MSP [all]", "harvestF"))
 
 ggplot(df_MSP, aes(x, predicted)) +
@@ -595,7 +438,7 @@ ggplot(df_MSP, aes(x, predicted)) +
         legend.position = "top",
         legend.title = element_blank())
 
-# d_AHM
+###### 5.3 d_AHM ----
 df_AHM <- ggpredict(harvest_2a_models[["model_2a"]][[3]], terms = c("d_AHM [all]", "harvestF"))
 
 ggplot(df_AHM, aes(x, predicted)) +
@@ -634,7 +477,7 @@ ggplot(df_AHM, aes(x, predicted)) +
         legend.title = element_blank(),
         text = element_text(family = "Times"))
 
-# d_NFFD
+###### 5.4 d_NFFD ----
 df_NFFD <- ggpredict(harvest_2a_models[["model_2a"]][[4]], terms = c("d_NFFD [all]", "harvestF"))
 
 ggplot(df_NFFD, aes(x, predicted)) +
@@ -672,26 +515,14 @@ ggplot(df_NFFD, aes(x, predicted)) +
         legend.position = "top",
         legend.title = element_blank())
 
-# d_PAS
+###### 5.5 d_PAS ----
 PAS_mod <- harvest_2a_models$model_2a[[5]]
-
-
-PAS_mod_2 <- lmer(log(height) ~ scale(d_PAS) + harvestF + age + (1|blockF/plotF/splitplotF), 
-                  data = regen_height, REML = FALSE,
-                  control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-
 PAS_mod
-PAS_mod_2
 
-install.packages("performace")
-library(performance)
-
-r2_nakagawa(PAS_mod_2)
-r2_nakagawa(PAS_mod, tolerance = 1e-1000)
+performance::r2_nakagawa(PAS_mod, tolerance = 1e-1000)
 
 
-tab_model(PAS_mod_2)
-library(ggeffects)
+tab_model(PAS_mod)
 
 df_PAS <- ggpredict(harvest_2a_models[["model_2a"]][[5]], terms = c("d_PAS [all]", "harvestF"))
 
@@ -731,7 +562,7 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
 
 PAS_graph
 
-# d_EMT
+###### 5.6 d_EMT ----
 df_EMT <- ggpredict(harvest_2a_models[["model_2a"]][[6]], terms = c("d_EMT [all]", "harvestF"))
 
 ggplot(df_EMT, aes(x, predicted)) +
@@ -769,7 +600,7 @@ ggplot(df_EMT, aes(x, predicted)) +
         legend.position = "top",
         legend.title = element_blank())
 
-# d_RH
+###### 5.7 d_RH ----
 df_RH <- ggpredict(harvest_2a_models[["model_2a"]][[7]], terms = c("d_RH [all]", "harvestF"))
 
 ggplot(df_RH, aes(x, predicted)) +
@@ -808,42 +639,32 @@ ggplot(df_RH, aes(x, predicted)) +
         legend.title = element_blank())
 
 
-
-
-
 # 6. emmeans --------------------------------------------------------------------
 
+###### 6.1 PAS ----
 
-library(emmeans)
-
-
-df <- regen_height
-
-
-mod <- ln_height_harvest_models$model_ah[[1]]
-
-mod <- harvest_2a_models$model_2a[[7]]
-mod
-# Regrid emmeans
-
-logemm.src <- regrid(emmeans(PAS_mod, "harvestF",
-                             lmerTest.limit = 5809, pbkrtest.limit = 5809), 
-                     transform = "log")
-confint(logemm.src, type = "response")
-pairs(logemm.src,  adjust="bonferroni", side="two-sided", type = "response")
-
-
+# Labels
 harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
 sig_labels <- c("AA", "AA", "AB", "BB")
 
-PAS_means <- plot(regrid(logemm.src), transform = "log") +
+# Models
+PAS_mod <- #path to PAS model
+
+# Regrid emmeans
+PAS_regird <- regrid(emmeans(PAS_mod, "harvestF",
+                             lmerTest.limit = 5809, pbkrtest.limit = 5809), 
+                     transform = "log")
+confint(PAS_regird, type = "response")
+pairs(PAS_regird,  adjust="bonferroni", side="two-sided", type = "response")
+
+PAS_means <- plot(regrid(PAS_regird), transform = "log") +
   
   coord_flip() +
   
   scale_y_discrete(labels = harvest_labels) +
   
   geom_text(aes(label = sig_labels), hjust = 1.5, vjust = -5, size = 3) +
-  geom_text(aes(label = round(exp(logemm.src@bhat), 1)), hjust = -0.5) +
+  geom_text(aes(label = round(exp(PAS_regird@bhat), 1)), hjust = -0.5) +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
@@ -862,126 +683,8 @@ PAS_means
 ggarrange(PAS_graph, PAS_means, nrow = 2, heights = c(2.5, 1))
 
 
-# 7. Beta Coefficients ---------------------------------------------------------
 
-model_0 <- lmer(log(height) ~ scale(d_RH) + harvestF + (1|locationF/blockF/plotF/splitplotF), 
-                data = regen_height, REML = FALSE, 
-                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-
-model_1 <- lmer(log(height) ~ d_RH + harvestF + (1|locationF/blockF/plotF/splitplotF), 
-                data = regen_height, REML = FALSE, 
-                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-
-model_0
-model_1
-
-sjPlot::plot_model(model_0, terms = c("d_RH [all]", "harvestF"), type = "pred")
-sjPlot::plot_model(model_1, terms = c("d_RH [all]", "harvestF"), type = "pred")
-
-
-
-cover_3a_models
-
-MAP_mod <- cover_3a_models$model_3a[[2]]
-NFFD_mod <- cover_3a_models$model_3a[[3]]
-RH_mod <- cover_3a_models$model_3a[[5]]
-
-tab_model(MAP_mod, NFFD_mod, RH_mod, tolerance )
-
-
-library(performance)
-
-r2_nakagawa(RH_mod, tolerance = 1e-1000)
-
-# 8. Three way interaction ------------------------------------------------------
-# Variation too high due to not a large enough breadth of climatic distances 
-
-library(ggeffects)
-library(emmeans)
-
-model_0 <- lmer(log(height) ~ scale(d_RH) * harvestF + (1|locationF/blockF/plotF/splitplotF), 
-                data = regen_height, REML = FALSE, 
-                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-
-
-
-model_1 <- lmer(log(height) ~ scale(d_RH) * harvestF + locationF + (1|blockF/plotF/splitplotF), 
-              data = regen_height, REML = FALSE, 
-              control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-
-
-
-model_2 <- lmer(log(height) ~ scale(d_RH) * harvestF * locationF + (1|blockF/plotF/splitplotF), 
-              data = regen_height, REML = FALSE, 
-              control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-
-
-model_3 <- lmer(log(height) ~ scale(d_RH) * locationF + (1|blockF/plotF/splitplotF), 
-                data = regen_height, REML = FALSE, 
-                control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
-
-
-model_0
-model_1
-model_2
-model_3
-
-lrtest(model_0, model_1)
-lrtest(model_1, model_2)
-lrtest(model_2, model_3)
-
-df <- ggpredict(model_0, terms = c("d_RH [all]", "harvestF"), terms_to_colnames = TRUE)
-df
-
-
-ggplot(df, aes(x, predicted)) +
-  geom_line(aes(color = group)) 
-
-
-df_0 <- ggpredict(model_0, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
-df_0
-
-
-ggplot(df_0, aes(x, predicted)) +
-  geom_line(aes(color = group)) +
-  facet_wrap(~ facet)
-
-
-df_1 <- ggpredict(model_1, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
-df_1
-
-
-ggplot(df_1, aes(x, predicted)) +
-  geom_line(aes(color = group)) +
-  facet_wrap(~ facet)
-
-
-df_2 <- ggpredict(model_2, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
-df_2
-
-plot(df_2, show_ci = FALSE)
-plot(df_2)
-
-
-ggplot(df_2, aes(x, predicted)) +
-  geom_line(aes(color = group)) +
-  facet_wrap(~ facet)
-
-
-
-df_3 <- ggpredict(model_3, terms = c("d_RH [all]", "locationF"), terms_to_colnames = TRUE, type = "random")
-
-plot(df_3, show_ci = FALSE) +
-  geom_point(data = regen_height, 
-             aes(x = d_RH, y = height, colour = locationF), inherit.aes = FALSE)
-plot(df_3)
-
-emmip(model_2, harvestF ~ d_RH | locationF, mult.name = "variety", cov.reduce = FALSE,
-      glmerTest.limit = 5809, pbkrtest.limit = 5809)
-
-emtrends(model_3, pairwise ~ locationF, var = "d_RH", mult.name = "variety")
-
-# 9. P-Values ------------------------------------------------------------------
+# 7. P-Values ------------------------------------------------------------------
 
 ln_height_cover_models$ClimaticVarList
 
@@ -1003,5 +706,9 @@ tab_model(NFFD_mod_3)
 tab_model(RH_mod_3)
 tab_model(ln_height_cover_models$model_3a[[12]])
 
-library(performance)
-r2_nakagawa(ln_height_cover_models$model_3a[[1]], tolerance = 1e-1000)
+# Marginal/Conditional R2
+
+# using an extremely low tolerance due to model singularity
+# values are the same for model without the singularity.
+
+performance::r2_nakagawa(ln_height_cover_models$model_3a[[1]], tolerance = 1e-1000)
