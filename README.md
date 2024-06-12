@@ -13,7 +13,7 @@ Phone - 778-866-4198
 
 # Purpose:
 
-This study aims at investigating the individual and interactive affects of climatic distance from provenance of origin and harvesting method on the the survival and performance of interior Douglas-fir seedlings.
+This study aims at investigating the individual and interactive effects of climatic distance from provenance of origin and harvesting method on the the survival and performance of interior Douglas-fir seedlings.
 
 
 # Keywords:
