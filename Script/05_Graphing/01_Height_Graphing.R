@@ -250,7 +250,7 @@ RH_3C_plot <- sjPlot::plot_model(cover_3a_models[["model_3a"]][[5]],
 RH_3C_plot
 
 
-##### 4.2 COMPOSITE ----
+##### 4.2 Composites ----
 ggarrange(MWMT_3C_plot, MAP_3C_plot, NFFD_3C_plot,
           EMT_3C_plot, RH_3C_plot,
           labels = c("A", "B", "C",
@@ -351,7 +351,7 @@ EXT_3C_plot <- sjPlot::plot_model(cover_3a_models_weak[["model_3a"]][[5]],
 EXT_3C_plot
 
 
-##### 4.4 COMPOSITE ----
+##### 4.4 Composites ----
 ggarrange(MAT_3C_plot,
           FFP_3C_plot, EXT_3C_plot,
           labels = c("A", "B", "C",
@@ -361,8 +361,9 @@ ggarrange(MAT_3C_plot,
 
 # 5. Harvest Models ------------------------------------------------------------
 # ggeffects ploting
+# Paired with "6. emmeans" to create composites 
 
-###### 5.1 d_MAP ----
+###### 5.1 MAP plot ----
 df_MAP <- ggpredict(harvest_2a_models[["model_2a"]][[1]], terms = c("d_MAP [all]", "harvestF"))
 
 ggplot(df_MAP, aes(x, predicted)) +
@@ -400,7 +401,7 @@ ggplot(df_MAP, aes(x, predicted)) +
         legend.position = "top",
         legend.title = element_blank())
 
-###### 5.2 d_MSP ----
+###### 5.2 MSP plot ----
 df_MSP <- ggpredict(harvest_2a_models[["model_2a"]][[2]], terms = c("d_MSP [all]", "harvestF"))
 
 ggplot(df_MSP, aes(x, predicted)) +
@@ -438,7 +439,7 @@ ggplot(df_MSP, aes(x, predicted)) +
         legend.position = "top",
         legend.title = element_blank())
 
-###### 5.3 d_AHM ----
+###### 5.3 AHM plot ----
 df_AHM <- ggpredict(harvest_2a_models[["model_2a"]][[3]], terms = c("d_AHM [all]", "harvestF"))
 
 ggplot(df_AHM, aes(x, predicted)) +
@@ -477,7 +478,7 @@ ggplot(df_AHM, aes(x, predicted)) +
         legend.title = element_blank(),
         text = element_text(family = "Times"))
 
-###### 5.4 d_NFFD ----
+###### 5.4 NFFD plot ----
 df_NFFD <- ggpredict(harvest_2a_models[["model_2a"]][[4]], terms = c("d_NFFD [all]", "harvestF"))
 
 ggplot(df_NFFD, aes(x, predicted)) +
@@ -515,7 +516,7 @@ ggplot(df_NFFD, aes(x, predicted)) +
         legend.position = "top",
         legend.title = element_blank())
 
-###### 5.5 d_PAS ----
+###### 5.5 PAS plot----
 PAS_mod <- harvest_2a_models$model_2a[[5]]
 PAS_mod
 
@@ -562,7 +563,7 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
 
 PAS_graph
 
-###### 5.6 d_EMT ----
+###### 5.6 EMT plot ----
 df_EMT <- ggpredict(harvest_2a_models[["model_2a"]][[6]], terms = c("d_EMT [all]", "harvestF"))
 
 ggplot(df_EMT, aes(x, predicted)) +
@@ -600,7 +601,7 @@ ggplot(df_EMT, aes(x, predicted)) +
         legend.position = "top",
         legend.title = element_blank())
 
-###### 5.7 d_RH ----
+###### 5.7 RH plot ----
 df_RH <- ggpredict(harvest_2a_models[["model_2a"]][[7]], terms = c("d_RH [all]", "harvestF"))
 
 ggplot(df_RH, aes(x, predicted)) +
@@ -641,11 +642,13 @@ ggplot(df_RH, aes(x, predicted)) +
 
 # 6. emmeans --------------------------------------------------------------------
 
+# Labels
+harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
+
 ###### 6.1 PAS ----
 
 # Labels
-harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
-sig_labels <- c("AA", "AA", "AB", "BB")
+PAS_sig_labels <- c("AA", "AA", "AB", "BB")
 
 # Models
 PAS_mod <- #path to PAS model
@@ -663,7 +666,7 @@ PAS_means <- plot(regrid(PAS_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = sig_labels), hjust = 1.5, vjust = -5, size = 3) +
+  geom_text(aes(label = PAS_sig_labels), hjust = 1.5, vjust = -5, size = 3) +
   geom_text(aes(label = round(exp(PAS_regird@bhat), 1)), hjust = -0.5) +
   
   labs(x = "Height (cm)", 
@@ -679,34 +682,12 @@ PAS_means <- plot(regrid(PAS_regird), transform = "log") +
 
 PAS_means
 
-# grouping
+### 6.2 Composites -----
 ggarrange(PAS_graph, PAS_means, nrow = 2, heights = c(2.5, 1))
 
 
 
-# 7. P-Values ------------------------------------------------------------------
-
-ln_height_cover_models$ClimaticVarList
-
-
-MAP_mod_3 <- ln_height_cover_models$model_3a[[4]]
-NFFD_mod_3 <- ln_height_cover_models$model_3a[[8]]
-RH_mod_3 <- ln_height_cover_models$model_3a[[15]]
-
-MAP_mod_2 <- ln_height_cover_models$model_2a[[4]]
-NFFD_mod_2 <- ln_height_cover_models$model_2a[[8]]
-RH_mod_2 <- ln_height_cover_models$model_2a[[15]]
-
-lrtest(MAP_mod_2, MAP_mod_3)
-lrtest(NFFD_mod_2, NFFD_mod_3)
-lrtest(RH_mod_2, RH_mod_3)
-
-tab_model(MAP_mod_3)
-tab_model(NFFD_mod_3)
-tab_model(RH_mod_3)
-tab_model(ln_height_cover_models$model_3a[[12]])
-
-# Marginal/Conditional R2
+# 7. Marginal/Conditional R2 --------------------------------------------
 
 # using an extremely low tolerance due to model singularity
 # values are the same for model without the singularity.

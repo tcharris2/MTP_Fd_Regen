@@ -143,30 +143,7 @@ NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred",
 
 NFFD_plot
 
-### 5.2. FFP plot ----
-
-FFP_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[2]], type = "pred", 
-                                terms = c("d_FFP [all]", "harvestF"),
-                                legend.title = "") + 
-  
-  scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")) +
-  
-  
-  geom_point(data = model_3_H$data[[2]], mapping = aes(x = d_FFP, y = survival_probs), 
-             inherit.aes = FALSE, size = 0.5) +
-  
-  labs(x = "FFP Climatic Distance", 
-       y = NULL,
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
-
-### 5.3. EMT plot -----
+### 5.2. EMT plot -----
 
 EMT_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred", 
                                 terms = c("d_EMT [all]", "harvestF"),
@@ -189,7 +166,7 @@ EMT_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred",
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top")
 
-### 5.4. RH plot -----
+### 5.3. RH plot -----
 
 RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred", 
                                 terms = c("d_RH [all]", "harvestF"),
@@ -219,7 +196,7 @@ RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred",
 
 RH_plot 
 
-### 5.5. Composites ------ 
+### 5.4. Composites ------ 
 
 ggarrange(NFFD_plot, FFP_plot, EMT_plot, RH_plot, 
           labels = c("A", "B", "C", "D"), 
@@ -322,26 +299,7 @@ NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred",
 NFFD_cov_plot
 
 
-### 6.4. FFP plot ----
-FFP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[6]], type = "pred", 
-                                    terms = c("d_FFP [all]", "tree_cover [0, 25, 50]"),
-                                    legend.title = "Percent Tree Cover (%)") + 
-  
-  geom_point(data = model_3_C$data[[6]], mapping = aes(x = d_FFP, y = survival_probs), 
-             inherit.aes = FALSE, size = 0.2, colour = "gray20") +
-  
-  labs(x = "FFP Climatic Distance", 
-       y = NULL,
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
-
-### 6.5. EMT plot -----
+### 6.4. EMT plot -----
 EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[7]], type = "pred", 
                                     terms = c("d_EMT [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
@@ -361,7 +319,7 @@ EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[7]], type = "pred",
         legend.position = "top")
 
 
-### 6.6. EXT plot ----
+### 6.5. EXT plot ----
 EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[8]], type = "pred", 
                                     terms = c("d_EXT [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
@@ -382,7 +340,7 @@ EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[8]], type = "pred",
 
 
 
-### 6.7. RH plot ----
+### 6.6. RH plot ----
 RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[10]], type = "pred", 
                                     terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"),
                                     legend.title = "Percent Tree Cover (%)",
@@ -410,7 +368,7 @@ RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[10]], type = "pred",
 
 RH_cov_plot
 
-### 6.8 Composities ----
+### 6.7 Composites ----
 
 ggarrange(MAT_cov_plot,
           MAP_cov_plot, NFFD_cov_plot, FFP_cov_plot,
@@ -434,7 +392,7 @@ ggarrange(MAT_cov_plot,MAP_cov_plot,
 
 # 7. Climatic Models Composite ------------------------------------------------
 
-# MAT plot
+### 7.1. MAT plot ----
 MAT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[1]], type = "pred", 
                                  terms = c("d_MAT [all]")) + 
   
@@ -453,7 +411,7 @@ MAT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[1]], type = "pred",
 
 
 
-# MAP plot
+### 7.2. MAP plot -----
 MAP_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[4]], type = "pred", 
                                  terms = c("d_MAP [all]")) +
   
@@ -471,7 +429,7 @@ MAP_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[4]], type = "pred",
         axis.title = element_text(size = 12, face = "bold"))
 
 
-# MSP plot
+### 7.3. MSP plot ----
 MSP_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[5]], type = "pred", 
                                  terms = c("d_MSP [all]")) +
   
@@ -488,7 +446,7 @@ MSP_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[5]], type = "pred",
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"))
 
-# AHM plot
+### 7.4. AHM plot ----
 AHM_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[6]], type = "pred", 
                                  terms = c("d_AHM [all]")) + 
   
@@ -505,7 +463,7 @@ AHM_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[6]], type = "pred",
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"))
 
-# NFFD plot
+### 7.5. NFFD plot -----
 NFFD_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[7]], type = "pred", 
                                   terms = c("d_NFFD [all]")) + 
   
@@ -523,25 +481,8 @@ NFFD_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[7]], type = "pred",
         axis.title = element_text(size = 12, face = "bold"))
 
 
-# FFP plot
-FFP_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[8]], type = "pred", 
-                                 terms = c("d_FFP [all]")) + 
-  
-  scale_y_continuous(limits = c(0.2, 1), 
-                     labels = c("20%", "40%", "60%", "80%", "100%")) +
-  
-  labs(x = "FFP Climatic Distance", 
-       y = NULL,
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"))
 
-
-# PAS plot
+### 7.6. PAS plot ----
 PAS_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[9]], type = "pred", 
                                  terms = c("d_PAS [all]")) + 
   
@@ -558,7 +499,7 @@ PAS_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[9]], type = "pred",
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"))
 
-# EMT plot
+### 7.7. EMT plot ----
 EMT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[10]], type = "pred", 
                                  terms = c("d_EMT [all]")) + 
   
@@ -576,7 +517,7 @@ EMT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[10]], type = "pred",
         axis.title = element_text(size = 12, face = "bold"))
 
 
-# EXT plot
+### 7.8. EXT plot ----
 EXT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[11]], type = "pred", 
                                  terms = c("d_EXT [all]")) + 
   
@@ -594,7 +535,7 @@ EXT_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[11]], type = "pred",
         axis.title = element_text(size = 12, face = "bold"))
 
 
-# RH plot
+### 7.9. RH plot ----
 RH_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[13]], type = "pred", 
                                 terms = c("d_RH [all]")) + 
   
@@ -612,6 +553,7 @@ RH_1_plot <- sjPlot::plot_model(model_1[["model_1"]][[13]], type = "pred",
         axis.title = element_text(size = 12, face = "bold"))
 
 
+### 7.10. Composites -----
 
 ggarrange(MAT_1_plot,
           MAP_1_plot, MSP_1_plot, AHM_1_plot,
@@ -622,14 +564,13 @@ ggarrange(MAT_1_plot,
           common.legend = TRUE, legend = "top")
 
 
-# 8. emmeans --------------------------------------------------------------
+# 8. Harveset emtrends  --------------------------------------------------------------
 
 df <- regen_survival
 
 model_3_H
 
 NFFD_mod <- model_3_H$model_3[[1]]
-RH_mod <- model_3_H$model_3[[4]]
 
 NFFD_mod
 RH_mod
@@ -640,15 +581,26 @@ joint_tests(mod, by = "d_RH")
 joint_tests(mod, by = "harvestF")
 joint_tests(mod)
 
+### 8.1. RH emtrend ----
+
+# General Labels
+harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
+
+
+# Get model 
+RH_mod <- model_3_H$model_3[[4]]
+RH_mod
+
+# Look at trend significance 
 RH_emtrends <- emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")
 RH_emtrends
+
 # Plotting
 
-harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
-sig_labels <- c("AA", "AB", "AB", "BB")
-sig_labels_1 <- c("AA", "", "", "")
+# Lables
+RH_sig_labels <- c("AA", "AB", "AB", "BB")
+RH_sig_labels_1 <- c("AA", "", "", "")
 RH_trend_vals <- c(0.2281, 0.1515, 0.1379, 0.0718)
-
 
 RH_trend <- plot(emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")) +
   
@@ -676,9 +628,19 @@ RH_trend <- plot(emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "b
 
 RH_trend
 
+### 8.2. NFFD emtrend ----
+
+# Get model
+NFFD_mod <- model_3_H$model_3[[1]]
+NFFD_mod
+
+# Look at trend significance 
 NFFD_emtrends <- emtrends(NFFD_mod, pairwise ~ harvestF, var = "d_NFFD", adjust = "bonferroni")
 NFFD_emtrends
 
+# Labels
+NFFD_sig_labels <- c("AA", "AB", "AB", "BB")
+NFFD_sig_labels_1 <- c("AA", "", "", "")
 NFFD_trend_vals <- c(0.0350, 0.0256, 0.0217, 0.0108)
 
 
@@ -708,10 +670,8 @@ NFFD_trend <- plot(emtrends(NFFD_mod, pairwise ~ harvestF, var = "d_NFFD", adjus
 
 NFFD_trend
 
-NFFD_mod
-RH_mod
 
-# Grouping -----------------
+### 8.3 Composites -----------------
 
 inter_plot <- ggarrange(NFFD_plot, RH_plot,
           vjust = 0.5, 
@@ -722,120 +682,5 @@ inter_plot <- ggarrange(NFFD_plot, RH_plot,
 trend_plot <- ggarrange(NFFD_trend, RH_trend)
 
 ggarrange(inter_plot, trend_plot, nrow = 2, heights = c(2, 1))
-
-
-ggarrange(NFFD_plot, RH_plot,
-          ggarrange(NFFD_trend, RH_trend, nrow = 1, labels = c("C", "D"), align = "hv"),
-          labels = c("A", "B"), widths = c(1, 10), align = "v", common.legend = TRUE)
-
-# Crown Closure means ---------------------------------------
-
-MAT_mod <- model_3_C[["model_3"]][[1]]
-
-tab_model(MAT_mod)
-
-df_2 <- ggpredict(MAT_mod, terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"), terms_to_colnames = TRUE, type = "random")
-df_2
-
-emtrends(MAT_mod, pairwise ~ tree_cover, var = "d_MAT", adjust = "bonferroni", 
-         at=list(d_MAT = c(-2.5, 0, 2.5, 5), tree_cover =c(0, 0.000002, 30, 60)))
-
-emtrends(mod, pairwise ~ temp, var="nitro", at=list(variety="A", temp=c(20,40)))
-
-joint_tests(MAT_mod, by = "d_MAT")
-
-emmip(MAT_mod, tree_cover ~ d_MAT, mult.name = "variety", cov.reduce = FALSE)
-
-emtrends(MAT_mod, pairwise ~ d_MAT, var = "tree_cover", mult.name = "d_MAT")
-
-
-
-
-trend_plots <- ggarrange(NFFD_trend, RH_trend, nrow = 1, labels = c("C", "D"), align = "hv")
-# Testing 
-fiber.lm <- lm(strength ~ diameter*machine, data = fiber)
-
-fiber.lm
-emtrends(fiber.lm, pairwise ~ machine, var = "diameter")
-
-
-emmip(RH_mod, harvestF ~ d_RH, cov.reduce = range)
-
-
-df_1 <- ggpredict(mod, terms = c("d_RH [all]", "harvestF", "locationF"), terms_to_colnames = TRUE, type = "random")
-df_1
-
-
-ggplot(df_1, aes(x, predicted)) +
-  geom_line(aes(color = group)) +
-  facet_wrap(~ facet)
-
-
-mod_2 <- ln_height_cover_models$model_3[[15]]
-mod_2
-
-
-df_2 <- ggpredict(mod_2, terms = c("d_RH [all]", "tree_cover [0, 10, 25, 50]", "locationF"), terms_to_colnames = TRUE, type = "random")
-df_2
-
-
-ggplot(df_2, aes(x, predicted)) +
-  geom_line(aes(color = group)) +
-  facet_wrap(~ facet)
-
-
-# Less Useful
-
-plots.emm.RH <- emmeans(mod, ~ d_RH * harvestF,  
-                        glmerTest.limit = 8040, pbkrtest.limit = 8040)
-pairs(plots.emm.RH, adjust="bonferroni", side="two-sided")
-
-
-contrast(plots.emm.RH, "consec", simple = "each", combine = TRUE, adjust = "mvt")
-plots.emm.RH
-
-
-
-
-# For cover 
-
-model_3_C
-mod.c <- model_3_C$model_3[[1]]
-mod.c
-
-emtrend.cb <- emtrends(mod, pairwise ~ tree_cover, var = "d_MAT", adjust = "bonferroni")
-joint_tests(mod.c, by = "d_MAT")
-
-emmeans(mod.c, pairwise ~ tree_cover)
-
-
-# Testing 
-
-sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred", 
-                              terms = c("d_RH [all]", "harvestF"),
-                              legend.title = "", show.intercept = TRUE) + 
-  
-  scale_colour_discrete(labels = c("Clearcut *", "Seed Tree", "30% Retention", "60% Retention *")) +
-  
-  
-  geom_point(data = model_3_H$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
-             inherit.aes = FALSE, size = 0.5) +
-  
-  labs(x = "RH Climatic Distance", 
-       y = NULL,
-       title = NULL) + 
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
-
-
-
-sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred", 
-                   terms = c("d_RH [all]", "harvestF"),
-                   legend.title = "", show.zeroinf = TRUE)
 
 
