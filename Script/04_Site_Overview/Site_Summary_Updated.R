@@ -5,14 +5,9 @@
 #' @Date: Oct 4th, 2023
 
 # 1. Importing Data ---------------------------------------------------------------
+regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 
+                  header = TRUE)
 
-regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE)
-
-regen <- subset(regen, !(is.na(tree_cover)))
-
-regen <- subset(regen, !regen$provenance %in% c("Jaffray future Fd",  "John Prince future Fd",
-                                                "Peterhope future Fd", "Alex Fraser future Fd", 
-                                                "Twobit B class Fd"))
 
 # nesting data
 loc_group_summary <- regen %>% 
@@ -115,7 +110,7 @@ loc_group_summary$location[loc_group_summary$location == "Jaffray"] <- "Cranbroo
 
 ###### 3.1 Survival ----
 
-survival_2 <- ggplot(data = loc_group_summary, 
+survival_graph <- ggplot(data = loc_group_summary, 
                      aes(x = fct_reorder(location, avg_survival), y = avg_survival, fill = location)) +
   
   geom_col(width = 0.80, colour = "black") +
@@ -144,12 +139,12 @@ survival_2 <- ggplot(data = loc_group_summary,
         text = element_text(family = "Times"))
 
 
-survival_2
+survival_graph
 
 ####### 3.2 Height -------
 
 
-height_2 <- ggplot(data = loc_group_summary, 
+height_graph <- ggplot(data = loc_group_summary, 
                    aes(x = fct_reorder(location, avg_height), y = avg_height, fill = location)) +
   
   geom_col(width = 0.80, color = "black") +
@@ -178,7 +173,7 @@ height_2 <- ggplot(data = loc_group_summary,
         text = element_text(family = "Times"))
 
 
-height_2
+height_graph
 ###### 3.3 Avg Site Climate ------------
 site_c_vars_df$location[site_c_vars_df$location == "Jaffray"] <- "Cranbrook"
 
@@ -226,5 +221,5 @@ library(ggpubr)
 
 
 ggarrange(site_summary,
-          ggarrange(survival_2, height_2, nrow = 2, labels = c("B.", "C."), align = "hv"),
+          ggarrange(survival_graph, height_graph, nrow = 2, labels = c("B.", "C."), align = "hv"),
           ncol = 2, labels = "A.", widths = c(1, 1), align = "v")
