@@ -15,6 +15,7 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 ### 1.1. Importing Functions ----------------------------------------------------------
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
+source("Script/02b_Survival_Graphing/graphing_Functions.R")
 
 ### 1.2 Loading Packages --------
 library(emmeans)
@@ -72,8 +73,6 @@ rm(regen, regen_prepped, universalDataPrepFunction)
 
 
 # 4. Estimated Probability of Survival -----------------------------------------
-
-source("Script/02b_Survival_Graphing/graphing_Functions.R")
 
 ##### 4.1 Adding data -----
 
