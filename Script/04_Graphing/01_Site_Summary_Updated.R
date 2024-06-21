@@ -8,22 +8,24 @@
 regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 
                   header = TRUE)
 
+regen$location[regen$location == "Jaffray"] <- "Cranbrook"
 
-# nesting data
+# Increasing RH
+location_order <- c("Alex Fraser", "Cranbrook", "John Prince", "Twobit", "Redfish", "Narrows")
+
+### 1.1 Loading packages -----
+library(ggpubr)
+
+### 1.2 Nesting data -----
 loc_group_summary <- regen %>% 
   group_by(location) %>% 
   nest()
 
 loc_group_summary
 
-loc_group_summary$location[loc_group_summary$location == "Jaffray"] <- "Cranbrook"
-
-loc_group_summary
 # 2. Organizing Data ------------------------------------------------------
 
-
 # new dataframe with an empty column
-
 loc_group_summary$avg_survival <- NA
 
 loc_group_summary$avg_height <- NA
@@ -61,7 +63,7 @@ loc_group_summary
 
 SiteClimaticVarList <- names(regen %>% select(starts_with("s_")))
 
-SiteClimaticVarList <- SiteClimaticVarList[c(4, 5, 10, 1, 12, 11, 8, 6, 15)]
+SiteClimaticVarList <- SiteClimaticVarList[c(2, 3, 6, 1, 8, 7, 5, 4, 9)]
 SiteClimaticVarList
 
 
@@ -78,7 +80,6 @@ location_c_vars <- location_c_vars %>%
 location_c_vars[SiteClimaticVarList] <- NA
 
 location_c_vars
-
 
 for (i in 1:length(SiteClimaticVarList)) {
   
@@ -102,16 +103,14 @@ site_c_vars_df <- melt(site_c_vars_df, id.var = "location", variable.name = "Sit
 
 site_c_vars_df
 
-
-
-loc_group_summary$location[loc_group_summary$location == "Jaffray"] <- "Cranbrook"
-
 #  3.  Graphing  ---------------------------------------------------------------
 
 ###### 3.1 Survival ----
 
 survival_graph <- ggplot(data = loc_group_summary, 
-                     aes(x = fct_reorder(location, avg_survival), y = avg_survival, fill = location)) +
+                     aes(x = factor(location, levels = location_order), 
+                         y = avg_survival, 
+                         fill = location)) +
   
   geom_col(width = 0.80, colour = "black") +
   
@@ -145,7 +144,9 @@ survival_graph
 
 
 height_graph <- ggplot(data = loc_group_summary, 
-                   aes(x = fct_reorder(location, avg_height), y = avg_height, fill = location)) +
+                   aes(x = factor(location, levels = location_order),
+                       y = avg_height, 
+                       fill = location)) +
   
   geom_col(width = 0.80, color = "black") +
   
@@ -175,10 +176,14 @@ height_graph <- ggplot(data = loc_group_summary,
 
 height_graph
 ###### 3.3 Avg Site Climate ------------
-site_c_vars_df$location[site_c_vars_df$location == "Jaffray"] <- "Cranbrook"
+site_c_vars_df <- site_c_vars_df %>% arrange(factor(location, levels = location_order))
+
+site_c_vars_df$location <- as.factor(site_c_vars_df$location)
 
 
-site_summary <- ggplot(data = site_c_vars_df, 
+# graphing 
+site_summary <- ggplot(data = transform(site_c_vars_df,
+                                 location = factor(location, levels=location_order)), 
                        aes(x = Site_C_Var, y = value, fill = Site_C_Var)) +
   
   geom_col(width = 0.80, color = "black") +
@@ -191,9 +196,9 @@ site_summary <- ggplot(data = site_c_vars_df,
        size = 16) +
 
   
-  scale_x_discrete(labels = c(bquote(MAP[L]), bquote(MSP[L]), bquote(PAS[L]), 
-                              bquote(MAT[L]), bquote(EXT[L]), bquote(EMT[L]), 
-                              bquote(NFFD[L]), bquote(AHM[L]), bquote(RH[L]))) +
+  scale_x_discrete(labels = c(bquote(MAP[Ls]), bquote(MSP[Ls]), bquote(PAS[Ls]), 
+                              bquote(MAT[Ls]), bquote(EXT[Ls]), bquote(EMT[Ls]), 
+                              bquote(NFFD[Ls]), bquote(AHM[Ls]), bquote(RH[Ls]))) +
   
   geom_text(aes(y = value + 0.5 * sign(value), label = round(value, 1)), 
             position = position_dodge(width = 0.8), 
@@ -201,7 +206,7 @@ site_summary <- ggplot(data = site_c_vars_df,
   
   facet_wrap( ~ location, ncol = 1) +
   
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0.5),
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5),
         legend.position = "none",
         panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major.y = element_blank(),
@@ -217,9 +222,8 @@ site_summary <- ggplot(data = site_c_vars_df,
 site_summary
 # 4. Grouping Graphs ------------------------------------------------------
 
-library(ggpubr)
-
-
 ggarrange(site_summary,
           ggarrange(survival_graph, height_graph, nrow = 2, labels = c("B.", "C."), align = "hv"),
           ncol = 2, labels = "A.", widths = c(1, 1), align = "v")
+
+# Save this graph at 1400 x 1000

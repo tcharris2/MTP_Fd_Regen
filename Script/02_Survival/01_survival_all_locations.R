@@ -20,7 +20,7 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # 2. Importing Functions ----------------------------------------------------------
 
-source("Script/02a_Survival_Functions/03_survival_all_locs_model_function.R")
+source("Script/02a_Survival_Functions/01_survival_all_locs_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 

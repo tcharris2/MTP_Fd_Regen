@@ -6,7 +6,7 @@
 
 # 1. Importing Data ---------------------------------------------------------------
 
-regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE) 
+regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), header = TRUE) 
 # check for most recent CSV file
 
 ClimaticVarList <- names(regen %>% select(starts_with("d_")))
