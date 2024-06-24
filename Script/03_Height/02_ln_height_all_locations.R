@@ -260,17 +260,7 @@ write.csv(HH_sig_p_vals, file = here("Data/05_Output", paste0(Sys.Date(),
 
 
 # 10. Testing Cover Models ----------------------------------------------------
-names(ln_height_cover_models)
-
-
-# rename columns
-colnames(ln_height_cover_models) <- c("model_0", "model_c", 
-                                              "model_1", "model_2",  
-                                              "model_3",
-                                              "ClimaticVarList")
 ln_height_cover_models
-
-source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
 
 ###### 10.1 Test models ----
 
@@ -298,7 +288,7 @@ ln_height_cover_models$lr_test_c_2 <- unlist(modelsTest(df = ln_height_cover_mod
                                                      recursive = FALSE)
 
 # Model 2 vs n + 1
-n_height_cover_models$lr_test_2_3 <- unlist(modelsTest(df = ln_height_cover_models,
+ln_height_cover_models$lr_test_2_3 <- unlist(modelsTest(df = ln_height_cover_models,
                                                                 model_x = ln_height_cover_models$model_2,
                                                                 model_y = ln_height_cover_models$model_3), 
                                                      recursive = FALSE)
