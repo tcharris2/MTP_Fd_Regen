@@ -194,14 +194,7 @@ QQGraphing(ln_height_cover_fits_data)
 
 
 # 9. Testing Harvest Models ----------------------------------------------------
-names(ln_height_harvest_models)
 
-
-# rename columns
-colnames(ln_height_harvest_models) <- c("model_0", "model_h", "model_a", "model_ah",
-                                              "model_1", "model_1a", "model_2", "model_2a", 
-                                              "model_3", "model_3a", 
-                                              "ClimaticVarList")
 ln_height_harvest_models
 
 source("Script/01_Universal_Functions/01_lrtest_function_updated.R")
@@ -214,22 +207,12 @@ ln_height_harvest_models$lr_test_0_h <- unlist(modelsTest(df = ln_height_harvest
                                                              model_y = ln_height_harvest_models$model_h), 
                                                   recursive = FALSE)
 
-ln_height_harvest_models$lr_test_0_a <- unlist(modelsTest(df = ln_height_harvest_models,
-                                                             model_x = ln_height_harvest_models$model_0,
-                                                             model_y = ln_height_harvest_models$model_a), 
-                                                  recursive = FALSE)
-
 ln_height_harvest_models$lr_test_0_1 <- unlist(modelsTest(df = ln_height_harvest_models,
                                                              model_x = ln_height_harvest_models$model_0,
                                                              model_y = ln_height_harvest_models$model_1), 
                                                   recursive = FALSE)
 
 # Model 1 vs n + 1
-ln_height_harvest_models$lr_test_1_1a <- unlist(modelsTest(df = ln_height_harvest_models,
-                                                              model_x = ln_height_harvest_models$model_1,
-                                                              model_y = ln_height_harvest_models$model_1a), 
-                                                   recursive = FALSE)
-
 ln_height_harvest_models$lr_test_1_2 <- unlist(modelsTest(df = ln_height_harvest_models,
                                                              model_x = ln_height_harvest_models$model_1,
                                                              model_y = ln_height_harvest_models$model_2), 
@@ -242,42 +225,11 @@ ln_height_harvest_models$lr_test_h_2 <- unlist(modelsTest(df = ln_height_harvest
                                                   recursive = FALSE)
 
 # Model 2 vs n + 1
-ln_height_harvest_models$lr_test_2_2a <- unlist(modelsTest(df = ln_height_harvest_models,
-                                                              model_x = ln_height_harvest_models$model_2,
-                                                              model_y = ln_height_harvest_models$model_2a), 
-                                                   recursive = FALSE)
-
 ln_height_harvest_models$lr_test_2_3 <- unlist(modelsTest(df = ln_height_harvest_models,
                                                              model_x = ln_height_harvest_models$model_2,
                                                              model_y = ln_height_harvest_models$model_3), 
                                                   recursive = FALSE)
 # Model 3 vs n + 1
-ln_height_harvest_models$lr_test_3_3a <- unlist(modelsTest(df = ln_height_harvest_models,
-                                                              model_x = ln_height_harvest_models$model_3,
-                                                              model_y = ln_height_harvest_models$model_3a), 
-                                                   recursive = FALSE)
-
-# age models
-ln_height_harvest_models$lr_test_a_1a <- unlist(modelsTest(df = ln_height_harvest_models,
-                                                                 model_x = ln_height_harvest_models$model_a,
-                                                                 model_y = ln_height_harvest_models$model_1a), 
-                                                      recursive = FALSE)
-
-
-ln_height_harvest_models$lr_test_1a_2a <- unlist(modelsTest(df = ln_height_harvest_models,
-                                                                 model_x = ln_height_harvest_models$model_1a,
-                                                                 model_y = ln_height_harvest_models$model_2a), 
-                                                      recursive = FALSE)
-
-ln_height_harvest_models$lr_test_ah_2a <- unlist(modelsTest(df = ln_height_harvest_models,
-                                                                  model_x = ln_height_harvest_models$model_ah,
-                                                                  model_y = ln_height_harvest_models$model_2a), 
-                                                       recursive = FALSE)
-
-ln_height_harvest_models$lr_test_2a_3a <- unlist(modelsTest(df = ln_height_harvest_models,
-                                                                 model_x = ln_height_harvest_models$model_2a,
-                                                                 model_y = ln_height_harvest_models$model_3a), 
-                                                      recursive = FALSE)
 ln_height_harvest_models
 
 
@@ -287,10 +239,9 @@ HH_p_vals <- extractPVals(ln_height_harvest_models)
 HH_p_vals
 
 HH_p_vals <- subset(HH_p_vals, 
-                          select = c("ClimaticVarList", "p_val_0_h", "p_val_0_a", 
-                                     "p_val_0_1", "p_val_1_1a", "p_val_1_2", "p_val_h_2",
-                                     "p_val_2_2a", "p_val_2_3", "p_val_3_3a",
-                                     "p_val_a_1a", "p_val_1a_2a", "p_val_ah_2a", "p_val_2a_3a"))
+                          select = c("ClimaticVarList", "p_val_0_h", 
+                                     "p_val_0_1",  "p_val_1_2", "p_val_h_2",
+                                     "p_val_2_3"))
 HH_p_vals
 
 # Isolating Significant P-Values 
@@ -313,9 +264,9 @@ names(ln_height_cover_models)
 
 
 # rename columns
-colnames(ln_height_cover_models) <- c("model_0", "model_c", "model_a", "model_ac",
-                                              "model_1", "model_1a", "model_2", "model_2a", 
-                                              "model_3", "model_3a",
+colnames(ln_height_cover_models) <- c("model_0", "model_c", 
+                                              "model_1", "model_2",  
+                                              "model_3",
                                               "ClimaticVarList")
 ln_height_cover_models
 
@@ -329,22 +280,12 @@ ln_height_cover_models$lr_test_0_c <- unlist(modelsTest(df = ln_height_cover_mod
                                                                 model_y = ln_height_cover_models$model_c), 
                                                      recursive = FALSE)
 
-ln_height_cover_models$lr_test_0_a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                model_x = ln_height_cover_models$model_0,
-                                                                model_y = ln_height_cover_models$model_a), 
-                                                     recursive = FALSE)
-
 ln_height_cover_models$lr_test_0_1 <- unlist(modelsTest(df = ln_height_cover_models,
                                                                 model_x = ln_height_cover_models$model_0,
                                                                 model_y = ln_height_cover_models$model_1), 
                                                      recursive = FALSE)
 
 # Model 1 vs n + 1
-ln_height_cover_models$lr_test_1_1a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                 model_x = ln_height_cover_models$model_1,
-                                                                 model_y = ln_height_cover_models$model_1a), 
-                                                      recursive = FALSE)
-
 ln_height_cover_models$lr_test_1_2 <- unlist(modelsTest(df = ln_height_cover_models,
                                                                 model_x = ln_height_cover_models$model_1,
                                                                 model_y = ln_height_cover_models$model_2), 
@@ -357,49 +298,11 @@ ln_height_cover_models$lr_test_c_2 <- unlist(modelsTest(df = ln_height_cover_mod
                                                      recursive = FALSE)
 
 # Model 2 vs n + 1
-ln_height_cover_models$lr_test_2_2a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                 model_x = ln_height_cover_models$model_2,
-                                                                 model_y = ln_height_cover_models$model_2a), 
-                                                      recursive = FALSE)
-
-ln_height_cover_models$lr_test_2_3 <- unlist(modelsTest(df = ln_height_cover_models,
+n_height_cover_models$lr_test_2_3 <- unlist(modelsTest(df = ln_height_cover_models,
                                                                 model_x = ln_height_cover_models$model_2,
                                                                 model_y = ln_height_cover_models$model_3), 
                                                      recursive = FALSE)
 # Model 3 vs n + 1
-ln_height_cover_models$lr_test_3_3a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                 model_x = ln_height_cover_models$model_3,
-                                                                 model_y = ln_height_cover_models$model_3a), 
-                                                      recursive = FALSE)
-
-# age models
-ln_height_cover_models$lr_test_a_1a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                 model_x = ln_height_cover_models$model_a,
-                                                                 model_y = ln_height_cover_models$model_1a), 
-                                                      recursive = FALSE)
-
-
-ln_height_cover_models$lr_test_1a_2a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                  model_x = ln_height_cover_models$model_1a,
-                                                                  model_y = ln_height_cover_models$model_2a), 
-                                                       recursive = FALSE)
-
-ln_height_cover_models$lr_test_ac_2a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                 model_x = ln_height_cover_models$model_ac,
-                                                                 model_y = ln_height_cover_models$model_2a), 
-                                                      recursive = FALSE)
-
-ln_height_cover_models$lr_test_ac_3a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                model_x = ln_height_cover_models$model_ac,
-                                                                model_y = ln_height_cover_models$model_3a), 
-                                                     recursive = FALSE)
-
-
-ln_height_cover_models$lr_test_2a_3a <- unlist(modelsTest(df = ln_height_cover_models,
-                                                                  model_x = ln_height_cover_models$model_2a,
-                                                                  model_y = ln_height_cover_models$model_3a), 
-                                                       recursive = FALSE)
-
 ln_height_cover_models
 
 
@@ -409,11 +312,9 @@ HC_p_vals <- extractPVals(ln_height_cover_models)
 HC_p_vals
 
 HC_p_vals <- subset(HC_p_vals, 
-                          select = c("ClimaticVarList", "p_val_0_c", "p_val_0_a", 
-                                     "p_val_0_1", "p_val_1_1a", "p_val_1_2", "p_val_c_2",
-                                     "p_val_2_2a", "p_val_2_3", "p_val_3_3a",
-                                     "p_val_a_1a", "p_val_1a_2a", "p_val_ac_2a", 
-                                     "p_val_ac_3a",  "p_val_2a_3a"))
+                          select = c("ClimaticVarList", "p_val_0_c",
+                                     "p_val_0_1", "p_val_1_2", "p_val_c_2",
+                                     "p_val_2_3"))
 HC_p_vals
 
 # Isolating Significant P-Values 
