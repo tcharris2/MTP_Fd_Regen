@@ -19,7 +19,7 @@ ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
 # 2. Importing Functions ----------------------------------------------------------
 
-source("Script/03a_Height_Functions/03a_ln_height_all_locs_model_function.R")
+source("Script/03a_Height_Functions/02_ln_height_all_locs_model_function.R")
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 
@@ -53,39 +53,27 @@ ln_h_model_null <- list(ln_HeightModelNull(regen_height))
 ###### 4.2 Treatment Models ----
 ln_h_model_harvest <- list(ln_HeightModelHarvest(regen_height))
 ln_h_model_cover <- list(ln_HeightModelCover(regen_height))
-ln_h_model_age <- list(ln_HeightModelAge(regen_height))
 ln_h_model_age_har <- list(ln_HeightModelAgeHarvest(regen_height))
 ln_h_model_age_can <- list(ln_HeightModelAgeCover(regen_height))
 
 ###### 4.3 Climate Models ----
 ln_h_model_1 <- ln_HeightClimate_1(regen_height)
-ln_h_model_1a <- ln_HeightClimate_1a(regen_height)
 
 ###### 4.4 Harvest Models ----
 ln_h_model_harvest_2 <- ln_HeightHarvest_2(regen_height)
 ln_h_model_harvest_3 <- ln_HeightHarvest_3(regen_height)
-ln_h_model_harvest_2a <- ln_HeightHarvest_2a(regen_height)
-ln_h_model_harvest_3a <- ln_HeightHarvest_3a(regen_height)
 
 ###### 4.5 Cover Models ----
 ln_h_model_cover_2 <- ln_HeightCover_2(regen_height)
 ln_h_model_cover_3 <- ln_HeightCover_3(regen_height)
-ln_h_model_cover_2a <- ln_HeightCover_2a(regen_height)
-ln_h_model_cover_3a <- ln_HeightCover_3a(regen_height)
-
 
 
 # 5. Grouping Models -----------------------------------------------------------
 ln_height_harvest_models <- tibble("model_0" = ln_h_model_null,
                                    "model_h" = ln_h_model_harvest,
-                                   "model_a" = ln_h_model_age,
-                                   "model_ah" = ln_h_model_age_har,
                                    "model_1" = ln_h_model_1,
-                                   "model_1a" = ln_h_model_1a,
                                    "model_2" = ln_h_model_harvest_2, 
-                                   "model_2a" = ln_h_model_harvest_2a,
                                    "model_3" = ln_h_model_harvest_3, 
-                                   "model_3a" = ln_h_model_harvest_3a,
                                    ClimaticVarList)
 
 ln_height_harvest_models
@@ -93,14 +81,9 @@ ln_height_harvest_models
 
 ln_height_cover_models <- tibble("model_0" = ln_h_model_null,
                                 "model_c" = ln_h_model_cover, 
-                                "model_a" = ln_h_model_age,
-                                "model_ac" = ln_h_model_age_can,
                                 "model_1" = ln_h_model_1, 
-                                "model_1a" = ln_h_model_1a,
                                 "model_2" = ln_h_model_cover_2,
-                                "model_2a" = ln_h_model_cover_2a,
                                 "model_3" = ln_h_model_cover_3,
-                                "model_3a" = ln_h_model_cover_3a,
                                 ClimaticVarList)
 
 ln_height_cover_models

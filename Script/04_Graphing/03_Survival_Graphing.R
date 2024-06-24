@@ -37,13 +37,13 @@ str(regen_prepped)
 ### 1.4 Calling RDS file  ------
 
 survival_harvest_models <- readRDS(file = here("Data/04_Temp", 
-                                               "2024-03-11_survival_group_harvest_models.rds"))
+                                               "2024-06-24_survival_harvest_models.rds"))
 
 survival_harvest_models
 
 
 survival_cover_models <- readRDS(file = here("Data/04_Temp", 
-                                               "2024-03-11_survival_group_cover_models.rds"))
+                                               "2024-06-24_survival_cover_models.rds"))
 
 survival_cover_models
 
@@ -56,14 +56,8 @@ names(survival_cover_models)
 # See 2024-02-06_MODEL_SLECTION_survival_Harvest_group_sig_p_vals_NoFutures.csv for list of selected models
 
 
-model_1 <- survival_harvest_models[c(1:6, 8:13, 15), c("ClimaticVarList", "model_1")]
+model_3_H <- survival_harvest_models[c(5, 7, 9), c("ClimaticVarList", "model_3")]
 
-model_1 <- survival_harvest_models[c(1:6, 10, 12:13), c("ClimaticVarList", "model_1")]
-
-model_3_H <- survival_harvest_models[c(8:9, 11, 15), c("ClimaticVarList", "model_3")]
-
-
-model_2_C <- survival_cover_models[c(5:6, 10), c("ClimaticVarList", "model_2")]
 
 model_3_C <- survival_cover_models[c(1:4, 8:9, 11:13, 15), c("ClimaticVarList", "model_3")]
 
@@ -76,29 +70,18 @@ rm(regen, regen_prepped, universalDataPrepFunction)
 
 ##### 4.1 Adding data -----
 
-model_1$data <- list(regen_survival)
-
-model_1
-
 model_3_H$data <- list(regen_survival)
 
 model_3_H
 
-
-model_2_C$data <- list(regen_survival)
-
-model_2_C
 
 model_3_C$data <- list(regen_survival)
 
 model_3_C
 
 ### 4.2 Adding EPS ----
-model_1 <- survivalProbs(model_1, model_1$model_1)
 
 model_3_H <- survivalProbs(model_3_H, model_3_H$model_3)
-
-model_2_C <- survivalProbs(model_2_C, model_2_C$model_2)
 
 model_3_C <- survivalProbs(model_3_C, model_3_C$model_3)
 
@@ -108,9 +91,11 @@ model_3_C <- survivalProbs(model_3_C, model_3_C$model_3)
   
 # NFFD plot
 NFFD_mod <- model_3_H$model_3[[1]]
-RH_mod <- model_3_H$model_3[[4]]
+EMT_mod <- model_3_H$model_3[[2]]
+RH_mod <- model_3_H$model_3[[3]]
 
-tab_model(NFFD_mod, RH_mod, transform = NULL)
+
+tab_model(NFFD_mod, EMT_mod, RH_mod, transform = NULL)
 
 ### 5.1. NFFD plot -----
 
@@ -135,39 +120,47 @@ NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred",
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
+        legend.text = element_text(size = 17),
         text = element_text(family = "Times"))
 
 NFFD_plot
 
 ### 5.2. EMT plot -----
 
-EMT_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred", 
+EMT_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[2]], type = "pred", 
                                 terms = c("d_EMT [all]", "harvestF"),
-                                legend.title = "") + 
+                                legend.title = "",
+                                alpha = 0.05) + 
   
-  scale_colour_discrete(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")) +
+  scale_colour_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                    values = c("red", "green4", "blue", "black")) +
   
   
-  geom_point(data = model_3_H$data[[3]], mapping = aes(x = d_EMT, y = survival_probs), 
+  geom_point(data = model_3_H$data[[2]], mapping = aes(x = d_EMT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
-  labs(x = "EMT Climatic Distance", 
-       y = "Estimated Probability of Survival",
+  labs(x = bquote(bold("Extreme Minimum Temperature Transfer Distance (" ^"o" * "C)")), 
+       y = "Predicted Probability of Survival",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.text = element_text(size = 17),
+        text = element_text(family = "Times"))
 
+EMT_plot
 ### 5.3. RH plot -----
 
-RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred", 
+RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred", 
                                 terms = c("d_RH [all]", "harvestF"),
                                 legend.title = "",
                               alpha = 0.05) + 
@@ -178,7 +171,7 @@ RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred",
                     values = c("red", "green4", "blue", "black")) +
   
   
-  geom_point(data = model_3_H$data[[4]], mapping = aes(x = d_RH, y = survival_probs), 
+  geom_point(data = model_3_H$data[[3]], mapping = aes(x = d_RH, y = survival_probs), 
              inherit.aes = FALSE, size = 0.5) +
   
   labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
@@ -188,9 +181,10 @@ RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[4]], type = "pred",
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
+        legend.text = element_text(size = 17),
         text = element_text(family = "Times"))
 
 RH_plot 
@@ -567,12 +561,7 @@ ggarrange(MAT_1_plot,
 
 df <- regen_survival
 
-model_3_H
-
-NFFD_mod <- model_3_H$model_3[[1]]
-
-NFFD_mod
-RH_mod
+harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
 
   
 # Useful 
@@ -581,10 +570,6 @@ joint_tests(mod, by = "harvestF")
 joint_tests(mod)
 
 ### 8.1. RH emtrend ----
-
-# General Labels
-harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
-
 
 # Get model 
 RH_mod <- model_3_H$model_3[[4]]
@@ -607,25 +592,72 @@ RH_trend <- plot(emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "b
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = sig_labels), hjust = 1.5, 
+  geom_text(aes(label = RH_sig_labels), hjust = 1.5, 
                                      vjust = -3,
-                                     size = 3) +
-  geom_text(aes(label = round(RH_trend_vals, 2), hjust = -0.3)) +
+                                     size = 5) +
+  geom_text(aes(label = round(RH_trend_vals, 2), hjust = -0.3),
+            size = 5) +
   
   
-  labs(x = "Relative Humidity - Harvest \n Interaction Slope", 
+  labs(x = bquote(bold(RH[td] * "  - Harvest Interaction Slope")), 
        y = "",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 
 RH_trend
+
+### 8.2. EMT emtrend ----
+
+
+# Get model 
+EMT_mod <- model_3_H$model_3[[2]]
+EMT_mod
+
+# Look at trend significance 
+EMT_emtrends <- emtrends(EMT_mod, pairwise ~ harvestF, var = "d_EMT", adjust = "bonferroni")
+EMT_emtrends
+
+# Plotting
+
+# Lables
+EMT_sig_labels <- c("AA", "AB", "AB", "BB")
+EMT_sig_labels_1 <- c("AA", "", "", "")
+EMT_trend_vals <- c(0.1714, 0.1301, 0.1062, 0.0562)
+
+
+EMT_trend <- plot(emtrends(EMT_mod, pairwise ~ harvestF, var = "d_EMT", adjust = "bonferroni")) +
+  
+  coord_flip() +
+  
+  scale_y_discrete(labels = harvest_labels) +
+  
+  geom_text(aes(label = EMT_sig_labels), hjust = 1.5, 
+            vjust = -3,
+            size = 5) +
+  geom_text(aes(label = round(EMT_trend_vals, 2), hjust = -0.3), size = 5) +
+  
+  
+  labs(x = bquote(bold(EMT[td] * "  - Harvest Interaction Slope")), 
+       y = "",
+       title = NULL) + 
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
+        text = element_text(family = "Times"))
+
+
+EMT_trend
+
 
 ### 8.2. NFFD emtrend ----
 
@@ -649,21 +681,22 @@ NFFD_trend <- plot(emtrends(NFFD_mod, pairwise ~ harvestF, var = "d_NFFD", adjus
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = sig_labels), hjust = 1.5, 
+  geom_text(aes(label = NFFD_sig_labels), hjust = 1.5, 
                                      vjust = -3,
-                                     size = 3) +
-  geom_text(aes(label = round(NFFD_trend_vals, 3), hjust = -0.3)) +
+                                     size = 5) +
+  geom_text(aes(label = round(NFFD_trend_vals, 3), hjust = -0.3),
+            size = 5) +
   
   
-  labs(x = "Number of Frost Free Days - Harvest \n Interaction Slope", 
+  labs(x = bquote(bold(NFFD[td] * "  - Harvest Interaction Slope")), 
        y = "",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 12),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 
@@ -682,4 +715,11 @@ trend_plot <- ggarrange(NFFD_trend, RH_trend)
 
 ggarrange(inter_plot, trend_plot, nrow = 2, heights = c(2, 1))
 
+# save at 1600 x 900
 
+
+# EMT Composite 
+
+ggarrange(EMT_plot, EMT_trend, ncol = 1, heights = c(2.5, 1))
+
+# save graph as 1400 x 1000
