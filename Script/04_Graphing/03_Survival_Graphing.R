@@ -59,7 +59,7 @@ names(survival_cover_models)
 model_3_H <- survival_harvest_models[c(5, 7, 9), c("ClimaticVarList", "model_3")]
 
 
-model_3_C <- survival_cover_models[c(1:4, 8:9, 11:13, 15), c("ClimaticVarList", "model_3")]
+model_3_C <- survival_cover_models[c(1:2, 5, 7:9), c("ClimaticVarList", "model_3")]
 
 # 3. Clean up Global env. ------------------------------------------------------
 
@@ -89,7 +89,7 @@ model_3_C <- survivalProbs(model_3_C, model_3_C$model_3)
 
 # 5. Harvest Interaction Plots --------------------------------------------------
   
-# NFFD plot
+# models
 NFFD_mod <- model_3_H$model_3[[1]]
 EMT_mod <- model_3_H$model_3[[2]]
 RH_mod <- model_3_H$model_3[[3]]
@@ -191,7 +191,7 @@ RH_plot
 
 ### 5.4. Composites ------ 
 
-ggarrange(NFFD_plot, FFP_plot, EMT_plot, RH_plot, 
+ggarrange(NFFD_plot, EMT_plot, RH_plot, 
           labels = c("A", "B", "C", "D"), 
           vjust = 0.5, 
           common.legend = TRUE, legend = "top")
@@ -219,24 +219,23 @@ MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred",
              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 0.02, alpha = 0.5) +
   
   labs(x = bquote(bold("Mean Annual Temperature Transfer Distance (" ^"o" * "C)")), 
-       y = "Predicted Probability of Survival",
+       y = "Predicted Probability of Survival (%)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 MAT_cov_plot
 
 
-
 ### 6.2. MAP plot -----
-MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred", 
+MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[2]], type = "pred", 
                                     terms = c("d_MAP [all]", "tree_cover [0, 10, 30, 60]"),
                                     legend.title = "Percent Tree Cover (%)",
                                    alpha = 0.05) +
@@ -246,25 +245,26 @@ MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred",
   scale_fill_manual(labels = c("0", "10", "30", "60"),
                     values = c("red", "green4", "blue", "black")) +
   
-  geom_jitter(data = model_3_C$data[[4]], mapping = aes(x = d_MAP, y = survival_probs), 
-              inherit.aes = FALSE, size = 0.2, colour = "gray40", width = 2.5, alpha = 0.5) +
+  geom_jitter(data = model_3_C$data[[2]], mapping = aes(x = d_MAP, y = survival_probs), 
+              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 2.5, alpha = 0.5) +
   
-  labs(x = "MAP Climatic Distance", 
-       y = NULL,
+  labs(x = "Mean Annual Precipitation Transfer Distance (mm)", 
+       y = "Predicted Probability of Survival (%)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
-        legend.spacing.y = unit(1, "cm"))
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 MAP_cov_plot
 
 ### 6.3. NFFD plot -----
-NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred", 
+NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[3]], type = "pred", 
                                     terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"),
                                     legend.title = "Percent Tree Cover (%)",
                                     alpha = 0.05) + 
@@ -274,67 +274,72 @@ NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred",
   scale_fill_manual(labels = c("0", "10", "30", "60"),
                     values = c("red", "green4", "blue", "black")) +
   
-  geom_jitter(data = model_3_C$data[[5]], mapping = aes(x = d_NFFD, y = survival_probs), 
+  geom_jitter(data = model_3_C$data[[3]], mapping = aes(x = d_NFFD, y = survival_probs), 
               inherit.aes = FALSE, size = 0.2, colour = "gray40", width = 0.4, alpha = 0.5) +
   
-  labs(x = "NFFD Climatic Distance", 
-       y = "Predicted Probability of Survival",
+  labs(x = "Number of Frost Free Days Transfer Distance (days)", 
+       y = "Predicted Probability of Survival (%)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
-        legend.spacing.y = unit(1, "cm"))
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 NFFD_cov_plot
 
 
 ### 6.4. EMT plot -----
-EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[7]], type = "pred", 
+EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred", 
                                     terms = c("d_EMT [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
   
-  geom_point(data = model_3_C$data[[7]], mapping = aes(x = d_EMT, y = survival_probs), 
+  geom_point(data = model_3_C$data[[4]], mapping = aes(x = d_EMT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "EMT Climatic Distance", 
-       y = "Estimated Probability of Survival",
+  labs(x = bquote(bold("Extreme Minimum Temperature Transfer Distance (" ^"o" * "C)")), 
+       y = "Predicted Probability of Survival (%)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 
 ### 6.5. EXT plot ----
-EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[8]], type = "pred", 
+EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred", 
                                     terms = c("d_EXT [all]", "tree_cover [0, 25, 50]"),
                                     legend.title = "Percent Tree Cover (%)") + 
   
-  geom_point(data = model_3_C$data[[8]], mapping = aes(x = d_EXT, y = survival_probs), 
+  geom_point(data = model_3_C$data[[5]], mapping = aes(x = d_EXT, y = survival_probs), 
              inherit.aes = FALSE, size = 0.2, colour = "gray20") +
   
-  labs(x = "EXT Climatic Distance", 
-       y = NULL,
+  labs(x = bquote(bold("Extreme Maximum Temperature Transfer Distance (" ^"o" * "C)")), 
+       y = "Predicted Probability of Survival (%)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 
 
 ### 6.6. RH plot ----
-RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[10]], type = "pred", 
+RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[6]], type = "pred", 
                                     terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"),
                                     legend.title = "Percent Tree Cover (%)",
                                   alpha = 0.05) + 
@@ -344,20 +349,21 @@ RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[10]], type = "pred",
   scale_fill_manual(labels = c("0", "10", "30", "60"),
                     values = c("red", "green4", "blue", "black")) +
   
-  geom_jitter(data = model_3_C$data[[10]], mapping = aes(x = d_RH, y = survival_probs), 
+  geom_jitter(data = model_3_C$data[[6]], mapping = aes(x = d_RH, y = survival_probs), 
               inherit.aes = FALSE, size = 0.2, colour = "gray40", width = 0.07, alpha = 0.5) +
   
-  labs(x = "RH Climatic Distance", 
-       y = NULL,
+  labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
+       y = "Predicted Probability of Survival (%)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
-        legend.spacing.y = unit(1, "cm"))
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 RH_cov_plot
 
@@ -563,12 +569,6 @@ df <- regen_survival
 
 harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
 
-  
-# Useful 
-joint_tests(mod, by = "d_RH")
-joint_tests(mod, by = "harvestF")
-joint_tests(mod)
-
 ### 8.1. RH emtrend ----
 
 # Get model 
@@ -583,7 +583,6 @@ RH_emtrends
 
 # Lables
 RH_sig_labels <- c("AA", "AB", "AB", "BB")
-RH_sig_labels_1 <- c("AA", "", "", "")
 RH_trend_vals <- c(0.2281, 0.1515, 0.1379, 0.0718)
 
 RH_trend <- plot(emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")) +
@@ -628,7 +627,6 @@ EMT_emtrends
 
 # Lables
 EMT_sig_labels <- c("AA", "AB", "AB", "BB")
-EMT_sig_labels_1 <- c("AA", "", "", "")
 EMT_trend_vals <- c(0.1714, 0.1301, 0.1062, 0.0562)
 
 
@@ -671,7 +669,6 @@ NFFD_emtrends
 
 # Labels
 NFFD_sig_labels <- c("AA", "AB", "AB", "BB")
-NFFD_sig_labels_1 <- c("AA", "", "", "")
 NFFD_trend_vals <- c(0.0350, 0.0256, 0.0217, 0.0108)
 
 
@@ -715,11 +712,11 @@ trend_plot <- ggarrange(NFFD_trend, RH_trend)
 
 ggarrange(inter_plot, trend_plot, nrow = 2, heights = c(2, 1))
 
-# save at 1600 x 900
+# save at 1600 x 900 .png or "US legal" .pdf 
 
 
 # EMT Composite 
 
 ggarrange(EMT_plot, EMT_trend, ncol = 1, heights = c(2.5, 1))
 
-# save graph as 1400 x 1000
+# save graph as 1400 x 1000 .png or 11.50" x 12.00" .pdf
