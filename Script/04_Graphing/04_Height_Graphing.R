@@ -349,31 +349,34 @@ MAP_graph <- ggplot(df_MAP, aes(x, predicted)) +
               inherit.aes = FALSE,
               height = 0.5,
               width = 2,
-              size = 0.1, colour = "gray50") +
+              size = 0.1, colour = "gray20") +
   
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
-                  alpha = 0.1) +
+                  alpha = 0.05) +
   
   geom_line(aes(color = group), linewidth = 1) +
   
-  labs(x = "MAP Climatic Distance", 
-       y = "Predicted Height",
+  labs(x = "Mean Annual Precipitation Transfer Distance (mm)", 
+       y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
        colour = "Harvest") +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
-                     values = c("red", "blue", "green4", "black")) +
+                     values = c("red", "green4", "blue", "black")) +
   scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
-                    values = c("red", "blue", "green4", "black")) +
+                    values = c("red", "green4", "blue", "black")) +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
-        legend.title = element_blank())
+        legend.title = element_blank(),
+        text = element_text(family = "Times", size = 17))
+
+MAP_graph
 
 ###### 5.2 MSP plot ----
 df_MSP <- ggpredict(harvest_2_models[["model_2"]][[2]], terms = c("d_MSP [all]", "harvestF"))
@@ -384,60 +387,24 @@ MSP_graph <- ggplot(df_MSP, aes(x, predicted)) +
               mapping = aes(x = d_MSP, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 2,
-              size = 0.1, colour = "gray50") +
+              width = 0.3,
+              size = 0.1, colour = "gray20") +
   
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
-              alpha = 0.1) +
+              alpha = 0.05) +
   
   geom_line(aes(color = group), linewidth = 1) +
   
-  labs(x = "MSP Climatic Distance", 
-       y = "Predicted Height",
+  labs(x = "Mean Summer Precipitation Transfer Distance (mm)", 
+       y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
        colour = "Harvest") +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
-                     values = c("red", "blue", "green4", "black")) +
+                     values = c("red", "green4", "blue", "black")) +
   scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
-                    values = c("red", "blue", "green4", "black")) +
-  
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top",
-        legend.title = element_blank())
-
-###### 5.3 AHM plot ----
-df_AHM <- ggpredict(harvest_2_models[["model_2"]][[3]], terms = c("d_AHM [all]", "harvestF"))
-
-AHM_graph <- ggplot(df_AHM, aes(x, predicted)) +
-  
-  geom_jitter(data = harvest_2_models$data[[4]],
-              mapping = aes(x = d_AHM, y = exp(predict_val)),
-              inherit.aes = FALSE,
-              height = 0.5,
-              width = 0.2,
-              size = 0.1, colour = "gray50") +
-  
-  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
-              alpha = 0.1) +
-  
-  geom_line(aes(color = group), linewidth = 1) +
-  
-  labs(x = "AHM Climatic Distance", 
-       y = "Predicted Height",
-       title = NULL,
-       fill = "Harvest",
-       colour = "Harvest") +
-  
-  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
-                     values = c("red", "blue", "green4", "black")) +
-  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
-                    values = c("red", "blue", "green4", "black")) +
+                    values = c("red", "green4", "blue", "black")) +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -446,7 +413,48 @@ AHM_graph <- ggplot(df_AHM, aes(x, predicted)) +
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
+
+MSP_graph
+
+###### 5.3 AHM plot ----
+df_AHM <- ggpredict(harvest_2_models[["model_2"]][[3]], terms = c("d_AHM [all]", "harvestF"))
+
+AHM_graph <- ggplot(df_AHM, aes(x, predicted)) +
+  
+  geom_jitter(data = harvest_2_models$data[[3]],
+              mapping = aes(x = d_AHM, y = exp(predict_val)),
+              inherit.aes = FALSE,
+              height = 0.5,
+              width = 0.07,
+              size = 0.1, colour = "gray20") +
+  
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
+              alpha = 0.05) +
+  
+  geom_line(aes(color = group), linewidth = 1) +
+  
+  labs(x = "Annual Heat Moisture Index Transfer Distance", 
+       y = "Predicted Height (cm)",
+       title = NULL,
+       fill = "Harvest",
+       colour = "Harvest") +
+  
+  scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
+                     values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
+                    values = c("red", "green4", "blue", "black")) +
+  
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 10),
+        axis.title = element_text(size = 12, face = "bold"),
+        legend.position = "top",
+        legend.title = element_blank(),
+        text = element_text(family = "Times", size = 17))
+
+AHM_graph
 
 ###### 5.4 NFFD plot ----
 df_NFFD <- ggpredict(harvest_2_models[["model_2"]][[4]], terms = c("d_NFFD [all]", "harvestF"))
@@ -457,32 +465,35 @@ NFFD_graph <- ggplot(df_NFFD, aes(x, predicted)) +
               mapping = aes(x = d_NFFD, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 2,
-              size = 0.1, colour = "gray50") +
+              width = 0.3,
+              size = 0.1, colour = "gray20") +
   
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
-              alpha = 0.1) +
+              alpha = 0.05) +
   
   geom_line(aes(color = group), linewidth = 1) +
   
-  labs(x = "NFFD Climatic Distance", 
-       y = "Predicted Height",
+  labs(x = "Number of Frost Free Days Transfer Distance (days)", 
+       y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
        colour = "Harvest") +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
-                     values = c("red", "blue", "green4", "black")) +
+                     values = c("red", "green4", "blue", "black")) +
   scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
-                    values = c("red", "blue", "green4", "black")) +
+                    values = c("red", "green4", "blue", "black")) +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
-        legend.title = element_blank())
+        legend.title = element_blank(),
+        text = element_text(family = "Times", size = 17))
+
+NFFD_graph
 
 ###### 5.5 PAS plot----
 
@@ -495,7 +506,7 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
               inherit.aes = FALSE,
               height = 0.5,
               width = 0.8,
-              size = 0.1, colour = "gray30") +
+              size = 0.1, colour = "gray20") +
   
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
               alpha = 0.05) +
@@ -516,11 +527,11 @@ PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 PAS_graph
 
@@ -533,32 +544,35 @@ EMT_graph <- ggplot(df_EMT, aes(x, predicted)) +
               mapping = aes(x = d_EMT, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 2,
-              size = 0.1, colour = "gray50") +
+              width = 0.05,
+              size = 0.1, colour = "gray20") +
   
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
-              alpha = 0.1) +
+              alpha = 0.05) +
   
   geom_line(aes(color = group), linewidth = 1) +
   
-  labs(x = "EMT Climatic Distance", 
-       y = "Predicted Height",
+  labs(x = bquote(bold("Extreme Minimum Temperature Transfer Distance (" ^"o" * "C)")), 
+       y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
        colour = "Harvest") +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
-                     values = c("red", "blue", "green4", "black")) +
+                     values = c("red", "green4", "blue", "black")) +
   scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
-                    values = c("red", "blue", "green4", "black")) +
+                    values = c("red", "green4", "blue", "black")) +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
-        legend.title = element_blank())
+        legend.title = element_blank(),
+        text = element_text(family = "Times", size = 17))
+
+EMT_graph
 
 ###### 5.7 RH plot ----
 df_RH <- ggpredict(harvest_2_models[["model_2"]][[7]], terms = c("d_RH [all]", "harvestF"))
@@ -569,24 +583,24 @@ RH_graph <- ggplot(df_RH, aes(x, predicted)) +
               mapping = aes(x = d_RH, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 0.1,
-              size = 0.1, colour = "gray50") +
+              width = 0.05,
+              size = 0.1, colour = "gray20") +
   
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = group), 
-              alpha = 0.1) +
+              alpha = 0.05) +
   
   geom_line(aes(color = group), linewidth = 1) +
   
-  labs(x = "RH Climatic Distance", 
-       y = "Predicted Height",
+  labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
+       y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
        colour = "Harvest") +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
-                     values = c("red", "blue", "green4", "black")) +
+                     values = c("red", "green4", "blue", "black")) +
   scale_fill_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"), 
-                    values = c("red", "blue", "green4", "black")) +
+                    values = c("red", "green4", "blue", "black")) +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -594,7 +608,9 @@ RH_graph <- ggplot(df_RH, aes(x, predicted)) +
         axis.text = element_text(size = 10),
         axis.title = element_text(size = 12, face = "bold"),
         legend.position = "top",
-        legend.title = element_blank())
+        legend.title = element_blank(),
+        text = element_text(family = "Times", size = 17))
+
 RH_graph
 
 # 6. emmeans --------------------------------------------------------------------
