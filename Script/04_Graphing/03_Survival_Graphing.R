@@ -204,6 +204,8 @@ ggarrange(NFFD_plot, RH_plot,
 
 # 6.  Cover Interaction Plots --------------------------------------------------
 
+# Save at "A4" .pdf
+
 ### 6.1. MAT plot ----
 MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred", 
                                 terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"),
@@ -275,7 +277,7 @@ NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[3]], type = "pred",
                     values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = model_3_C$data[[3]], mapping = aes(x = d_NFFD, y = survival_probs), 
-              inherit.aes = FALSE, size = 0.2, colour = "gray40", width = 0.4, alpha = 0.5) +
+              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 0.4, alpha = 0.5) +
   
   labs(x = "Number of Frost Free Days Transfer Distance (days)", 
        y = "Predicted Probability of Survival (%)",
@@ -295,11 +297,17 @@ NFFD_cov_plot
 
 ### 6.4. EMT plot -----
 EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred", 
-                                    terms = c("d_EMT [all]", "tree_cover [0, 25, 50]"),
-                                    legend.title = "Percent Tree Cover (%)") + 
+                                    terms = c("d_EMT [all]", "tree_cover [0, 10, 30, 60]"),
+                                    legend.title = "Percent Tree Cover (%)",
+                                   alpha = 0.05) + 
   
-  geom_point(data = model_3_C$data[[4]], mapping = aes(x = d_EMT, y = survival_probs), 
-             inherit.aes = FALSE, size = 0.2, colour = "gray20") +
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
+  
+  geom_jitter(data = model_3_C$data[[4]], mapping = aes(x = d_EMT, y = survival_probs), 
+              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 0.05, alpha = 0.5) +
   
   labs(x = bquote(bold("Extreme Minimum Temperature Transfer Distance (" ^"o" * "C)")), 
        y = "Predicted Probability of Survival (%)",
@@ -314,14 +322,21 @@ EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred",
         legend.spacing.y = unit(1, "cm"),
         text = element_text(family = "Times", size = 17))
 
+EMT_cov_plot
 
 ### 6.5. EXT plot ----
 EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred", 
                                     terms = c("d_EXT [all]", "tree_cover [0, 25, 50]"),
-                                    legend.title = "Percent Tree Cover (%)") + 
+                                    legend.title = "Percent Tree Cover (%)",
+                                    alpha = 0.05) + 
   
-  geom_point(data = model_3_C$data[[5]], mapping = aes(x = d_EXT, y = survival_probs), 
-             inherit.aes = FALSE, size = 0.2, colour = "gray20") +
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
+  
+  geom_jitter(data = model_3_C$data[[5]], mapping = aes(x = d_EXT, y = survival_probs), 
+              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 0.02, alpha = 0.5) +
   
   labs(x = bquote(bold("Extreme Maximum Temperature Transfer Distance (" ^"o" * "C)")), 
        y = "Predicted Probability of Survival (%)",
@@ -336,7 +351,7 @@ EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred",
         legend.spacing.y = unit(1, "cm"),
         text = element_text(family = "Times", size = 17))
 
-
+EXT_cov_plot
 
 ### 6.6. RH plot ----
 RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[6]], type = "pred", 
@@ -350,7 +365,7 @@ RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[6]], type = "pred",
                     values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = model_3_C$data[[6]], mapping = aes(x = d_RH, y = survival_probs), 
-              inherit.aes = FALSE, size = 0.2, colour = "gray40", width = 0.07, alpha = 0.5) +
+              inherit.aes = FALSE, size = 0.2, colour = "gray20", width = 0.05, alpha = 0.5) +
   
   labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
        y = "Predicted Probability of Survival (%)",
