@@ -113,16 +113,15 @@ cover_3_models <- heightPredictions(cover_3_models, cover_3_models$model_3)
 
 
 # 4. Cover Models -------------------------------------------------------
-
+# save as "A4" .pdf
 # Predictions 
 cover_3_models
-
 
 ##### 4.1.1 MAT Plot ----
 MAT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[1]],
                                   type = "pred", 
                                   terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"),
-                                  legend.title = "   Percent \nTree Cover (%)", 
+                                  legend.title = "   Percent Tree Cover (%)", 
                                   alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -131,22 +130,24 @@ MAT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[1]],
                     values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = cover_3_models$data[[1]],
-              MATping = aes(x = d_MAT, y = exp(predict_val)),
+              mapping = aes(x = d_MAT, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 3,
-              size = 0.1, colour = "gray30", alpha = 0.5) +
+              width = 0.03,
+              size = 0.1, colour = "gray20", alpha = 0.5) +
   
-  labs(x = "MAT Climatic Distance", 
+  labs(x = bquote(bold("Mean Annual Temperature Transfer Distance (" ^"o" * "C)")), 
        y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 MAT_3C_plot
 
@@ -155,7 +156,7 @@ MAT_3C_plot
 MAP_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[2]],
                                    type = "pred", 
                                    terms = c("d_MAP [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)", 
+                                   legend.title = "   Percent Tree Cover (%)", 
                                   alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -168,18 +169,20 @@ MAP_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[2]],
               inherit.aes = FALSE,
               height = 0.5,
               width = 3,
-              size = 0.1, colour = "gray30", alpha = 0.5) +
+              size = 0.1, colour = "gray20", alpha = 0.5) +
   
-  labs(x = "MAP Climatic Distance", 
+  labs(x = "Mean Annual Precipitation Transfer Distance (mm)", 
        y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 MAP_3C_plot
 
@@ -187,7 +190,7 @@ MAP_3C_plot
 NFFD_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[3]],
                                    type = "pred", 
                                    terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)",
+                                   legend.title = "   Percent Tree Cover (%)",
                                    alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -200,18 +203,20 @@ NFFD_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[3]],
               inherit.aes = FALSE,
               height = 0.5,
               width = 0.3,
-              size = 0.1, colour = "gray30", alpha = 0.5) +
+              size = 0.1, colour = "gray20", alpha = 0.5) +
   
-  labs(x = "NFFD Climatic Distance", 
+  labs(x = "Number of Frost Free Days Transfer Distance (days)", 
        y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 NFFD_3C_plot
 
@@ -219,7 +224,13 @@ NFFD_3C_plot
 EMT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[4]],
                                    type = "pred", 
                                    terms = c("d_EMT [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)") +
+                                   legend.title = "   Percent Tree Cover (%)",
+                                  alpha = 0.05) +
+  
+  scale_colour_manual(labels = c("0", "10", "30", "60"),
+                      values = c("red", "green4", "blue", "black")) +
+  scale_fill_manual(labels = c("0", "10", "30", "60"),
+                    values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = cover_3_models$data[[4]],
               mapping = aes(x = d_EMT, y = exp(predict_val)),
@@ -228,16 +239,18 @@ EMT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[4]],
               width = 0.1,
               size = 0.1, colour = "gray20") +
   
-  labs(x = "EMT Climatic Distance", 
+  labs(x =  bquote(bold("Extreme Minimum Temperature Transfer Distance (" ^"o" * "C)")), 
        y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 EMT_3C_plot
 
@@ -245,7 +258,7 @@ EMT_3C_plot
 EXT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[5]],
                                   type = "pred", 
                                   terms = c("d_EXT [all]", "tree_cover [0, 10, 30, 60]"),
-                                  legend.title = "   Percent \nTree Cover (%)", 
+                                  legend.title = "   Percent Tree Cover (%)", 
                                   alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -254,22 +267,24 @@ EXT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[5]],
                     values = c("red", "green4", "blue", "black")) +
   
   geom_jitter(data = cover_3_models$data[[5]],
-              EXTping = aes(x = d_EXT, y = exp(predict_val)),
+              mapping = aes(x = d_EXT, y = exp(predict_val)),
               inherit.aes = FALSE,
               height = 0.5,
-              width = 3,
-              size = 0.1, colour = "gray30", alpha = 0.5) +
+              width = 0.03,
+              size = 0.1, colour = "gray20", alpha = 0.5) +
   
-  labs(x = "EXT Climatic Distance", 
+  labs(x =  bquote(bold("Extreme Maximum Temperature Transfer Distance (" ^"o" * "C)")), 
        y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 EXT_3C_plot
 
@@ -278,7 +293,7 @@ EXT_3C_plot
 RH_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[6]],
                                    type = "pred", 
                                    terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent \nTree Cover (%)",
+                                   legend.title = "   Percent Tree Cover (%)",
                                  alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -291,36 +306,33 @@ RH_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[6]],
               inherit.aes = FALSE,
               height = 0.5,
               width = 0.05,
-              size = 0.1, colour = "gray30", alpha = 0.5) +
+              size = 0.1, colour = "gray20", alpha = 0.5) +
   
-  labs(x = "RH Climatic Distance", 
+  labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
        y = "Predicted Height (cm)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
-        legend.position = "top")
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 RH_3C_plot
 
 
 ##### 4.2 Composites ----
-ggarrange(MWMT_3C_plot, MAP_3C_plot, NFFD_3C_plot,
-          EMT_3C_plot, RH_3C_plot,
-          labels = c("A", "B", "C",
-                     "D", "E"),
-          hjust = -1, 
-          common.legend = TRUE, legend = "top")
-
 
 ggarrange(MAP_3C_plot, NFFD_3C_plot, RH_3C_plot,
           labels = c("A", "B", "C"),
           hjust = -1, 
           ncol = 1,
           common.legend = TRUE, legend = "top")
+
+# save as "US Legal" .pdf
 
 # 5. Harvest Models ------------------------------------------------------------
 # ggeffects ploting
