@@ -578,7 +578,7 @@ ggarrange(MAT_1_plot,
           common.legend = TRUE, legend = "top")
 
 
-# 8. Harveset emtrends  --------------------------------------------------------------
+# 8. emtrends  --------------------------------------------------------------
 
 df <- regen_survival
 

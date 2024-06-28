@@ -342,7 +342,9 @@ harvest_2_models
 ###### 5.1 MAP plot ----
 df_MAP <- ggpredict(harvest_2_models[["model_2"]][[1]], terms = c("d_MAP [all]", "harvestF"))
 
-MAP_graph <- ggplot(df_MAP, aes(x, predicted)) +
+MAP_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[1]], 
+                              terms = c("d_MAP [all]", "harvestF")), 
+                    aes(x, predicted)) +
   
   geom_jitter(data = harvest_2_models$data[[1]],
               mapping = aes(x = d_MAP, y = exp(predict_val)),
@@ -381,7 +383,9 @@ MAP_graph
 ###### 5.2 MSP plot ----
 df_MSP <- ggpredict(harvest_2_models[["model_2"]][[2]], terms = c("d_MSP [all]", "harvestF"))
 
-MSP_graph <- ggplot(df_MSP, aes(x, predicted)) +
+MSP_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[2]],
+                              terms = c("d_MSP [all]", "harvestF")),
+                    aes(x, predicted)) +
   
   geom_jitter(data = harvest_2_models$data[[2]],
               mapping = aes(x = d_MSP, y = exp(predict_val)),
@@ -409,8 +413,8 @@ MSP_graph <- ggplot(df_MSP, aes(x, predicted)) +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
         text = element_text(family = "Times", size = 17))
@@ -420,7 +424,9 @@ MSP_graph
 ###### 5.3 AHM plot ----
 df_AHM <- ggpredict(harvest_2_models[["model_2"]][[3]], terms = c("d_AHM [all]", "harvestF"))
 
-AHM_graph <- ggplot(df_AHM, aes(x, predicted)) +
+AHM_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[3]],
+                              terms = c("d_AHM [all]", "harvestF")), 
+                    aes(x, predicted)) +
   
   geom_jitter(data = harvest_2_models$data[[3]],
               mapping = aes(x = d_AHM, y = exp(predict_val)),
@@ -448,8 +454,8 @@ AHM_graph <- ggplot(df_AHM, aes(x, predicted)) +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
         text = element_text(family = "Times", size = 17))
@@ -459,7 +465,9 @@ AHM_graph
 ###### 5.4 NFFD plot ----
 df_NFFD <- ggpredict(harvest_2_models[["model_2"]][[4]], terms = c("d_NFFD [all]", "harvestF"))
 
-NFFD_graph <- ggplot(df_NFFD, aes(x, predicted)) +
+NFFD_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[4]],
+                               terms = c("d_NFFD [all]", "harvestF")), 
+                     aes(x, predicted)) +
   
   geom_jitter(data = harvest_2_models$data[[4]],
               mapping = aes(x = d_NFFD, y = exp(predict_val)),
@@ -499,7 +507,9 @@ NFFD_graph
 
 df_PAS <- ggpredict(harvest_2_models[["model_2"]][[5]], terms = c("d_PAS [all]", "harvestF"))
 
-PAS_graph <- ggplot(df_PAS, aes(x, predicted)) +
+PAS_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[5]],
+                              terms = c("d_PAS [all]", "harvestF")),
+                    aes(x, predicted)) +
   
   geom_jitter(data = harvest_2_models$data[[5]],
               mapping = aes(x = d_PAS, y = exp(predict_val)),
@@ -538,7 +548,9 @@ PAS_graph
 ###### 5.6 EMT plot ----
 df_EMT <- ggpredict(harvest_2_models[["model_2"]][[6]], terms = c("d_EMT [all]", "harvestF"))
 
-EMT_graph <- ggplot(df_EMT, aes(x, predicted)) +
+EMT_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[6]], 
+                              terms = c("d_EMT [all]", "harvestF")),
+                    aes(x, predicted)) +
   
   geom_jitter(data = harvest_2_models$data[[6]],
               mapping = aes(x = d_EMT, y = exp(predict_val)),
@@ -577,7 +589,9 @@ EMT_graph
 ###### 5.7 RH plot ----
 df_RH <- ggpredict(harvest_2_models[["model_2"]][[7]], terms = c("d_RH [all]", "harvestF"))
 
-RH_graph <- ggplot(df_RH, aes(x, predicted)) +
+RH_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[7]], 
+                             terms = c("d_RH [all]", "harvestF")), 
+                   aes(x, predicted)) +
   
   geom_jitter(data = harvest_2_models$data[[7]],
               mapping = aes(x = d_RH, y = exp(predict_val)),
@@ -605,8 +619,8 @@ RH_graph <- ggplot(df_RH, aes(x, predicted)) +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
         text = element_text(family = "Times", size = 17))
@@ -624,10 +638,10 @@ harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
 MAP_sig_labels <- c("AA", "AA", "AB", "BB")
 
 # Models
-MAP_mod <- #path to MAP model
+MAP_mod <- harvest_2_models$model_2[[1]]
 
 # Regrid emmeans
-MAP_regird <- regrid(emmeans(MAP_mod, "harvestF",
+MAP_regird <- regrid(emmeans(harvest_2_models$model_2[[1]], "harvestF",
                              lmerTest.limit = 5809, pbkrtest.limit = 5809), 
                      transform = "log")
 confint(MAP_regird, type = "response")
@@ -639,8 +653,9 @@ MAP_means <- plot(regrid(MAP_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = MAP_sig_labels), hjust = 1.5, vjust = -5, size = 3) +
-  geom_text(aes(label = round(exp(MAP_regird@bhat), 1)), hjust = -0.5) +
+  geom_text(aes(label = MAP_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = round(exp(MAP_regird@bhat), 1)),
+            size = 5, hjust = -0.5) +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
@@ -649,8 +664,8 @@ MAP_means <- plot(regrid(MAP_regird), transform = "log") +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 MAP_means
@@ -659,13 +674,10 @@ MAP_means
 
 # Labels
 MSP_sig_labels <- c("AA", "AA", "AB", "BB")
-
-# Models
-MSP_mod <- #path to MSP model
   
-  # Regrid emmeans
-  MSP_regird <- regrid(emmeans(MSP_mod, "harvestF",
-                               lmerTest.limit = 5809, pbkrtest.limit = 5809), 
+# Regrid emmeans
+MSP_regird <- regrid(emmeans(harvest_2_models$model_2[[2]], "harvestF",
+                              lmerTest.limit = 5809, pbkrtest.limit = 5809), 
                        transform = "log")
 confint(MSP_regird, type = "response")
 pairs(MSP_regird,  adjust="bonferroni", side="two-sided", type = "response")
@@ -676,8 +688,9 @@ MSP_means <- plot(regrid(MSP_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = MSP_sig_labels), hjust = 1.5, vjust = -5, size = 3) +
-  geom_text(aes(label = round(exp(MSP_regird@bhat), 1)), hjust = -0.5) +
+  geom_text(aes(label = MSP_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = round(exp(MSP_regird@bhat), 1)),
+            size = 5, hjust = -0.5) +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
@@ -686,8 +699,8 @@ MSP_means <- plot(regrid(MSP_regird), transform = "log") +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 MSP_means
@@ -696,13 +709,10 @@ MSP_means
 
 # Labels
 AHM_sig_labels <- c("AA", "AA", "AB", "BB")
-
-# Models
-AHM_mod <- #path to AHM model
   
-  # Regrid emmeans
-  AHM_regird <- regrid(emmeans(AHM_mod, "harvestF",
-                               lmerTest.limit = 5809, pbkrtest.limit = 5809), 
+# Regrid emmeans
+AHM_regird <- regrid(emmeans(harvest_2_models$model_2[[3]], "harvestF",
+                              lmerTest.limit = 5809, pbkrtest.limit = 5809), 
                        transform = "log")
 confint(AHM_regird, type = "response")
 pairs(AHM_regird,  adjust="bonferroni", side="two-sided", type = "response")
@@ -713,8 +723,9 @@ AHM_means <- plot(regrid(AHM_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = AHM_sig_labels), hjust = 1.5, vjust = -5, size = 3) +
-  geom_text(aes(label = round(exp(AHM_regird@bhat), 1)), hjust = -0.5) +
+  geom_text(aes(label = AHM_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = round(exp(AHM_regird@bhat), 1)), 
+            size = 5, hjust = -0.5) +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
@@ -723,8 +734,8 @@ AHM_means <- plot(regrid(AHM_regird), transform = "log") +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 AHM_means
@@ -734,12 +745,10 @@ AHM_means
 # Labels
 NFFD_sig_labels <- c("AA", "AA", "AB", "BB")
 
-# Models
-NFFD_mod <- #path to NFFD model
   
-  # Regrid emmeans
-  NFFD_regird <- regrid(emmeans(NFFD_mod, "harvestF",
-                               lmerTest.limit = 5809, pbkrtest.limit = 5809), 
+# Regrid emmeans
+NFFD_regird <- regrid(emmeans(harvest_2_models$model_2[[4]], "harvestF",
+                              lmerTest.limit = 5809, pbkrtest.limit = 5809), 
                        transform = "log")
 confint(NFFD_regird, type = "response")
 pairs(NFFD_regird,  adjust="bonferroni", side="two-sided", type = "response")
@@ -750,8 +759,9 @@ NFFD_means <- plot(regrid(NFFD_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = NFFD_sig_labels), hjust = 1.5, vjust = -5, size = 3) +
-  geom_text(aes(label = round(exp(NFFD_regird@bhat), 1)), hjust = -0.5) +
+  geom_text(aes(label = NFFD_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = round(exp(NFFD_regird@bhat), 1)), 
+            size = 5, hjust = -0.5) +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
@@ -760,8 +770,8 @@ NFFD_means <- plot(regrid(NFFD_regird), transform = "log") +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 NFFD_means
@@ -770,13 +780,10 @@ NFFD_means
 
 # Labels
 PAS_sig_labels <- c("AA", "AA", "AB", "BB")
-
-# Models
-PAS_mod <- #path to PAS model
   
-  # Regrid emmeans
-  PAS_regird <- regrid(emmeans(PAS_mod, "harvestF",
-                               lmerTest.limit = 5809, pbkrtest.limit = 5809), 
+# Regrid emmeans
+PAS_regird <- regrid(emmeans(harvest_2_models$model_2[[5]], "harvestF",
+                             lmerTest.limit = 5809, pbkrtest.limit = 5809), 
                        transform = "log")
 confint(PAS_regird, type = "response")
 pairs(PAS_regird,  adjust="bonferroni", side="two-sided", type = "response")
@@ -787,8 +794,9 @@ PAS_means <- plot(regrid(PAS_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = PAS_sig_labels), hjust = 1.5, vjust = -5, size = 3) +
-  geom_text(aes(label = round(exp(PAS_regird@bhat), 1)), hjust = -0.5) +
+  geom_text(aes(label = PAS_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = round(exp(PAS_regird@bhat), 1)), 
+            size = 5, hjust = -0.5) +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
@@ -797,8 +805,8 @@ PAS_means <- plot(regrid(PAS_regird), transform = "log") +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 PAS_means
@@ -808,12 +816,9 @@ PAS_means
 # Labels
 EMT_sig_labels <- c("AA", "AA", "AB", "BB")
 
-# Models
-EMT_mod <- #path to EMT model
-  
-  # Regrid emmeans
-  EMT_regird <- regrid(emmeans(EMT_mod, "harvestF",
-                               lmerTest.limit = 5809, pbkrtest.limit = 5809), 
+# Regrid emmeans
+EMT_regird <- regrid(emmeans(harvest_2_models$model_2[[6]], "harvestF",
+                             lmerTest.limit = 5809, pbkrtest.limit = 5809), 
                        transform = "log")
 confint(EMT_regird, type = "response")
 pairs(EMT_regird,  adjust="bonferroni", side="two-sided", type = "response")
@@ -824,8 +829,9 @@ EMT_means <- plot(regrid(EMT_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = EMT_sig_labels), hjust = 1.5, vjust = -5, size = 3) +
-  geom_text(aes(label = round(exp(EMT_regird@bhat), 1)), hjust = -0.5) +
+  geom_text(aes(label = EMT_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = round(exp(EMT_regird@bhat), 1)), 
+            size = 5, hjust = -0.5) +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
@@ -834,8 +840,8 @@ EMT_means <- plot(regrid(EMT_regird), transform = "log") +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 EMT_means
@@ -844,14 +850,11 @@ EMT_means
 
 # Labels
 RH_sig_labels <- c("AA", "AA", "AB", "BB")
-
-# Models
-RH_mod <- #path to RH model
   
-  # Regrid emmeans
-  RH_regird <- regrid(emmeans(RH_mod, "harvestF",
-                               lmerTest.limit = 5809, pbkrtest.limit = 5809), 
-                       transform = "log")
+# Regrid emmeans
+RH_regird <- regrid(emmeans(harvest_2_models$model_2[[7]], "harvestF",
+                            lmerTest.limit = 5809, pbkrtest.limit = 5809), 
+                            transform = "log")
 confint(RH_regird, type = "response")
 pairs(RH_regird,  adjust="bonferroni", side="two-sided", type = "response")
 
@@ -861,8 +864,9 @@ RH_means <- plot(regrid(RH_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = RH_sig_labels), hjust = 1.5, vjust = -5, size = 3) +
-  geom_text(aes(label = round(exp(RH_regird@bhat), 1)), hjust = -0.5) +
+  geom_text(aes(label = RH_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = round(exp(RH_regird@bhat), 1)),
+            size = 5, hjust = -0.5) +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
@@ -871,14 +875,16 @@ RH_means <- plot(regrid(RH_regird), transform = "log") +
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 10),
-        axis.title = element_text(size = 12, face = "bold"),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 15, face = "bold"),
         text = element_text(family = "Times"))
 
 RH_means
 
 
 ### 7. Harvest Composites -----
+
+# Save as 10 x 11' .pdf
 
 # MAP
 ggarrange(MAP_graph, MAP_means, nrow = 2, heights = c(2.5, 1))
@@ -931,22 +937,22 @@ performance::r2_nakagawa(ln_height_cover_models$model_3[[6]], tolerance = 1e-100
 
 ### 8.2 harvest values ----
 # MAP
-performance::r2_nakagawa(ln_height_cover_models$model_2[[1]], tolerance = 1e-1000)
+performance::r2_nakagawa(harvest_2_models$model_2[[1]], tolerance = 1e-1000)
 
 # MSP
-performance::r2_nakagawa(ln_height_cover_models$model_2[[2]], tolerance = 1e-1000)
+performance::r2_nakagawa(harvest_2_models$model_2[[2]], tolerance = 1e-1000)
 
 # AHM
-performance::r2_nakagawa(ln_height_cover_models$model_2[[3]], tolerance = 1e-1000)
+performance::r2_nakagawa(harvest_2_models$model_2[[3]], tolerance = 1e-1000)
 
 # NFFD
-performance::r2_nakagawa(ln_height_cover_models$model_2[[4]], tolerance = 1e-1000)
+performance::r2_nakagawa(harvest_2_models$model_2[[4]], tolerance = 1e-1000)
 
 # PAS
-performance::r2_nakagawa(ln_height_cover_models$model_2[[5]], tolerance = 1e-1000)
+performance::r2_nakagawa(harvest_2_models$model_2[[5]], tolerance = 1e-1000)
 
 # EMT
-performance::r2_nakagawa(ln_height_cover_models$model_2[[6]], tolerance = 1e-1000)
+performance::r2_nakagawa(harvest_2_models$model_2[[6]], tolerance = 1e-1000)
 
 # RH
-performance::r2_nakagawa(ln_height_cover_models$model_2[[7]], tolerance = 1e-1000)
+performance::r2_nakagawa(harvest_2_models$model_2[[7]], tolerance = 1e-1000)
