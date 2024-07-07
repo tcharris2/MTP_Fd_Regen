@@ -1,6 +1,12 @@
 # SURVIVAL FD B CLASS CSV BUILDER -----------------------------------------
 
 # 1. Importing Data ---------------------------------------------------------------
+
+### 1.1. Loading Packages ----
+library(here)
+library(tidyverse)
+
+### 1.2. Loading Data -----
 #' @ImportData
 survival_fd_b_base <- read.csv(here("Data/03_Processed", "20240602_regen_merged.csv"), header=TRUE)
 

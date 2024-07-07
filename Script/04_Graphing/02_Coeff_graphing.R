@@ -1,4 +1,17 @@
-# 1. Importing Data ---------------
+####### MODEL COEFFICIENTS ################
+#' @Content: Graphing Model Coefficients ---------------------------------------------
+
+#' @Author: Thomson Harris
+#' @Date: July 7th, 2024
+
+# 1. Loading Packages -----------
+library(here)
+library(tidyverse)
+library(sjPlot)
+library(ggpubr)
+
+
+# 2. Importing Data ---------------
 
 ln_height_cover_models <- readRDS(file = here("Data/04_Temp", 
                                               "2024-03-11_ln_height_cover_models.rds" ))
@@ -7,8 +20,6 @@ survival_harvest_mods <- readRDS(file = here("Data/04_Temp",
                                              "2024-03-11_survival_harvest_models.rds"))
 
 
-# 2. Loading Packages -----------
-library(ggpubr)
 
 ln_height_cover_models
 

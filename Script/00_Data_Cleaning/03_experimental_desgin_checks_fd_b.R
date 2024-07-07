@@ -1,4 +1,12 @@
-# Investigating Experimental Design by Location --------------------------------
+#  EXPERIMENTAL DESIGN BY LOCATION --------------------------------
+
+# 1. Importing Data ---------------------------------------------------------------
+
+### 1.1. Loading Packages -----
+library(here)
+library(tidyverse)
+
+### 1.2. Loading Data -----
 
 survival_fd_b_processed <- read.csv(here("Data/03_processed" , "20231130_survival_fd_b_processed.csv"), header = TRUE)
 
@@ -6,6 +14,8 @@ survival_fd_b_processed <- subset(survival_fd_b_processed, !(is.na(tree_cover)))
 
 survival_fd_b_processed <- subset(survival_fd_b_processed, !survival_fd_b_processed$tree_number %in% c(3904, 9861, 8248, 12846, 13432, 14752))
 
+
+# 2. Locations -----
 # diving dataset by location 
 
 location1<-survival_fd_b_processed[(survival_fd_b_processed$locationNo==1),]

@@ -5,23 +5,29 @@
 #' @Date: Oct 4th, 2023
 
 # 1. Importing Data ---------------------------------------------------------------
+
+### 1.1. Loading Packages -----
+library(here)
+library(tidyverse)
+library(ggpubr)
+
+### 1.2. Loading Data ------
 regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 
                   header = TRUE)
 
 regen$location[regen$location == "Jaffray"] <- "Cranbrook"
 
-# Increasing RH
-location_order <- c("Alex Fraser", "Cranbrook", "John Prince", "Twobit", "Redfish", "Narrows")
-
-### 1.1 Loading packages -----
-library(ggpubr)
-
-### 1.2 Nesting data -----
+### 1.3. Nesting data -----
 loc_group_summary <- regen %>% 
   group_by(location) %>% 
   nest()
 
 loc_group_summary
+
+# Location order for graphing 
+# Increasing RH
+location_order <- c("Alex Fraser", "Cranbrook", "John Prince", "Twobit", "Redfish", "Narrows")
+
 
 # 2. Organizing Data ------------------------------------------------------
 

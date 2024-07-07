@@ -6,23 +6,28 @@
 
 # 1. Importing Data ---------------------------------------------------------------
 
+### 1.1. Loading Packages --------
+library(here)
+library(tidyverse)
+library(sjPlot)
+library(emmeans)
+library(ggpubr)
+library(ggeffects)
+
+### 1.2. Loading Data --------
 regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 
                   header = TRUE)
 # check for most recent CSV file
 
 ClimaticVarList <- names(regen %>% select(starts_with("d_")))
 
-### 1.1. Importing Functions ----------------------------------------------------------
+### 1.3. Importing Functions ----------------------------------------------------------
 
 source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
 source("Script/04_Graphing/03a_Survival_graphing_Functions.R")
 
-### 1.2 Loading Packages --------
-library(emmeans)
-library(ggpubr)
-library(ggeffects)
 
-### 1.3. Correcting Variable types ---------------------------------------------------
+### 1.4. Correcting Variable types ---------------------------------------------------
 
 regen_prepped <- universalDataPrepFunction(regen)
 
@@ -34,7 +39,7 @@ regen_survival <- regen_prepped
 str(regen_prepped)
 
 
-### 1.4 Calling RDS file  ------
+### 1.5. Calling RDS file  ------
 
 survival_harvest_models <- readRDS(file = here("Data/04_Temp", 
                                                "2024-06-24_survival_harvest_models.rds"))

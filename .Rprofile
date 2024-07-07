@@ -1,16 +1,16 @@
 .First <- function() {
   
 # Load all Appropriate Packages
-  library(here)
-  library(modelr)
-  library(tidyverse)
-  library(lmtest)
-  library(lme4)
-  library(broom.mixed)
-  library(reshape2)
-  library(sjPlot)
-  library(ggpubr)
-  library(ggeffects)
+  library(here) # Data import/export
+# library(modelr)
+  library(tidyverse) # all scripts
+  library(lmtest) # model testing
+  library(lme4) # modelling
+  library(broom.mixed) # use unsure
+  library(reshape2) # Used for melt() function
+  library(sjPlot) # Used in plotting
+  library(ggpubr) # Used in plotting
+  library(ggeffects) # Used in plotting
 	
 
 }

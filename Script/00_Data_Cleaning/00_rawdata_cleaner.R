@@ -9,18 +9,22 @@
 # 3. Have a consistent way of calling different provenances (by seedlot)
 # 4. Prepare variables for future analyses
 #
-##### 1. Loading Data -------------------------------------------------------------
+# 1. Loading Data -------------------------------------------------------------
+
+##### 1.1 Loading Packages ----
+library(here)
+library(tidyverse)
+
+
+##### 1.2. Loading Data -----
 #' @ImportData
 regenbase <- read.csv(here("Data/01_Raw", "Regen surveys.csv"), header=TRUE)
 
 summary(regenbase)
 str(regenbase)
 
-# make sure to load "plry" first 
-library(plyr) # not sure if plyr needs to be loaded (-Thomson 20/09/2023)
-library(dplyr)
 
-##### 2. Removing variables and consistent naming --------------------------------
+# 2. Removing variables and consistent naming --------------------------------
 #' @RenameVariables
 ### Removing variables that are not needed ###
 
@@ -57,7 +61,7 @@ df
 regen <- rename_vars(regen)
 
 
-##### 3. Cleaning the Dataset -------------------------------------------------
+# 3. Cleaning the Dataset -------------------------------------------------
 #' @CleanDataset
 
 summary(regen)
@@ -158,7 +162,8 @@ unique(regen$provenance)
 
 # Removing issue #3 
 
-regen <- regen%>%mutate(provenance = case_when(
+regen <- regen %>% 
+  mutate(provenance = case_when(
   provenance == "Larch" & location == "Alex Fraser" ~ "Larch_AF",
   provenance == "Larch" & location == "Jaffray" ~ "Larch_JAF",
   provenance == "Larch" & location == "John Prince" ~ "Larch_JP",
@@ -233,7 +238,8 @@ regen[regen$species == "fd", ] # <- rename to "Fd"
 regen[regen$species == "PL", ] # <- rename to "Pl"
 
 
-regen <- regen %>% mutate(species = case_when(
+regen <- regen %>%
+  mutate(species = case_when(
   species == "Fd or Lw"  ~ "Fd",
   species == "Fd or Py"  ~ "Py",
   species == ""  ~ "Fd",
@@ -295,12 +301,12 @@ regen <- fix_prov_species_disconnect()
 
 summary(regen)
 
-##### 4. Writing a New .CSV File -----------------------------------------------
+# 4. Writing a New .CSV File -----------------------------------------------
 #' @WriteCSV
 write.csv(regen, file = here("Data/03_Processed" , "20231128_regen_cleaned.csv"), row.names = FALSE)
 
 
-#### 5. Double Checking Dataset --------------------------------------------
+# 5. Double Checking Dataset --------------------------------------------
 #' @ReadCSV
 regencleaned <- read.csv(here("Data/03_Processed", "20231128_regen_cleaned.csv"), header=TRUE)
 

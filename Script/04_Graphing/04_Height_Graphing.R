@@ -6,22 +6,27 @@
 
 # 1. Importing Data ---------------------------------------------------------------
 
-regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), header = TRUE) 
-# check for most recent CSV file
-
-ClimaticVarList <- names(regen %>% select(starts_with("d_")))
-
-### 1.1 Importing Functions -----
-
-source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
-
-### 1.2 Loading Packages ----
+### 1.1. Loading Packages ----
+library(here)
+library(tidyverse)
+library(sjPlot)
 library(ggeffects)
 library(ggpubr)
 library(emmeans)
 library(performance)
 
-### 1.4 Height specific prep ----
+### 1.2. Loading Data --------
+
+regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), header = TRUE) 
+# check for most recent CSV file
+
+ClimaticVarList <- names(regen %>% select(starts_with("d_")))
+
+### 1.3. Importing Functions -----
+
+source("Script/01_Universal_Functions/00_universal_data_prep_function.R")
+
+### 1.4. Height specific prep ----
 
 # Universal prep
 regen_prepped <- universalDataPrepFunction(regen)

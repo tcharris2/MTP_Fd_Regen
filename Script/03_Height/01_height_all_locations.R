@@ -11,7 +11,13 @@
 
 
 # 1. Importing Data ---------------------------------------------------------------
+### 1.1. Loading Packages ----
+library(here)
+library(tidyverse)
+library(lmer)
+library(lmtest)
 
+### 1.2. Loading Data -----
 regen <- read.csv(here("Data/03_Processed", "20231201_survival_fd_b_processed.csv"), header = TRUE) 
 # check for most recent CSV file
 

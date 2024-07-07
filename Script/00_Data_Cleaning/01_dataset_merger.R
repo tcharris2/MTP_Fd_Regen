@@ -11,6 +11,11 @@
 # 7. Peterhope A, Venables and Peterhope futures 
 
 # 1. Loading Cleaned Regen Data ------------------------------------------------
+
+###### 1.1 Loading Packages ----
+library(here)
+library(tidyverse)
+
 regen_cleaned_unmerged <- read.csv(here("Data/03_Processed", "20231129_regen_cleaned.csv"), header = TRUE)
 
 unique(regen_cleaned_unmerged$provenance)
