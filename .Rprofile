@@ -1,3 +1,4 @@
+source("renv/activate.R")
 .First <- function() {
   
 # Load all Appropriate Packages
