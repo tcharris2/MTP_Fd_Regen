@@ -14,7 +14,7 @@
 ### 1.1. Loading Packages ----
 library(here)
 library(tidyverse)
-library(lmer)
+library(lme4)
 library(lmtest)
 
 ### 1.2. Loading Data -----

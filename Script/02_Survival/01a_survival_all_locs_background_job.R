@@ -2,7 +2,7 @@
 ### 1.1. Loading Packages ----
 library(here)
 library(tidyverse)
-library(lmer)
+library(lme4)
 
 ### 1.2. Loading Data -----
 regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 
