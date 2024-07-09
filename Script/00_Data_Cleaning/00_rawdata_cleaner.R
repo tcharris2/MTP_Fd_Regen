@@ -349,7 +349,8 @@ regencleaned$locationNo <- as.integer(regencleaned$locationNo)
 ###### 6.4 blockNo -----
 regencleaned$blockNo <- NA
   
-regencleaned <- regencleaned%>%mutate(blockNo = case_when(
+regencleaned <- regencleaned %>% 
+  mutate(blockNo = case_when(
   rep == "1" & location == "Alex Fraser" ~ 1,
   rep == "2" & location == "Alex Fraser" ~ 2,
   rep == "3" & location == "Alex Fraser" ~ 3,
