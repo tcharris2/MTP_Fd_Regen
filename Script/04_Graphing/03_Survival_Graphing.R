@@ -332,7 +332,7 @@ EMT_cov_plot
 
 ### 6.5. EXT plot ----
 EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred", 
-                                    terms = c("d_EXT [all]", "tree_cover [0, 25, 50]"),
+                                    terms = c("d_EXT [all]", "tree_cover [0, 10, 30, 60]"),
                                     legend.title = "Percent Tree Cover (%)",
                                     alpha = 0.05) + 
   
