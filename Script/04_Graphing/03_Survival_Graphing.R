@@ -13,6 +13,7 @@ library(sjPlot)
 library(emmeans)
 library(ggpubr)
 library(ggeffects)
+library(MTP.Graphics)
 
 ### 1.2. Loading Data --------
 regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 

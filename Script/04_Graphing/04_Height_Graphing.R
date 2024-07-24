@@ -14,6 +14,7 @@ library(ggeffects)
 library(ggpubr)
 library(emmeans)
 library(performance)
+library(MTP.Graphics)
 
 ### 1.2. Loading Data --------
 
@@ -180,14 +181,10 @@ MAP_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[2]],
        y = "Predicted Height (cm)",
        title = NULL) + 
   
-  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
-        panel.grid.major = element_line(color = "gray60", linewidth = .05),
-        panel.grid.minor = element_blank(),
-        axis.text = element_text(size = 15),
-        axis.title = element_text(size = 17, face = "bold"),
-        legend.position = "top",
-        legend.spacing.y = unit(1, "cm"),
-        text = element_text(family = "Times", size = 17))
+  theme_MTP_1() +
+  
+  theme(legend.position = "top",
+        legend.spacing.y = unit(1, "cm"))
 
 MAP_3C_plot
 
