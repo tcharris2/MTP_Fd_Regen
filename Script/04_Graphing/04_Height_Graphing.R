@@ -69,7 +69,7 @@ names(ln_height_cover_models)
 
 harvest_2_models <- ln_height_harvest_models[c(2:7, 9), c("ClimaticVarList", "model_2")]
 
-cover_2_models <- ln_height_cover_models[c(4:5, 6), c("ClimaticVarList", "model_2")]
+# cover_2_models <- ln_height_cover_models[c(4:5, 6), c("ClimaticVarList", "model_2")]
 
 cover_3_models <- ln_height_cover_models[c(1:2, 5, 7:9), c("ClimaticVarList", "model_3")]
 
@@ -127,7 +127,7 @@ cover_3_models
 MAT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[1]],
                                   type = "pred", 
                                   terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"),
-                                  legend.title = "   Percent Tree Cover (%)", 
+                                  legend.title = "   Percent Crown Closure (%)", 
                                   alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -162,7 +162,7 @@ MAT_3C_plot
 MAP_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[2]],
                                    type = "pred", 
                                    terms = c("d_MAP [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent Tree Cover (%)", 
+                                   legend.title = "Percent Crown Closure (%)", 
                                   alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -181,10 +181,14 @@ MAP_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[2]],
        y = "Predicted Height (cm)",
        title = NULL) + 
   
-  theme_MTP_1() +
-  
-  theme(legend.position = "top",
-        legend.spacing.y = unit(1, "cm"))
+  theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
+        panel.grid.major = element_line(color = "gray60", linewidth = .05),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size = 15),
+        axis.title = element_text(size = 17, face = "bold"),
+        legend.position = "top",
+        legend.spacing.y = unit(1, "cm"),
+        text = element_text(family = "Times", size = 17))
 
 MAP_3C_plot
 
@@ -192,7 +196,7 @@ MAP_3C_plot
 NFFD_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[3]],
                                    type = "pred", 
                                    terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent Tree Cover (%)",
+                                   legend.title = "Percent Crown Closure (%)",
                                    alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -226,7 +230,7 @@ NFFD_3C_plot
 EMT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[4]],
                                    type = "pred", 
                                    terms = c("d_EMT [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent Tree Cover (%)",
+                                   legend.title = "Percent Crown Closure (%)",
                                   alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -260,7 +264,7 @@ EMT_3C_plot
 EXT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[5]],
                                   type = "pred", 
                                   terms = c("d_EXT [all]", "tree_cover [0, 10, 30, 60]"),
-                                  legend.title = "   Percent Tree Cover (%)", 
+                                  legend.title = "Percent Crown Closure (%)", 
                                   alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -295,7 +299,7 @@ EXT_3C_plot
 RH_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[6]],
                                    type = "pred", 
                                    terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"),
-                                   legend.title = "   Percent Tree Cover (%)",
+                                   legend.title = "Percent Crown Closure (%)",
                                  alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -958,3 +962,15 @@ performance::r2_nakagawa(harvest_2_models$model_2[[6]], tolerance = 1e-1000)
 
 # RH
 performance::r2_nakagawa(harvest_2_models$model_2[[7]], tolerance = 1e-1000)
+
+
+# 9. ggeffects  -----------------------------------------------------------
+
+MAP_ggpre <- ggpredict(ln_height_cover_models[["model_3"]][[2]],
+                      terms = c("d_MAP [all]", "tree_cover [0, 10, 30, 60]"))
+
+NFFD_ggpre <- ggpredict(ln_height_cover_models[["model_3"]][[5]],
+                       terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"))
+
+RH_ggpre <- ggpredict(ln_height_cover_models[["model_3"]][[9]],
+                       terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"))

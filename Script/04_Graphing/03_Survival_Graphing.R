@@ -245,7 +245,7 @@ MAT_cov_plot
 ### 6.2. MAP plot -----
 MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[2]], type = "pred", 
                                     terms = c("d_MAP [all]", "tree_cover [0, 10, 30, 60]"),
-                                    legend.title = "Percent Tree Cover (%)",
+                                    legend.title = "Percent Crown Closure (%)",
                                    alpha = 0.05) +
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -274,7 +274,7 @@ MAP_cov_plot
 ### 6.3. NFFD plot -----
 NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[3]], type = "pred", 
                                     terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"),
-                                    legend.title = "Percent Tree Cover (%)",
+                                    legend.title = "Percent Crown Closure (%)",
                                     alpha = 0.05) + 
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -304,7 +304,7 @@ NFFD_cov_plot
 ### 6.4. EMT plot -----
 EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred", 
                                     terms = c("d_EMT [all]", "tree_cover [0, 10, 30, 60]"),
-                                    legend.title = "Percent Tree Cover (%)",
+                                    legend.title = "Percent Crown Closure (%)",
                                    alpha = 0.05) + 
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -333,7 +333,7 @@ EMT_cov_plot
 ### 6.5. EXT plot ----
 EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred", 
                                     terms = c("d_EXT [all]", "tree_cover [0, 10, 30, 60]"),
-                                    legend.title = "Percent Tree Cover (%)",
+                                    legend.title = "Percent Crown Closure (%)",
                                     alpha = 0.05) + 
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -362,7 +362,7 @@ EXT_cov_plot
 ### 6.6. RH plot ----
 RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[6]], type = "pred", 
                                     terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"),
-                                    legend.title = "Percent Tree Cover (%)",
+                                    legend.title = "Percent Crown Closure (%)",
                                   alpha = 0.05) + 
   
   scale_colour_manual(labels = c("0", "10", "30", "60"),
@@ -741,3 +741,22 @@ ggarrange(inter_plot, trend_plot, nrow = 2, heights = c(2, 1))
 ggarrange(EMT_plot, EMT_trend, ncol = 1, heights = c(2.5, 1))
 
 # save graph as 1400 x 1000 .png or 11.50" x 12.00" .pdf
+
+
+
+# 9. ggeffects ------------------------------------------------------------
+
+RH_ggpre <- ggpredict(survival_harvest_models[["model_3"]][[9]], 
+                      terms = c("d_RH [all]", "harvestF"))
+
+NFFD_ggpre <- ggpredict(survival_harvest_models[["model_3"]][[5]], 
+                        terms = c("d_NFFD [all]", "harvestF"))
+
+MAT_ggpre <- ggpredict(survival_cover_models[["model_3"]][[1]],
+                       terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"))
+
+NFFD_ggpre <- ggpredict(survival_cover_models[["model_3"]][[5]],
+                       terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"))
+
+RH_ggpre <- ggpredict(survival_cover_models[["model_3"]][[9]],
+                       terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"))
