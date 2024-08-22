@@ -1,0 +1,54 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo=FALSE, out.width="433px", fig.align="center"}
+knitr::include_graphics("man/figures/mt-logo-workmark.png")
+```
+
+# MTP_Natural_Regen
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+Project Title: Natural regeneration analysis
+
+Part of the Mother Tree Project (MTP) at the University of British Columbia (UBC). 
+
+Principal Investigator: Thomson Harris
+
+Email - thomsonharris@gmail.com, 
+        tc.harris@ubc.ca 
+
+Phone - 778-866-4198 
+
+# Purpose:
+
+
+
+# Keywords:
+
+Forestry, Silviculture, Ecology, Climatic Distance, Assisted Migration, Climate Change
+
+
+# Taxonomic Information:
+
+Interior Douglas-fir - Pseudotsuga menziesii var. glauca (Mayr) Franco
+		      Taxonomic Serial No.: 183428
+
+Western Larch - 
+
+Ponderosa Pine - 
+
+Lodgepole Pine - 
+
+# Variable Information:
+
+
+Climatic variables are retried from Climate NA v7.40. Using historical climate data: Normal_1981_2010.nrm.
+	
+Locations are distributed across interior British Columbia (BC) within the span of interior Douglas-fir's range. Locations were harvested between 2017/20, planted between 2018/20, and surveyed between 2020/21. 
+
+

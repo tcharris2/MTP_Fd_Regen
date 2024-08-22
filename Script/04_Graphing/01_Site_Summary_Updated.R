@@ -10,6 +10,7 @@
 library(here)
 library(tidyverse)
 library(ggpubr)
+library(reshape2)
 
 ### 1.2. Loading Data ------
 regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 
@@ -26,7 +27,7 @@ loc_group_summary
 
 # Location order for graphing 
 # Increasing RH
-location_order <- c("Alex Fraser", "Cranbrook", "John Prince", "Twobit", "Redfish", "Narrows")
+location_order <- c("Alex Fraser", "Jaffray", "John Prince", "Twobit", "Redfish", "Narrows")
 
 
 # 2. Organizing Data ------------------------------------------------------

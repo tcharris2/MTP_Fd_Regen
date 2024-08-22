@@ -181,7 +181,7 @@ RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred",
              inherit.aes = FALSE, size = 0.5) +
   
   labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
-       y = NULL,
+       y = "Predictd Probability of Survival (%)",
        title = NULL) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
