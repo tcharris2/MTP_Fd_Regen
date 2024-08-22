@@ -1,4 +1,6 @@
 
+[![DOI](https://zenodo.org/badge/750065977.svg)](https://zenodo.org/doi/10.5281/zenodo.13363439)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <img src="man/figures/mt-logo-workmark.png" width="433px" style="display: block; margin: auto;" />
