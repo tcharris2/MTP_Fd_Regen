@@ -17,6 +17,7 @@ library(here)
 library(tidyverse)
 library(lme4)
 library(lmtest)
+library(easystats)
 
 ### 1.2. Loading Data -----
 regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 
@@ -98,7 +99,7 @@ saveRDS(survival_cover_models,
 
 # 7.Calling RDS File  ------------------------------------------------------------
 
-survival_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-03-11_survival_harvest_models.rds"))
+survival_harvest_mods <- readRDS(file = here("Data/04_Temp", "2024-06-24_survival_harvest_models.rds"))
 
 survival_harvest_mods
 
@@ -239,3 +240,11 @@ write.csv(SC_sig_p_vals,
           file = here("Data/05_Output", paste0(Sys.Date(), "_Survival_Cover_sig_p_vals.csv")),
           row.names = FALSE)
 
+
+
+
+# 10. Model Assumptions ---------------------------------------------------
+
+RH.mod <- survival_harvest_mods[9, 5][[1]][[1]]
+
+check_model(RH.mod)

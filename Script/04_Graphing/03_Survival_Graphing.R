@@ -13,7 +13,7 @@ library(sjPlot)
 library(emmeans)
 library(ggpubr)
 library(ggeffects)
-library(MTP.Graphics)
+#library(MTP.Graphics)
 
 ### 1.2. Loading Data --------
 regen <- read.csv(here("Data/03_Processed", "20240602_survival_fd_b_processed.csv"), 
@@ -121,7 +121,8 @@ NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred",
   
   labs(x = "Number of Frost Free Days Transfer Distance (days)", 
        y = "Predicted Probability of Survival",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(a)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -130,6 +131,7 @@ NFFD_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[1]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.text = element_text(size = 17),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times"))
 
 NFFD_plot
@@ -152,7 +154,8 @@ EMT_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[2]], type = "pred",
   
   labs(x = bquote(bold("Extreme Minimum Temperature Transfer Distance (" ^"o" * "C)")), 
        y = "Predicted Probability of Survival",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(a)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -161,6 +164,7 @@ EMT_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[2]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.text = element_text(size = 17),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times"))
 
 EMT_plot
@@ -182,8 +186,8 @@ RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred",
   
   labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
        y = "Predictd Probability of Survival (%)",
-       title = NULL) + 
-  
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
@@ -191,9 +195,11 @@ RH_plot <- sjPlot::plot_model(model_3_H[["model_3"]][[3]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.text = element_text(size = 17),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times"))
 
 RH_plot 
+
 
 ### 5.4. Composites ------ 
 
@@ -603,7 +609,7 @@ RH_emtrends
 # Plotting
 
 # Lables
-RH_sig_labels <- c("AA", "AB", "AB", "BB")
+RH_sig_labels <- c("A", "AB", "AB", "B")
 RH_trend_vals <- c(0.2281, 0.1515, 0.1379, 0.0718)
 
 RH_trend <- plot(emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "bonferroni")) +
@@ -614,14 +620,17 @@ RH_trend <- plot(emtrends(RH_mod, pairwise ~ harvestF, var = "d_RH", adjust = "b
   
   geom_text(aes(label = RH_sig_labels), hjust = 1.5, 
                                      vjust = -3,
-                                     size = 5) +
+                                     size = 5,
+            family = "Times") +
   geom_text(aes(label = round(RH_trend_vals, 2), hjust = -0.3),
-            size = 5) +
+            size = 5,
+            family = "Times") +
   
   
   labs(x = bquote(bold(RH[td] * "  - Harvest Interaction Slope")), 
        y = "",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(d)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -647,7 +656,7 @@ EMT_emtrends
 # Plotting
 
 # Lables
-EMT_sig_labels <- c("AA", "AB", "AB", "BB")
+EMT_sig_labels <- c("A", "AB", "AB", "B")
 EMT_trend_vals <- c(0.1714, 0.1301, 0.1062, 0.0562)
 
 
@@ -659,13 +668,17 @@ EMT_trend <- plot(emtrends(EMT_mod, pairwise ~ harvestF, var = "d_EMT", adjust =
   
   geom_text(aes(label = EMT_sig_labels), hjust = 1.5, 
             vjust = -3,
-            size = 5) +
-  geom_text(aes(label = round(EMT_trend_vals, 2), hjust = -0.3), size = 5) +
+            size = 5,
+            family = "Times") +
+  geom_text(aes(label = round(EMT_trend_vals, 2), hjust = -0.3), 
+            size = 5,
+            family = "Times") +
   
   
   labs(x = bquote(bold(EMT[td] * "  - Harvest Interaction Slope")), 
        y = "",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -689,7 +702,7 @@ NFFD_emtrends <- emtrends(NFFD_mod, pairwise ~ harvestF, var = "d_NFFD", adjust 
 NFFD_emtrends
 
 # Labels
-NFFD_sig_labels <- c("AA", "AB", "AB", "BB")
+NFFD_sig_labels <- c("A", "AB", "AB", "B")
 NFFD_trend_vals <- c(0.0350, 0.0256, 0.0217, 0.0108)
 
 
@@ -701,14 +714,17 @@ NFFD_trend <- plot(emtrends(NFFD_mod, pairwise ~ harvestF, var = "d_NFFD", adjus
   
   geom_text(aes(label = NFFD_sig_labels), hjust = 1.5, 
                                      vjust = -3,
-                                     size = 5) +
+                                     size = 5,
+            family = "Times") +
   geom_text(aes(label = round(NFFD_trend_vals, 3), hjust = -0.3),
-            size = 5) +
+            size = 5,
+            family = "Times") +
   
   
   labs(x = bquote(bold(NFFD[td] * "  - Harvest Interaction Slope")), 
        y = "",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(c)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -744,19 +760,3 @@ ggarrange(EMT_plot, EMT_trend, ncol = 1, heights = c(2.5, 1))
 
 
 
-# 9. ggeffects ------------------------------------------------------------
-
-RH_ggpre <- ggpredict(survival_harvest_models[["model_3"]][[9]], 
-                      terms = c("d_RH [all]", "harvestF"))
-
-NFFD_ggpre <- ggpredict(survival_harvest_models[["model_3"]][[5]], 
-                        terms = c("d_NFFD [all]", "harvestF"))
-
-MAT_ggpre <- ggpredict(survival_cover_models[["model_3"]][[1]],
-                       terms = c("d_MAT [all]", "tree_cover [0, 10, 30, 60]"))
-
-NFFD_ggpre <- ggpredict(survival_cover_models[["model_3"]][[5]],
-                       terms = c("d_NFFD [all]", "tree_cover [0, 10, 30, 60]"))
-
-RH_ggpre <- ggpredict(survival_cover_models[["model_3"]][[9]],
-                       terms = c("d_RH [all]", "tree_cover [0, 10, 30, 60]"))

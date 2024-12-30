@@ -130,10 +130,11 @@ survival_graph <- ggplot(data = loc_group_summary,
   guides(fill = "none") +
   
   labs(title = NULL,
-       x = NULL,
+       x = "Location",
        y = "Average Survival (%)",
        size = 12,
-       fill = "Survival (%)") +
+       fill = "Survival (%)",
+       tag = "A.") +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major.y = element_blank(),
@@ -169,7 +170,8 @@ height_graph <- ggplot(data = loc_group_summary,
        x = "Location",
        y = "Average Height (cm)",
        size = 12,
-       fill = "Height (cm)") +
+       fill = "Height (cm)",
+       tag = "B.") +
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major.y = element_blank(),
@@ -209,7 +211,7 @@ site_summary <- ggplot(data = transform(site_c_vars_df,
   
   geom_text(aes(y = value + 0.5 * sign(value), label = round(value, 1)), 
             position = position_dodge(width = 0.8), 
-            size = 4) +
+            size = 4, family = "Times") +
   
   facet_wrap( ~ location, ncol = 1) +
   
@@ -234,3 +236,6 @@ ggarrange(site_summary,
           ncol = 2, labels = "A.", widths = c(1, 1), align = "v")
 
 # Save this graph at 1400 x 1000
+
+
+ggarrange(survival_graph, height_graph, nrow = 1, align = "hv")
