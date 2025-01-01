@@ -39,6 +39,7 @@ regen_prepped <- universalDataPrepFunction(regen)
 # Remove outliers
 regen_height <- subset(regen_prepped, !regen_prepped$tree_number %in% 
                          c(3904, 9861, 8248, 12846, 13432, 14752))
+# outliers removed do to excessive herbevoir of insect damage. 
 
 # Remove NAs
 regen_height <-  subset(regen_height, !(is.na(height)))
@@ -47,6 +48,8 @@ regen_height <-  subset(regen_height, !(is.na(height)))
 str(regen_height)
 
 df <- regen_height
+
+har_labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
 
 ### 1.5 Calling RDS files -----
 
@@ -153,6 +156,7 @@ MAT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[1]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 MAT_3C_plot
@@ -179,7 +183,8 @@ MAP_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[2]],
   
   labs(x = "Mean Annual Precipitation Transfer Distance (mm)", 
        y = "Predicted Height (cm)",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(a)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -188,6 +193,7 @@ MAP_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[2]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 MAP_3C_plot
@@ -213,7 +219,8 @@ NFFD_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[3]],
   
   labs(x = "Number of Frost Free Days Transfer Distance (days)", 
        y = "Predicted Height (cm)",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -222,6 +229,7 @@ NFFD_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[3]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 NFFD_3C_plot
@@ -256,6 +264,7 @@ EMT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[4]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 EMT_3C_plot
@@ -290,6 +299,7 @@ EXT_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[5]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 EXT_3C_plot
@@ -316,7 +326,8 @@ RH_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[6]],
   
   labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
        y = "Predicted Height (cm)",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(c)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -325,6 +336,7 @@ RH_3C_plot <- sjPlot::plot_model(cover_3_models[["model_3"]][[6]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 RH_3C_plot
@@ -333,12 +345,11 @@ RH_3C_plot
 ##### 4.2 Composites ----
 
 ggarrange(MAP_3C_plot, NFFD_3C_plot, RH_3C_plot,
-          labels = c("A", "B", "C"),
           hjust = -1, 
           ncol = 1,
           common.legend = TRUE, legend = "top")
 
-# save as "US Legal" .pdf
+# save as "US Legal" .pdf portrait 
 
 # 5. Harvest Models ------------------------------------------------------------
 # ggeffects ploting
@@ -368,7 +379,8 @@ MAP_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[1]],
        y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
-       colour = "Harvest") +
+       colour = "Harvest",
+       tag = bquote(bold("(a)"))) +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
                      values = c("red", "green4", "blue", "black")) +
@@ -382,6 +394,7 @@ MAP_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[1]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 MAP_graph
@@ -409,7 +422,8 @@ MSP_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[2]],
        y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
-       colour = "Harvest") +
+       colour = "Harvest",
+       tag = bquote(bold("(a)"))) +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
                      values = c("red", "green4", "blue", "black")) +
@@ -423,6 +437,7 @@ MSP_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[2]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 MSP_graph
@@ -450,7 +465,8 @@ AHM_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[3]],
        y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
-       colour = "Harvest") +
+       colour = "Harvest",
+       tag = bquote(bold("(a)"))) +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
                      values = c("red", "green4", "blue", "black")) +
@@ -464,6 +480,7 @@ AHM_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[3]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 AHM_graph
@@ -491,7 +508,8 @@ NFFD_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[4]],
        y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
-       colour = "Harvest") +
+       colour = "Harvest",
+       tag = bquote(bold("(a)"))) +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
                      values = c("red", "green4", "blue", "black")) +
@@ -505,6 +523,7 @@ NFFD_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[4]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 NFFD_graph
@@ -533,7 +552,8 @@ PAS_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[5]],
        y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
-       colour = "Harvest") +
+       colour = "Harvest",
+       tag = bquote(bold("(a)"))) +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
                      values = c("red", "green4", "blue", "black")) +
@@ -547,6 +567,7 @@ PAS_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[5]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 PAS_graph
@@ -574,7 +595,8 @@ EMT_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[6]],
        y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
-       colour = "Harvest") +
+       colour = "Harvest",
+       tag = bquote(bold("(a)"))) +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
                      values = c("red", "green4", "blue", "black")) +
@@ -588,6 +610,7 @@ EMT_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[6]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 EMT_graph
@@ -615,7 +638,8 @@ RH_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[7]],
        y = "Predicted Height (cm)",
        title = NULL,
        fill = "Harvest",
-       colour = "Harvest") +
+       colour = "Harvest",
+       tag = bquote(bold("(a)"))) +
   
   scale_color_manual(labels = c("Clearcut", "Seed Tree", "30% Retention", "60% Retention"),
                      values = c("red", "green4", "blue", "black")) +
@@ -629,6 +653,7 @@ RH_graph <- ggplot(ggpredict(harvest_2_models[["model_2"]][[7]],
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.title = element_blank(),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 RH_graph
@@ -641,7 +666,7 @@ harvest_labels <- c("Clearcut", "Seed Tree", "30% Retention", "60% Retention")
 ###### 6.1 MAP ----
 
 # Labels
-MAP_sig_labels <- c("AA", "AA", "AB", "BB")
+MAP_sig_labels <- c("A", "A", "AB", "B")
 
 # Models
 MAP_mod <- harvest_2_models$model_2[[1]]
@@ -659,27 +684,30 @@ MAP_means <- plot(regrid(MAP_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = MAP_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = MAP_sig_labels), hjust = 1.5, vjust = -5, size = 5,
+            family = "Times") +
   geom_text(aes(label = round(exp(MAP_regird@bhat), 1)),
-            size = 5, hjust = -0.5) +
+            size = 5, hjust = -0.5,
+            family = "Times") +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.title = element_text(size = 15, face = "bold"),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 MAP_means
 
 ###### 6.2 MSP ----
 
 # Labels
-MSP_sig_labels <- c("AA", "AA", "AB", "BB")
+MSP_sig_labels <- c("A", "A", "AB", "B")
   
 # Regrid emmeans
 MSP_regird <- regrid(emmeans(harvest_2_models$model_2[[2]], "harvestF",
@@ -694,27 +722,30 @@ MSP_means <- plot(regrid(MSP_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = MSP_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = MSP_sig_labels), hjust = 1.5, vjust = -5, size = 5,
+            family = "Times") +
   geom_text(aes(label = round(exp(MSP_regird@bhat), 1)),
-            size = 5, hjust = -0.5) +
+            size = 5, hjust = -0.5,
+            family = "Times") +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.title = element_text(size = 15, face = "bold"),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 MSP_means
 
 ###### 6.3 AHM ----
 
 # Labels
-AHM_sig_labels <- c("AA", "AA", "AB", "BB")
+AHM_sig_labels <- c("A", "A", "AB", "B")
   
 # Regrid emmeans
 AHM_regird <- regrid(emmeans(harvest_2_models$model_2[[3]], "harvestF",
@@ -729,27 +760,30 @@ AHM_means <- plot(regrid(AHM_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = AHM_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = AHM_sig_labels), hjust = 1.5, vjust = -5, size = 5,
+            family = "Times") +
   geom_text(aes(label = round(exp(AHM_regird@bhat), 1)), 
-            size = 5, hjust = -0.5) +
+            size = 5, hjust = -0.5,
+            family = "Times") +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.title = element_text(size = 15, face = "bold"),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 AHM_means
 
 ###### 6.4 NFFD ----
 
 # Labels
-NFFD_sig_labels <- c("AA", "AA", "AB", "BB")
+NFFD_sig_labels <- c("A", "A", "AB", "B")
 
   
 # Regrid emmeans
@@ -765,27 +799,30 @@ NFFD_means <- plot(regrid(NFFD_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = NFFD_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = NFFD_sig_labels), hjust = 1.5, vjust = -5, size = 5,
+            family = "Times") +
   geom_text(aes(label = round(exp(NFFD_regird@bhat), 1)), 
-            size = 5, hjust = -0.5) +
+            size = 5, hjust = -0.5,
+            family = "Times") +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.title = element_text(size = 15, face = "bold"),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 NFFD_means
 
 ###### 6.5 PAS ----
 
 # Labels
-PAS_sig_labels <- c("AA", "AA", "AB", "BB")
+PAS_sig_labels <- c("A", "A", "AB", "B")
   
 # Regrid emmeans
 PAS_regird <- regrid(emmeans(harvest_2_models$model_2[[5]], "harvestF",
@@ -800,27 +837,30 @@ PAS_means <- plot(regrid(PAS_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = PAS_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = PAS_sig_labels), hjust = 1.5, vjust = -5, size = 5,
+            family = "Times") +
   geom_text(aes(label = round(exp(PAS_regird@bhat), 1)), 
-            size = 5, hjust = -0.5) +
+            size = 5, hjust = -0.5,
+            family = "Times") +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.title = element_text(size = 15, face = "bold"),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 PAS_means
 
 ###### 6.6 EMT ----
 
 # Labels
-EMT_sig_labels <- c("AA", "AA", "AB", "BB")
+EMT_sig_labels <- c("A", "A", "AB", "B")
 
 # Regrid emmeans
 EMT_regird <- regrid(emmeans(harvest_2_models$model_2[[6]], "harvestF",
@@ -835,27 +875,30 @@ EMT_means <- plot(regrid(EMT_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = EMT_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = EMT_sig_labels), hjust = 1.5, vjust = -5, size = 5,
+            family = "Times") +
   geom_text(aes(label = round(exp(EMT_regird@bhat), 1)), 
-            size = 5, hjust = -0.5) +
+            size = 5, hjust = -0.5,
+            family = "Times") +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.title = element_text(size = 15, face = "bold"),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 EMT_means
 
 ###### 6.7 RH ----
 
 # Labels
-RH_sig_labels <- c("AA", "AA", "AB", "BB")
+RH_sig_labels <- c("A", "A", "AB", "B")
   
 # Regrid emmeans
 RH_regird <- regrid(emmeans(harvest_2_models$model_2[[7]], "harvestF",
@@ -870,20 +913,23 @@ RH_means <- plot(regrid(RH_regird), transform = "log") +
   
   scale_y_discrete(labels = harvest_labels) +
   
-  geom_text(aes(label = RH_sig_labels), hjust = 1.5, vjust = -5, size = 5) +
+  geom_text(aes(label = RH_sig_labels), hjust = 1.5, vjust = -5, size = 5,
+            family = "Times") +
   geom_text(aes(label = round(exp(RH_regird@bhat), 1)),
-            size = 5, hjust = -0.5) +
+            size = 5, hjust = -0.5,
+            family = "Times") +
   
   labs(x = "Height (cm)", 
        y = "Harvest Type",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
         panel.grid.minor = element_blank(),
         axis.text = element_text(size = 15),
         axis.title = element_text(size = 15, face = "bold"),
-        text = element_text(family = "Times"))
+        text = element_text(family = "Times", size = 17))
 
 RH_means
 

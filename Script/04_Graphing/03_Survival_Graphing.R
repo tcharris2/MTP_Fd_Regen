@@ -243,6 +243,7 @@ MAT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[1]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 MAT_cov_plot
@@ -264,7 +265,8 @@ MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[2]], type = "pred",
   
   labs(x = "Mean Annual Precipitation Transfer Distance (mm)", 
        y = "Predicted Probability of Survival (%)",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(a)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -273,6 +275,7 @@ MAP_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[2]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 MAP_cov_plot
@@ -293,7 +296,8 @@ NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[3]], type = "pred",
   
   labs(x = "Number of Frost Free Days Transfer Distance (days)", 
        y = "Predicted Probability of Survival (%)",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(b)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -302,6 +306,7 @@ NFFD_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[3]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 NFFD_cov_plot
@@ -332,6 +337,7 @@ EMT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[4]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 EMT_cov_plot
@@ -361,6 +367,7 @@ EXT_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[5]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 EXT_cov_plot
@@ -381,7 +388,8 @@ RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[6]], type = "pred",
   
   labs(x = "Mean Annual Relative Humidity Transfer Distance (%)", 
        y = "Predicted Probability of Survival (%)",
-       title = NULL) + 
+       title = NULL,
+       tag = bquote(bold("(c)"))) + 
   
   theme(panel.background = element_rect(fill = "white", color = "black", linewidth = 0.75),
         panel.grid.major = element_line(color = "gray60", linewidth = .05),
@@ -390,6 +398,7 @@ RH_cov_plot <- sjPlot::plot_model(model_3_C[["model_3"]][[6]], type = "pred",
         axis.title = element_text(size = 17, face = "bold"),
         legend.position = "top",
         legend.spacing.y = unit(1, "cm"),
+        legend.key = element_rect(fill = NA, color = NA),
         text = element_text(family = "Times", size = 17))
 
 RH_cov_plot
@@ -407,10 +416,8 @@ ggarrange(MAT_cov_plot,
           common.legend = TRUE, legend = "top")
 
 
-ggarrange(MAT_cov_plot,MAP_cov_plot,
-          NFFD_cov_plot, RH_cov_plot,
-          labels = c("A", "B", "C",
-                     "D"),
+ggarrange(MAP_cov_plot, NFFD_cov_plot, RH_cov_plot,
+          ncol = 1,
           vjust = 0.2, 
           hjust = -2,
           common.legend = TRUE, legend = "top")
